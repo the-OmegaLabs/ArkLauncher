@@ -26,6 +26,8 @@ def welcomePage():
     maliang.CheckBox(cv, (50, 640), command=print, default=True, length=23)
     maliang.Text(cv, (85, 643), text="发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。", family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
     
+    maliang.Button(cv, (50, 700), size=(100, 40), text='开始使用', fontsize=15)
+
     root.mainloop()
 
     
