@@ -23,19 +23,21 @@ def welcomePage():
     maliang.Text(cv, (50, 300), text='轻松管理并更新您的游戏。', family='Microsoft YaHei UI bold', fontsize=17)
 
     maliang.CheckBox(cv, (50, 600), command=print, default=False, length=23)
-    maliang.Text(cv, (85, 605), text="我同意并遵守 MIT License。", family='Microsoft YaHei UI Bold', weight='bold',
+    maliang.Text(cv, (85, 605), text="我同意贡献，使用此项目时遵守 MIT License。", family='Microsoft YaHei UI Bold', weight='bold',
                     fontsize=15)
     maliang.CheckBox(cv, (50, 640), command=print, default=True, length=23)
-    maliang.Text(cv, (85, 643), text="发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。",
+    maliang.Text(cv, (85, 643), text="发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。(摆设)",
                     family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
 
     maliang.Button(cv, (50, 700), size=(100, 40), text='开始使用', fontsize=16, family='Microsoft YaHei UI Bold')
 
-    maliang.RadioBox(cv, (170, 705), command=print, length=30, default=True)
+    langCN = maliang.RadioBox(cv, (170, 705), command=print, length=30, default=True)
     maliang.Text(cv, (210, 709), text="中文", fontsize=17, family='Microsoft YaHei UI Bold')
 
-    maliang.RadioBox(cv, (260, 705), command=print, length=30, default=False)
+    langEN = maliang.RadioBox(cv, (260, 705), command=print, length=30, default=False)
     maliang.Text(cv, (300, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
+
+    maliang.RadioBox.group(langCN, langEN)
     
     root.mainloop()
 
