@@ -20,25 +20,47 @@ avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
 avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
 
 
+locale = 'en'
+
 # 定义语言词典。
 lang_dict = {
-    'en': {
+    'en':     {
         'welcome': 'Welcome to ArkLauncher',
         'desc': 'Easily access and manage your Minecraft games.',
         'license': 'I agree to using this project with the MIT License.',
         'collect': 'Send anonymous data to help ATCraft Network\nimprove ArkLauncher App.',
         'button': 'Start',
         'lang_chinese': '中文',
-        'lang_english': 'English'
+        'lang_english': 'English',
+        'homepage': 'Homepage',
+        'about'        : 'About',
+        'version'      : 'Version',
+        'contributors' : 'Contributors',
+        'dev_uiux'     : 'UI/UX',
+        'dev_coredev'  : 'Core Developer',
+        'specialthanks': 'Special thanks',
+        'maliang_desc' : 'A lightweight UI framework based on\ntkinter with all UI drawn in Canvas!',
+        'dev_maliang'  : 'Developer of \'maliang\'',
+        'omegalab_desc': 'Developing a next-generation Linux\necosystem.'
     },
     'cn': {
-        'welcome': '欢迎使用 ArkLauncher',
-        'desc': '轻松访问并管理您的 Minecraft 游戏库。',
-        'license': '我同意贡献，使用此项目时遵守 MIT License。',
-        'collect': '发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。',
-        'button': '开始使用',
-        'lang_chinese': '中文',
-        'lang_english': 'English'
+        'welcome'      : '欢迎使用 ArkLauncher',
+        'desc'         : '轻松访问并管理您的 Minecraft 游戏库。',
+        'license'      : '我同意贡献，使用此项目时遵守 MIT License。',
+        'collect'      : '发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。',
+        'button'       : '开始使用',
+        'lang_chinese' : '中文',
+        'lang_english' : 'English',
+        'homepage'     : '主页',
+        'about'        : '关于',
+        'version'      : '版本',
+        'contributors' : '贡献者',
+        'dev_uiux'     : '界面设计',
+        'dev_coredev'  : '核心开发者',
+        'specialthanks': '特别感谢',
+        'maliang_desc' : '一个基于 Tkinter 画布的轻量 UI 框架。',
+        'dev_maliang'  : 'maliang 的开发者',
+        'omegalab_desc': '构建下一代 Linux 生态系统。'
     },
     'egg': {  # 彩蛋语言
         'welcome': '坐和放宽™《解压文件》发射器®️',
@@ -66,6 +88,7 @@ def changeWindow(window, root: maliang.Tk):
     window(x, y)
 
 def welcomePage():
+    global locale
     root, cv = createWindow()
 
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
@@ -83,9 +106,10 @@ def welcomePage():
         button.disable(not enable)
 
     # 切换语言函数
-    def changeLanguage(lang_key):
-        # 根据 lang_key 切换对应语言
+    def changeLanguage(lang_key):   
+        global locale
         lang = lang_dict.get(lang_key, lang_dict['en'])
+        locale = lang_key
 
         text_welcome.set(lang['welcome'])
         text_desc.set(lang['desc'])
@@ -124,42 +148,50 @@ def aboutPage(x, y):
         os.system(f'start https://github.com/{name}')
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
-    text_logo1 = maliang.Text(cv, (113, 50), text='Homepage', family='Microsoft YaHei UI', fontsize=15)
-    text_logo2 = maliang.Text(cv, (110, 70), text='About', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_logo1 = maliang.Text(cv, (113, 50), text='', family='Microsoft YaHei UI', fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 70), text='', family='Microsoft YaHei UI Bold', fontsize=26)
 
     maliang.Image(cv, (115, 145), image=maliang.PhotoImage(icon.resize((75, 75))))
-    text_logo1 = maliang.Text(cv, (200, 145), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=18)
-    text_logo2 = maliang.Text(cv, (198, 165), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=30)
-    text_version = maliang.Text(cv, (200, 205), text=f'Version: {VERSION}', family='Microsoft YaHei UI', fontsize=15)
+    maliang.Text(cv, (200, 145), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=18)
+    maliang.Text(cv, (198, 165), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=30)
+    text_version = maliang.Text(cv, (200, 205), text='', family='Microsoft YaHei UI', fontsize=15)
 
-    text_contributor = maliang.Text(cv, (50, 250), text='Contributors', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_contributor = maliang.Text(cv, (50, 250), text='', family='Microsoft YaHei UI Bold', fontsize=26)
     
     maliang.IconButton(cv, position=(50, 300), size=(50, 50), command=lambda: openProfile('Stevesuk0'), image=maliang.PhotoImage(avatar_Stevesuk0.resize((47, 47))))
     maliang.Text(cv, (115, 300), text='Stevesuk', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='UI/UX, Core Developer · ', family='Microsoft YaHei UI', fontsize=15)    
-    maliang.Text(cv, (293, 332), text='Stevesuk0', family='Microsoft YaHei UI Light', fontsize=15)    
+    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='', family='Microsoft YaHei UI', fontsize=15)    
 
     maliang.IconButton(cv, position=(50, 360), size=(50, 50), command=lambda: openProfile('bzym2'), image=maliang.PhotoImage(avatar_bzym2.resize((47, 47))))
     maliang.Text(cv, (115, 360), text='BIZONUSERYAKAMO', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_bzym_desc = maliang.Text(cv, (115, 392), text='UI/UX, Core Developer · ', family='Microsoft YaHei UI', fontsize=15)    
-    maliang.Text(cv, (293, 392), text='bzym2', family='Microsoft YaHei UI Light', fontsize=15)    
+    text_bzym_desc = maliang.Text(cv, (115, 392), text='', family='Microsoft YaHei UI', fontsize=15)    
 
-    text_thanks = maliang.Text(cv, (50, 450), text='Special thanks', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_thanks = maliang.Text(cv, (50, 450), text='', family='Microsoft YaHei UI Bold', fontsize=26)
     
     maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openProfile('Xiaokang2022/maliang'), image=maliang.PhotoImage(icon_maliang.resize((47, 47))))
     maliang.Text(cv, (115, 500), text='maliang', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_maliang_desc = maliang.Text(cv, (115, 532), text='A lightweight UI framework based on\ntkinter with all UI drawn in Canvas!', family='Microsoft YaHei UI', fontsize=15)    
+    text_maliang_desc = maliang.Text(cv, (115, 532), text='', family='Microsoft YaHei UI', fontsize=15)    
 
     maliang.IconButton(cv, position=(50, 580), size=(50, 50), command=lambda: openProfile('Xiaokang2022'), image=maliang.PhotoImage(avatar_Xiaokang2022.resize((47, 47))))
     maliang.Text(cv, (115, 580), text='Zhikang Yan', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='Developer of \'maliang\' · ', family='Microsoft YaHei UI', fontsize=15)    
-    maliang.Text(cv, (293, 612), text='Xiaokang2022', family='Microsoft YaHei UI Light', fontsize=15)    
+    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='', family='Microsoft YaHei UI', fontsize=15)    
 
     maliang.IconButton(cv, position=(50, 640), size=(50, 50), command=lambda: openProfile('the-OmegaLabs'), image=maliang.PhotoImage(avatar_theOmegaLabs.resize((47, 47))))
     maliang.Text(cv, (115, 640), text='Omega Labs', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_maliang_desc = maliang.Text(cv, (115, 672), text='Developing a next-generation Linux\necosystem.', family='Microsoft YaHei UI', fontsize=15)    
+    text_omegalab_desc = maliang.Text(cv, (115, 672), text='', family='Microsoft YaHei UI', fontsize=15)    
 
+    lang = lang_dict.get(locale)
 
+    text_logo1.set(lang['homepage'])
+    text_logo2.set(lang['about'])
+    text_version.set(f"{lang['version']}: {VERSION}")
+    text_contributor.set(lang['contributors'])
+    text_Stevesuk0_desc.set(f"{lang['dev_uiux']}, {lang['dev_coredev']}")
+    text_bzym_desc.set(f"{lang['dev_uiux']}, {lang['dev_coredev']}")
+    text_thanks.set(lang['specialthanks'])
+    text_maliang_desc.set(lang['maliang_desc'])
+    text_Xiaokang2022_desc.set(lang['dev_maliang'])
+    text_omegalab_desc.set(lang['omegalab_desc'])
     root.mainloop()
 
 def mainPage(x, y):
@@ -174,5 +206,5 @@ def mainPage(x, y):
 
     root.mainloop()
 
-aboutPage(200, 200)
+welcomePage()
 
