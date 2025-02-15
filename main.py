@@ -59,9 +59,10 @@ lang_dict = {
         'collect': '发送你的todesk配置文件和账号密码，但你并非并非\n（你需要来自dream大王的权限才能拒绝，L）',
         'button': '弹射起步',
         'lang_chinese': '掌瓦APP',
-        'lang_english': 'English',
+        'lang_english': '崇洋媚外',
         'homepage':'洛杉矶',
         'about': '讲述人',
+        'settings': '仪表',
         'version': '圈钱',
         'contributors': '公交车',
         'dev_uiux': '吴旭淳',
@@ -233,6 +234,6 @@ def mainPage(x, y):
     root.mainloop()
 
 locale = 'en'
-settingsPage(200, 200)
-#welcomePage()
+# settingsPage(200, 200)
+welcomePage()
 
