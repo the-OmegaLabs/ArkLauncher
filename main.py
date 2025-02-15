@@ -32,7 +32,7 @@ def welcomePage():
     text_collect = maliang.Text(cv, (85, 643), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
     text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family='Microsoft YaHei UI Bold')
     maliang.Text(cv, (330, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
-    button = maliang.Button(cv, (50, 700), size=(100, 40), text='', fontsize=16, family='Microsoft YaHei UI Bold')
+    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root, root.winfo_x(), root.winfo_y()), text='', fontsize=16, family='Microsoft YaHei UI Bold')
     button.disable(True)
 
     def agreeLicense(enable):
