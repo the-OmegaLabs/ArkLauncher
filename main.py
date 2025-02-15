@@ -1,6 +1,5 @@
 import maliang
 import keyboard
-import maliang.animation as animation
 from PIL import Image, ImageTk
 
 VERSION = 'Dev'
