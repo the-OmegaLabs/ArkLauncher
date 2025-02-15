@@ -83,6 +83,12 @@ lang_dict = {
     }
 }
 
+def T(target):
+    if lang_dict[locale][target]:
+        return lang_dict[locale][target]
+    else:
+        return lang_dict['en'][target]
+
 def createWindow(x = None, y = None):
     if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
     else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
@@ -121,12 +127,12 @@ def welcomePage():
         lang = lang_dict.get(lang_key, lang_dict['en'])
         locale = lang_key
 
-        text_welcome.set(lang['welcome'])
-        text_desc.set(lang['desc'])
-        text_license.set(lang['license'])
-        text_collect.set(lang['collect'])
-        text_button_chinese.set(lang['lang_chinese'])
-        button.set(lang['button'])
+        text_welcome.set(T('welcome'))
+        text_desc.set(T('desc'))
+        text_license.set(T('license'))
+        text_collect.set(T('collect'))
+        text_button_chinese.set(T('lang_chinese'))
+        button.set(T('button'))
 
     # 切换到英文
     def changeToEnglish(_):
@@ -192,16 +198,16 @@ def aboutPage(x, y):
 
     lang = lang_dict.get(locale)
 
-    text_logo1.set(lang['homepage'])
-    text_logo2.set(lang['about'])
-    text_version.set(f"{lang['version']}: {VERSION}")
-    text_contributor.set(lang['contributors'])
-    text_Stevesuk0_desc.set(f"{lang['dev_uiux']}, {lang['dev_coredev']}")
-    text_bzym_desc.set(f"{lang['dev_uiux']}, {lang['dev_coredev']}")
-    text_thanks.set(lang['specialthanks'])
-    text_maliang_desc.set(lang['maliang_desc'])
-    text_Xiaokang2022_desc.set(lang['dev_maliang'])
-    text_omegalab_desc.set(lang['omegalab_desc'])
+    text_logo1.set(T('homepage'))
+    text_logo2.set(T('about'))
+    text_version.set(f"{T('version')}: {VERSION}")
+    text_contributor.set(T('contributors'))
+    text_Stevesuk0_desc.set(f"{T('dev_uiux')}, {T('dev_coredev')}")
+    text_bzym_desc.set(f"{T('dev_uiux')}, {T('dev_coredev')}")
+    text_thanks.set(T('specialthanks'))
+    text_maliang_desc.set(T('maliang_desc'))
+    text_Xiaokang2022_desc.set(T('dev_maliang'))
+    text_omegalab_desc.set(T('omegalab_desc'))
     root.mainloop()
 
 def mainPage(x, y):
