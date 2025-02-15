@@ -1,6 +1,8 @@
+import os
 import maliang
 import darkdetect
 import keyboard
+import view
 from PIL import Image
 
 VERSION = 'Dev'
@@ -10,6 +12,13 @@ HEIGHT = 800
 icon = Image.open('src/icon.ico')
 icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
 icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
+icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+icon_maliang = Image.open(f'src/Contributors/maliang.png')
+avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
+avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
+avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
+avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
+
 
 # 定义语言词典。
 lang_dict = {
@@ -107,21 +116,63 @@ def welcomePage():
 
     root.mainloop()
 
+
 def aboutPage(x, y):
     root, cv = createWindow(x, y)
+
+    def openProfile(name):
+        os.system(f'start https://github.com/{name}')
+
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
+    text_logo1 = maliang.Text(cv, (113, 50), text='Homepage', family='Microsoft YaHei UI', fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 70), text='About', family='Microsoft YaHei UI Bold', fontsize=26)
+
+    maliang.Image(cv, (115, 145), image=maliang.PhotoImage(icon.resize((75, 75))))
+    text_logo1 = maliang.Text(cv, (200, 145), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=18)
+    text_logo2 = maliang.Text(cv, (198, 165), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=30)
+    text_version = maliang.Text(cv, (200, 205), text=f'Version: {VERSION}', family='Microsoft YaHei UI', fontsize=15)
+
+    text_contributor = maliang.Text(cv, (50, 250), text='Contributors', family='Microsoft YaHei UI Bold', fontsize=26)
     
+    maliang.IconButton(cv, position=(50, 300), size=(50, 50), command=lambda: openProfile('Stevesuk0'), image=maliang.PhotoImage(avatar_Stevesuk0.resize((47, 47))))
+    maliang.Text(cv, (115, 300), text='Stevesuk', family='Microsoft YaHei UI Bold', fontsize=25)
+    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='UI/UX, Core Developer · ', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (293, 332), text='Stevesuk0', family='Microsoft YaHei UI Light', fontsize=15)    
+
+    maliang.IconButton(cv, position=(50, 360), size=(50, 50), command=lambda: openProfile('bzym2'), image=maliang.PhotoImage(avatar_bzym2.resize((47, 47))))
+    maliang.Text(cv, (115, 360), text='BIZONUSERYAKAMO', family='Microsoft YaHei UI Bold', fontsize=25)
+    text_bzym_desc = maliang.Text(cv, (115, 392), text='UI/UX, Core Developer · ', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (293, 392), text='bzym2', family='Microsoft YaHei UI Light', fontsize=15)    
+
+    text_thanks = maliang.Text(cv, (50, 450), text='Special thanks', family='Microsoft YaHei UI Bold', fontsize=26)
+    
+    maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openProfile('Xiaokang2022/maliang'), image=maliang.PhotoImage(icon_maliang.resize((47, 47))))
+    maliang.Text(cv, (115, 500), text='maliang', family='Microsoft YaHei UI Bold', fontsize=25)
+    text_maliang_desc = maliang.Text(cv, (115, 532), text='A lightweight UI framework based on\ntkinter with all UI drawn in Canvas!', family='Microsoft YaHei UI', fontsize=15)    
+
+    maliang.IconButton(cv, position=(50, 580), size=(50, 50), command=lambda: openProfile('Xiaokang2022'), image=maliang.PhotoImage(avatar_Xiaokang2022.resize((47, 47))))
+    maliang.Text(cv, (115, 580), text='Zhikang Yan', family='Microsoft YaHei UI Bold', fontsize=25)
+    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='Developer of \'maliang\' · ', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (293, 612), text='Xiaokang2022', family='Microsoft YaHei UI Light', fontsize=15)    
+
+    maliang.IconButton(cv, position=(50, 640), size=(50, 50), command=lambda: openProfile('the-OmegaLabs'), image=maliang.PhotoImage(avatar_theOmegaLabs.resize((47, 47))))
+    maliang.Text(cv, (115, 640), text='Omega Labs', family='Microsoft YaHei UI Bold', fontsize=25)
+    text_maliang_desc = maliang.Text(cv, (115, 672), text='Developing a next-generation Linux\necosystem.', family='Microsoft YaHei UI', fontsize=15)    
+
 
     root.mainloop()
 
 def mainPage(x, y):
     root, cv = createWindow(x, y)
+    maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(aboutPage, root), image=maliang.PhotoImage(icon_about.resize((55, 55))))
+    maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
+
     logo = maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50))))
     text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=26)
 
-    maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(aboutPage, root), image=maliang.PhotoImage(icon_about.resize((55, 55))))
-    maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
 
     root.mainloop()
 
-welcomePage()
+aboutPage(200, 200)
+
