@@ -1,0 +1,17 @@
+{
+    "welcome.title":"Welcome to ArkLauncher",
+    "welcome.subtitle": "Easily access and manage your Minecraft games.",
+    "welcome.licence": "I agree to using this project with the MIT License.",
+    "welcome.collect": "I agree to send anonymous data to help ATCraft Network\nimprove ArkLauncher App.",
+    "welcome.start": "Start",
+    "option.lang":"Language",
+    "homepage.title":"Home",
+    "about.title": "About",
+    "about.version": "Version",
+    "about.dev.ui": "Ui designer",
+    "about.dev.core":"Core Developer",
+    "about.thanks.title": "Special Thanks",
+    "about.thanks.maliang": "A light-weight UI frameork based on Tkinter canvas",
+    "about.thanks.maliang.dev":"Developer of maliang",
+    "about.thanks.omegalab":"Creating a next-generation Linux\necosystem."
+}
