@@ -69,7 +69,17 @@ lang_dict = {
         'collect': '发送你的todesk配置文件和账号密码，但你并非并非\n（你需要来自dream大王的权限才能拒绝，L）',
         'button': '弹射起步',
         'lang_chinese': '掌瓦APP',
-        'lang_english': 'English'
+        'lang_english': 'English',
+        'homepage':'洛杉矶',
+        'about': '讲述人',
+        'version': '圈钱',
+        'contributors': '公交车',
+        'dev_uiux': 'js.design',
+        'dev_coredev': '摆烂大王',
+        'specialthanks': '暗杀名单',
+        'maliang_desc': '把屎山tkinter干掉的牛逼东西',
+        'dev_maliang': '我的父亲',
+        'omegalab_desc': '构建下一代水影并skid欣欣内部圈钱（大粉丝有神器）'
     }
 }
 
