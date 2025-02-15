@@ -1,5 +1,4 @@
 import maliang
-import data
 import base64
 import keyboard
 from PIL import Image, ImageTk
@@ -43,12 +42,12 @@ lang_dict = {
 }
 
 def createWindow(x = None, y = None):
+    global icon
     if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
     else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
-    icon = Image.open(BytesIO(base64.b64decode(data.icon)))
     root.tk.call('wm', 'iconphoto', root._w, ImageTk.PhotoImage(icon.resize((32, 32))))
     return root, cv
 
