@@ -30,8 +30,8 @@ def main_page(view):
 
 
     logo = maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50))))
-    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=15)
-    text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family=FONT_FAMILY, fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family=f'{FONT_FAMILY} Bold', fontsize=26)
 
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: change_window(about_page, root), image=maliang.PhotoImage(icon_about.resize((55, 55))))
     maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))

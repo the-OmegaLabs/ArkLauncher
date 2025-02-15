@@ -1,0 +1,17 @@
+{
+    "welcome.title":"欢迎使用 ArkLauncher",
+    "welcome.subtitle": "轻松访问并管理您的 Minecraft 游戏库。",
+    "welcome.licence": "我同意贡献、使用此项目时遵守 MIT License。",
+    "welcome.collect": "我同意发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。",
+    "welcome.start": "开始使用",
+    "option.lang":"语言",
+    "homepage.title":"主页",
+    "about.title": "关于",
+    "about.version": "版本",
+    "about.dev.ui": "界面设计",
+    "about.dev.core":"核心开发者",
+    "about.thanks.title": "特别感谢",
+    "about.thanks.maliang": "一个基于 Tkinter 画布的轻量 UI 框架。",
+    "about.thanks.maliang.dev":"maliang 的开发者",
+    "about.thanks.omegalab":"构建下一代 Linux 生态系统。"
+}

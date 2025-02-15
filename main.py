@@ -2,13 +2,16 @@ import os
 import maliang
 import darkdetect
 import keyboard
-import view
-from PIL import Image
+from PIL import Image, ImageFont
 
 VERSION = 'Dev'
 WIDTH = 500
 HEIGHT = 800
 
+
+FONT_FAMILY = 'Microsoft YaHei UI'
+
+# 我看看能不能导入字体...
 icon = Image.open('src/icon.ico')
 icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
 icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
@@ -19,8 +22,7 @@ avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
 avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
 avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
 
-
-locale = 'en'
+#我给语言文件拉出去了啊
 
 # 定义语言词典。
 lang_dict = {
@@ -69,7 +71,17 @@ lang_dict = {
         'collect': '发送你的todesk配置文件和账号密码，但你并非并非\n（你需要来自dream大王的权限才能拒绝，L）',
         'button': '弹射起步',
         'lang_chinese': '掌瓦APP',
-        'lang_english': 'English'
+        'lang_english': 'English',
+        'homepage':'洛杉矶',
+        'about': '讲述人',
+        'version': '圈钱',
+        'contributors': '公交车',
+        'dev_uiux': '吴旭淳',
+        'dev_coredev': '摆烂大王',
+        'specialthanks': '暗杀名单',
+        'maliang_desc': '把屎山tkinter干掉的牛逼东西',
+        'dev_maliang': '又一次听坚强笨女人听哭了',
+        'omegalab_desc': '构建下一代水影并skid欣欣内部圈钱（大粉丝有神器）'
     }
 }
 
@@ -92,13 +104,13 @@ def welcomePage():
     root, cv = createWindow()
 
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
-    text_welcome = maliang.Text(cv, (50, 250), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=30)
-    text_desc    = maliang.Text(cv, (50, 300), text='', family='Microsoft YaHei UI bold', fontsize=17)
-    text_license = maliang.Text(cv, (85, 605), text='', family='Microsoft YaHei UI Bold', weight='bold',fontsize=15)
-    text_collect = maliang.Text(cv, (85, 643), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
-    text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family='Microsoft YaHei UI Bold')
-    maliang.Text(cv, (330, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
-    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root), text='', fontsize=16, family='Microsoft YaHei UI Bold')
+    text_welcome = maliang.Text(cv, (50, 250), text='', family=f'{FONT_FAMILY} Bold', weight='bold', fontsize=30)
+    text_desc    = maliang.Text(cv, (50, 300), text='', family=f'{FONT_FAMILY} Bold', fontsize=17)
+    text_license = maliang.Text(cv, (85, 605), text='', family=f'{FONT_FAMILY} Bold', weight='bold',fontsize=15)
+    text_collect = maliang.Text(cv, (85, 643), text='', family=f'{FONT_FAMILY} Bold', weight='bold', fontsize=15)
+    text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family=f'{FONT_FAMILY} Bold')
+    maliang.Text(cv, (330, 709), text="English", fontsize=17, family=f'{FONT_FAMILY} Bold')
+    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root), text='', fontsize=16, family=f'{FONT_FAMILY} Bold')
     button.disable(True)
 
     # 同意协议逻辑
@@ -148,37 +160,37 @@ def aboutPage(x, y):
         os.system(f'start https://github.com/{name}')
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
-    text_logo1 = maliang.Text(cv, (113, 50), text='', family='Microsoft YaHei UI', fontsize=15)
-    text_logo2 = maliang.Text(cv, (110, 70), text='', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_logo1 = maliang.Text(cv, (113, 50), text='', family=FONT_FAMILY, fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 70), text='', family=f'{FONT_FAMILY} Bold', fontsize=26)
 
-    maliang.Image(cv, (115, 145), image=maliang.PhotoImage(icon.resize((75, 75))))
-    maliang.Text(cv, (200, 145), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=18)
-    maliang.Text(cv, (198, 165), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=30)
-    text_version = maliang.Text(cv, (200, 205), text='', family='Microsoft YaHei UI', fontsize=15)
+    maliang.IconButton(cv, (115, 145), size=(75, 75), image=maliang.PhotoImage(icon.resize((73, 73))), command=lambda: openProfile('the-OmegaLabs/ArkLauncher'))
+    maliang.Text(cv, (200, 145), text='ATCraft Network', family=FONT_FAMILY, fontsize=18)
+    maliang.Text(cv, (198, 165), text='ArkLauncher', family=f'{FONT_FAMILY} Bold', fontsize=30)
+    text_version = maliang.Text(cv, (200, 205), text='', family=FONT_FAMILY, fontsize=15)
 
-    text_contributor = maliang.Text(cv, (50, 250), text='', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_contributor = maliang.Text(cv, (50, 250), text='', family=f'{FONT_FAMILY} Bold', fontsize=26)
     
     maliang.IconButton(cv, position=(50, 300), size=(50, 50), command=lambda: openProfile('Stevesuk0'), image=maliang.PhotoImage(avatar_Stevesuk0.resize((47, 47))))
-    maliang.Text(cv, (115, 300), text='Stevesuk', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (115, 300), text='Stevesuk', family=f'{FONT_FAMILY} Bold', fontsize=25)
+    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='', family=FONT_FAMILY, fontsize=15)    
 
     maliang.IconButton(cv, position=(50, 360), size=(50, 50), command=lambda: openProfile('bzym2'), image=maliang.PhotoImage(avatar_bzym2.resize((47, 47))))
-    maliang.Text(cv, (115, 360), text='BIZONUSERYAKAMO', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_bzym_desc = maliang.Text(cv, (115, 392), text='', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (115, 360), text='BIZONUSERYAKAMO', family=f'{FONT_FAMILY} Bold', fontsize=25)
+    text_bzym_desc = maliang.Text(cv, (115, 392), text='', family=FONT_FAMILY, fontsize=15)    
 
-    text_thanks = maliang.Text(cv, (50, 450), text='', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_thanks = maliang.Text(cv, (50, 450), text='', family=f'{FONT_FAMILY} Bold', fontsize=26)
     
     maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openProfile('Xiaokang2022/maliang'), image=maliang.PhotoImage(icon_maliang.resize((47, 47))))
-    maliang.Text(cv, (115, 500), text='maliang', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_maliang_desc = maliang.Text(cv, (115, 532), text='', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (115, 500), text='maliang', family=f'{FONT_FAMILY} Bold', fontsize=25)
+    text_maliang_desc = maliang.Text(cv, (115, 532), text='', family=FONT_FAMILY, fontsize=15)    
 
     maliang.IconButton(cv, position=(50, 580), size=(50, 50), command=lambda: openProfile('Xiaokang2022'), image=maliang.PhotoImage(avatar_Xiaokang2022.resize((47, 47))))
-    maliang.Text(cv, (115, 580), text='Zhikang Yan', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (115, 580), text='Zhikang Yan', family=f'{FONT_FAMILY} Bold', fontsize=25)
+    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='', family=FONT_FAMILY, fontsize=15)    
 
     maliang.IconButton(cv, position=(50, 640), size=(50, 50), command=lambda: openProfile('the-OmegaLabs'), image=maliang.PhotoImage(avatar_theOmegaLabs.resize((47, 47))))
-    maliang.Text(cv, (115, 640), text='Omega Labs', family='Microsoft YaHei UI Bold', fontsize=25)
-    text_omegalab_desc = maliang.Text(cv, (115, 672), text='', family='Microsoft YaHei UI', fontsize=15)    
+    maliang.Text(cv, (115, 640), text='Omega Labs', family=f'{FONT_FAMILY} Bold', fontsize=25)
+    text_omegalab_desc = maliang.Text(cv, (115, 672), text='', family=FONT_FAMILY, fontsize=15)    
 
     lang = lang_dict.get(locale)
 
@@ -200,11 +212,12 @@ def mainPage(x, y):
     maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
 
     logo = maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50))))
-    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=15)
-    text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=26)
+    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family=FONT_FAMILY, fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family=f'{FONT_FAMILY} Bold', fontsize=26)
 
 
     root.mainloop()
 
-welcomePage()
+locale = 'egg'
+aboutPage(200, 200)
 
