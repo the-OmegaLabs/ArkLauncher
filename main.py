@@ -74,11 +74,11 @@ lang_dict = {
         'about': '讲述人',
         'version': '圈钱',
         'contributors': '公交车',
-        'dev_uiux': 'js.design',
+        'dev_uiux': '吴旭淳',
         'dev_coredev': '摆烂大王',
         'specialthanks': '暗杀名单',
         'maliang_desc': '把屎山tkinter干掉的牛逼东西',
-        'dev_maliang': '我的父亲',
+        'dev_maliang': '又一次听坚强笨女人听哭了',
         'omegalab_desc': '构建下一代水影并skid欣欣内部圈钱（大粉丝有神器）'
     }
 }
