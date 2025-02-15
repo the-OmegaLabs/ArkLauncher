@@ -1,15 +1,21 @@
 import os
 import maliang
 import darkdetect
+import pyglet
 import keyboard
 from PIL import Image, ImageFont
+from pathlib import Path
 
 VERSION = 'Dev'
 WIDTH = 500
 HEIGHT = 800
 
+pyglet.options['win32_gdi_font'] = True
 
-FONT_FAMILY = 'Microsoft YaHei UI'
+pyglet.font.add_file("src/MiSans-Medium.ttf")
+pyglet.font.add_file("src/MiSans-Bold.ttf")
+
+FONT_FAMILY = 'MiSans'
 
 # 我看看能不能导入字体...
 icon = Image.open('src/icon.ico')
@@ -168,37 +174,37 @@ def aboutPage(x, y):
         os.system(f'start https://github.com/{name}')
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
-    text_logo1 = maliang.Text(cv, (113, 50), text='', family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (113, 50), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), text='', family=f'{FONT_FAMILY} Bold', fontsize=26)
 
     maliang.IconButton(cv, (115, 145), size=(75, 75), image=maliang.PhotoImage(icon.resize((73, 73))), command=lambda: openProfile('the-OmegaLabs/ArkLauncher'))
-    maliang.Text(cv, (200, 145), text='ATCraft Network', family=FONT_FAMILY, fontsize=18)
+    maliang.Text(cv, (200, 145), text='ATCraft Network', family=f'{FONT_FAMILY} Medium', fontsize=18)
     maliang.Text(cv, (198, 165), text='ArkLauncher', family=f'{FONT_FAMILY} Bold', fontsize=30)
-    text_version = maliang.Text(cv, (200, 205), text='', family=FONT_FAMILY, fontsize=15)
+    text_version = maliang.Text(cv, (200, 205), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
 
     text_contributor = maliang.Text(cv, (50, 250), text='', family=f'{FONT_FAMILY} Bold', fontsize=26)
     
     maliang.IconButton(cv, position=(50, 300), size=(50, 50), command=lambda: openProfile('Stevesuk0'), image=maliang.PhotoImage(avatar_Stevesuk0.resize((47, 47))))
     maliang.Text(cv, (115, 300), text='Stevesuk', family=f'{FONT_FAMILY} Bold', fontsize=25)
-    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='', family=FONT_FAMILY, fontsize=15)
+    text_Stevesuk0_desc = maliang.Text(cv, (115, 332), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
 
     maliang.IconButton(cv, position=(50, 360), size=(50, 50), command=lambda: openProfile('bzym2'), image=maliang.PhotoImage(avatar_bzym2.resize((47, 47))))
     maliang.Text(cv, (115, 360), text='BIZONUSERYAKAMO', family=f'{FONT_FAMILY} Bold', fontsize=25)
-    text_bzym_desc = maliang.Text(cv, (115, 392), text='', family=FONT_FAMILY, fontsize=15)
+    text_bzym_desc = maliang.Text(cv, (115, 392), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
 
     text_thanks = maliang.Text(cv, (50, 450), text='', family=f'{FONT_FAMILY} Bold', fontsize=26)
     
     maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openProfile('Xiaokang2022/maliang'), image=maliang.PhotoImage(icon_maliang.resize((47, 47))))
     maliang.Text(cv, (115, 500), text='maliang', family=f'{FONT_FAMILY} Bold', fontsize=25)
-    text_maliang_desc = maliang.Text(cv, (115, 532), text='', family=FONT_FAMILY, fontsize=15)
+    text_maliang_desc = maliang.Text(cv, (115, 532), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
 
     maliang.IconButton(cv, position=(50, 580), size=(50, 50), command=lambda: openProfile('Xiaokang2022'), image=maliang.PhotoImage(avatar_Xiaokang2022.resize((47, 47))))
     maliang.Text(cv, (115, 580), text='Zhikang Yan', family=f'{FONT_FAMILY} Bold', fontsize=25)
-    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='', family=FONT_FAMILY, fontsize=15)
+    text_Xiaokang2022_desc = maliang.Text(cv, (115, 612), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
 
     maliang.IconButton(cv, position=(50, 640), size=(50, 50), command=lambda: openProfile('the-OmegaLabs'), image=maliang.PhotoImage(avatar_theOmegaLabs.resize((47, 47))))
     maliang.Text(cv, (115, 640), text='Omega Labs', family=f'{FONT_FAMILY} Bold', fontsize=25)
-    text_omegalab_desc = maliang.Text(cv, (115, 672), text='', family=FONT_FAMILY, fontsize=15)
+    text_omegalab_desc = maliang.Text(cv, (115, 672), text='', family=f'{FONT_FAMILY} Medium', fontsize=15)
 
     lang = lang_dict.get(locale)
 
@@ -220,7 +226,7 @@ def mainPage(x, y):
     maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
 
     logo = maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50))))
-    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family=f'{FONT_FAMILY} Medium', fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family=f'{FONT_FAMILY} Bold', fontsize=26)
 
 
