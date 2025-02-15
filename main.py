@@ -1,21 +1,29 @@
 import maliang
-import data
-import base64
 import keyboard
+import maliang.animation as animation
 from PIL import Image, ImageTk
-from io import BytesIO
 
 VERSION = 'Dev'
 WIDTH = 500
 HEIGHT = 800
 
-def welcomePage():
-    root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
+icon = Image.open('icon.ico')
+
+def createWindow(x = None, y = None):
+    if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
+    else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
-    icon = Image.open(BytesIO(base64.b64decode(data.icon)))
     root.tk.call('wm', 'iconphoto', root._w, ImageTk.PhotoImage(icon.resize((32, 32))))
+    return root, cv
+
+def changeWindow(window, root: maliang.Tk, x, y):
+    root.__exit__()
+    window(x, y)
+
+def welcomePage():
+    root, cv = createWindow()  
 
     maliang.Image(cv, (50, 75), image=ImageTk.PhotoImage(icon.resize((150, 150))))
     text_welcome = maliang.Text(cv, (50, 250), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=30)
@@ -24,7 +32,7 @@ def welcomePage():
     text_collect = maliang.Text(cv, (85, 643), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
     text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family='Microsoft YaHei UI Bold')
     maliang.Text(cv, (300, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
-    button = maliang.Button(cv, (50, 700), size=(100, 40), text='', fontsize=16, family='Microsoft YaHei UI Bold')
+    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root, root.winfo_x(), root.winfo_y()), text='', fontsize=16, family='Microsoft YaHei UI Bold')
     button.disable(True)
 
     def agreeLicense(enable):
@@ -46,7 +54,7 @@ def welcomePage():
             text_desc.set('和机器人一样访问你的麦恩克拉夫特游戏🤖')
             text_license.set('我同意从我身上榨精并遵守麻省理工学院许可。')
             text_collect.set('发送一些并非隐私信息的信息，但并非并非(你\n需要来自 United Nations 的权限才能拒绝。')
-            text_button_chinese.set('梗中\n07007最爱')
+            text_button_chinese.set('梗中\n07007爱炉管')
             button.set('弹射起步')
         else:
             text_welcome.set('欢迎使用 ArkLauncher')
@@ -63,6 +71,15 @@ def welcomePage():
     maliang.RadioBox.group(langCN, langEN)
 
     changeToChinese(1)
+
+    root.mainloop()
+
+def mainPage(x, y):
+    root, cv = createWindow(x, y)
+    logo = maliang.Image(cv, (50, 50), image=ImageTk.PhotoImage(icon.resize((50, 50))))
+    text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=26)
+    
 
     root.mainloop()
 
