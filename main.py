@@ -103,7 +103,10 @@ def welcomePage():
     global locale
     root, cv = createWindow()
 
+    ui = ui.builder(cv,FONT_FAMILY)
+
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
+
     text_welcome = maliang.Text(cv, (50, 250), text='', family=f'{FONT_FAMILY} Bold', weight='bold', fontsize=30)
     text_desc    = maliang.Text(cv, (50, 300), text='', family=f'{FONT_FAMILY} Bold', fontsize=17)
     text_license = maliang.Text(cv, (85, 605), text='', family=f'{FONT_FAMILY} Bold', weight='bold',fontsize=15)
