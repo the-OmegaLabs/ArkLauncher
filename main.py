@@ -60,10 +60,11 @@ lang_dict = {
         'license': '我对郊狼发射器在我身上榨精提供猫编程域名许可',
         'collect': '发送你的 todesk 配置文件和账号密码，但你并非并非\n（你需要来自dream大王的权限才能拒绝，L）',
         'button': '弹射起步',
-        'lang_chinese': '掌瓦 APP',
-        'lang_english': 'English',
+        'lang_chinese': '掌瓦APP',
+        'lang_english': '崇洋媚外',
         'homepage':'洛杉矶',
         'about': '讲述人',
+        'settings': '仪表',
         'version': '圈钱',
         'contributors': '公交车',
         'dev_uiux': '吴旭淳',
@@ -256,6 +257,6 @@ def settingsLanguagePage(x, y):
     text_logo2.set(T('locale'))
 
 locale = 'cn'
-#settingsPage(200, 200)
+# settingsPage(200, 200)
 welcomePage()
 
