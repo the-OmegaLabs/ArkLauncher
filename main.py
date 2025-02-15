@@ -12,18 +12,6 @@ HEIGHT = 800
 FONT_FAMILY = 'Microsoft YaHei UI'
 FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
 
-icon = Image.open('src/icon.ico')
-icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
-icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
-icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
-icon_maliang = Image.open(f'src/Contributors/maliang.png')
-avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
-avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
-avatar_suohoudaishi = Image.open(f'src/Contributors/SuoHouDaiShi.png')
-avatar_grassblock2022 = Image.open(f'src/Contributors/GrassBlock2022.png')
-avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
-avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
-
 lang_dict = {
     'en':     {
         'welcome': 'Welcome to ArkLauncher',
@@ -92,6 +80,7 @@ def T(target):
 
 
 def createWindow(x = None, y = None):
+    icon = Image.open('src/icon.ico')
     if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
     else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
     root.resizable(0, 0)
@@ -109,6 +98,9 @@ def welcomePage():
     global locale
     root, cv = createWindow()
 
+    
+    icon = Image.open('src/icon.ico')
+    
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
 
     text_welcome = maliang.Text(cv, (50, 250), text='', family=FONT_FAMILY_BOLD, weight='bold', fontsize=30)
@@ -166,6 +158,16 @@ def aboutPage(x, y):
     def openProfile(name):
         os.system(f'start https://github.com/{name}')
 
+    icon = Image.open('src/icon.ico')       
+    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_maliang = Image.open(f'src/Contributors/maliang.png')
+    avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
+    avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
+    avatar_suohoudaishi = Image.open(f'src/Contributors/SuoHouDaiShi.png')
+    avatar_grassblock2022 = Image.open(f'src/Contributors/GrassBlock2022.png')
+    avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
+    avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
+
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
     text_logo1 = maliang.Text(cv, (113, 50), text='', family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), text='', family=FONT_FAMILY_BOLD, fontsize=26)
@@ -206,6 +208,10 @@ def aboutPage(x, y):
 
 def mainPage(x, y):
     root, cv = createWindow(x, y)
+    
+    icon = Image.open('src/icon.ico')   
+    icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
+    icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(aboutPage, root), image=maliang.PhotoImage(icon_about.resize((55, 55))))
     maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
 
@@ -217,6 +223,5 @@ def mainPage(x, y):
     root.mainloop()
 
 locale = 'cn'
-aboutPage(200, 200)
-# welcomePage()
+welcomePage()
 
