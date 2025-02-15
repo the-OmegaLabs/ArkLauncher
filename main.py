@@ -2,8 +2,7 @@ import os
 import maliang
 import darkdetect
 import keyboard
-from PIL import Image, ImageFont
-from pathlib import Path
+from PIL import Image, ImageFont    
 
 VERSION = 'Dev'
 WIDTH = 500
@@ -23,6 +22,7 @@ lang_dict = {
         'lang_english': 'English',
         'homepage': 'Homepage',
         'about'        : 'About',
+        'settings'     : 'Settings',
         'version'      : 'Version',
         'contributors' : 'Contributors',
         'dev_uiux'     : 'UI/UX',
@@ -42,6 +42,7 @@ lang_dict = {
         'lang_english' : 'English',
         'homepage'     : '主页',
         'about'        : '关于',
+        'settings'     : '设置',
         'version'      : '版本',
         'contributors' : '贡献者',
         'dev_uiux'     : '界面设计',
@@ -97,16 +98,14 @@ def changeWindow(window, root: maliang.Tk):
 def welcomePage():
     global locale
     root, cv = createWindow()
-
     
     icon = Image.open('src/icon.ico')
     
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
-
-    text_welcome = maliang.Text(cv, (50, 250), text='', family=FONT_FAMILY_BOLD, weight='bold', fontsize=30)
+    text_welcome = maliang.Text(cv, (50, 250), text='', family=FONT_FAMILY_BOLD, fontsize=30)
     text_desc    = maliang.Text(cv, (50, 300), text='', family=FONT_FAMILY_BOLD, fontsize=17)
-    text_license = maliang.Text(cv, (85, 605), text='', family=FONT_FAMILY_BOLD, weight='bold',fontsize=15)
-    text_collect = maliang.Text(cv, (85, 643), text='', family=FONT_FAMILY_BOLD, weight='bold', fontsize=15)
+    text_license = maliang.Text(cv, (85, 605), text='', family=FONT_FAMILY_BOLD, fontsize=15)
+    text_collect = maliang.Text(cv, (85, 643), text='', family=FONT_FAMILY_BOLD, fontsize=15)
     text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family=FONT_FAMILY_BOLD)
     maliang.Text(cv, (330, 709), text="English", fontsize=17, family=FONT_FAMILY_BOLD)
     button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root), text='', fontsize=16, family=FONT_FAMILY_BOLD)
@@ -142,7 +141,7 @@ def welcomePage():
 
     maliang.CheckBox(cv, (50, 600), command=agreeLicense, default=False, length=23)
     maliang.CheckBox(cv, (50, 640), default=True, length=23)
-    langEN = maliang.RadioBox(cv, (290, 705), command=changeToEnglish, length=30, default=False)
+    langEN = maliang.RadioBox(cv, (290, 705), command=changeToEnglish , length=30, default=False)
     langCN = maliang.RadioBox(cv, (170, 705), command=checkEggLanguage, length=30, default=True)
     maliang.RadioBox.group(langCN, langEN)
 
@@ -151,6 +150,18 @@ def welcomePage():
 
     root.mainloop()
 
+def settingsPage(x, y):
+    root, cv = createWindow(x, y)
+
+    icon_return           = Image.open(f'src/{darkdetect.theme()}/return.png')
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
+    text_logo1 = maliang.Text(cv, (113, 50), text='', family=FONT_FAMILY, fontsize=15)
+    text_logo2 = maliang.Text(cv, (110, 70), text='', family=FONT_FAMILY_BOLD, fontsize=26)
+
+    text_logo1.set(T('homepage'))
+    text_logo2.set(T('settings'))
+
+    root.mainloop()
 
 def aboutPage(x, y):
     root, cv = createWindow(x, y)
@@ -158,21 +169,21 @@ def aboutPage(x, y):
     def openProfile(name):
         os.system(f'start https://github.com/{name}')
 
-    icon = Image.open('src/icon.ico')       
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
-    icon_maliang = Image.open(f'src/Contributors/maliang.png')
-    avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
-    avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
-    avatar_suohoudaishi = Image.open(f'src/Contributors/SuoHouDaiShi.png')
+    icon                  = Image.open('src/icon.ico')       
+    icon_return           = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_maliang          = Image.open(f'src/Contributors/maliang.png')
+    avatar_Stevesuk0      = Image.open(f'src/Contributors/Stevesuk0.jpg')
+    avatar_bzym2          = Image.open(f'src/Contributors/bzym2.png')
+    avatar_suohoudaishi   = Image.open(f'src/Contributors/SuoHouDaiShi.jpg')
     avatar_grassblock2022 = Image.open(f'src/Contributors/GrassBlock2022.png')
-    avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
-    avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
+    avatar_Xiaokang2022   = Image.open(f'src/Contributors/Xiaokang2022.jpg')
+    avatar_theOmegaLabs   = Image.open(f'src/Contributors/the-OmegaLabs.png')
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55))))
     text_logo1 = maliang.Text(cv, (113, 50), text='', family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), text='', family=FONT_FAMILY_BOLD, fontsize=26)
 
-    maliang.IconButton(cv, (115, 145), size=(75, 75), image=maliang.PhotoImage(icon.resize((73, 73))), command=lambda: openProfile('the-OmegaLabs/ArkLauncher'))
+    maliang.IconButton(cv, (110, 145), size=(75, 75), image=maliang.PhotoImage(icon.resize((73, 73))), command=lambda: openProfile('the-OmegaLabs/ArkLauncher'))
     maliang.Text(cv, (200, 145), text='ATCraft Network', family=FONT_FAMILY, fontsize=18)
     maliang.Text(cv, (198, 165), text='ArkLauncher', family=FONT_FAMILY_BOLD, fontsize=30)
     text_version = maliang.Text(cv, (200, 205), text='', family=FONT_FAMILY, fontsize=15)
@@ -184,7 +195,7 @@ def aboutPage(x, y):
     maliang.IconButton(cv, position=(230, 300), size=(50, 50), command=lambda: openProfile('SuoHouDaiShi'), image=maliang.PhotoImage(avatar_suohoudaishi.resize((47, 47))))
 
     text_thanks = maliang.Text(cv, (50, 450), text='', family=FONT_FAMILY_BOLD, fontsize=26)
-    maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openProfile('Xiaokang2022/maliang'), image=maliang.PhotoImage(icon_maliang.resize((47, 47))))
+    maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openProfile('Xiaokang2022/maliang'), image=maliang.PhotoImage(icon_maliang.resize((35, 35))))
     maliang.Text(cv, (115, 500), text='maliang', family=FONT_FAMILY_BOLD, fontsize=25)
     text_maliang_desc = maliang.Text(cv, (115, 532), text='', family=FONT_FAMILY, fontsize=15)
     maliang.IconButton(cv, position=(50, 570), size=(50, 50), command=lambda: openProfile('Xiaokang2022'), image=maliang.PhotoImage(avatar_Xiaokang2022.resize((47, 47))))
@@ -193,8 +204,6 @@ def aboutPage(x, y):
     maliang.IconButton(cv, position=(50, 640), size=(50, 50), command=lambda: openProfile('the-OmegaLabs'), image=maliang.PhotoImage(avatar_theOmegaLabs.resize((47, 47))))
     maliang.Text(cv, (115, 640), text='Omega Labs', family=FONT_FAMILY_BOLD, fontsize=25)
     text_omegalab_desc = maliang.Text(cv, (115, 672), text='', family=FONT_FAMILY, fontsize=15)
-
-    lang = lang_dict.get(locale)
 
     text_logo1.set(T('homepage'))
     text_logo2.set(T('about'))
@@ -209,11 +218,12 @@ def aboutPage(x, y):
 def mainPage(x, y):
     root, cv = createWindow(x, y)
     
-    icon = Image.open('src/icon.ico')   
-    icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
+    icon          = Image.open('src/icon.ico')   
+    icon_about    = Image.open(f'src/{darkdetect.theme()}/about.png')
     icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
+
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(aboutPage, root), image=maliang.PhotoImage(icon_about.resize((55, 55))))
-    maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
+    maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
 
     logo = maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50))))
     text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family=FONT_FAMILY, fontsize=15)
@@ -222,6 +232,7 @@ def mainPage(x, y):
 
     root.mainloop()
 
-locale = 'cn'
-welcomePage()
+locale = 'en'
+settingsPage(200, 200)
+#welcomePage()
 
