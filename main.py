@@ -31,8 +31,8 @@ def welcomePage():
     text_license = maliang.Text(cv, (85, 605), text='', family='Microsoft YaHei UI Bold', weight='bold',fontsize=15)
     text_collect = maliang.Text(cv, (85, 643), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
     text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family='Microsoft YaHei UI Bold')
-    maliang.Text(cv, (300, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
-    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root, root.winfo_x(), root.winfo_y()), text='', fontsize=16, family='Microsoft YaHei UI Bold')
+    maliang.Text(cv, (330, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
+    button = maliang.Button(cv, (50, 700), size=(100, 40), text='', fontsize=16, family='Microsoft YaHei UI Bold')
     button.disable(True)
 
     def agreeLicense(enable):
@@ -50,11 +50,11 @@ def welcomePage():
 
     def changeToChinese(_):
         if keyboard.is_pressed('shift'):
-            text_welcome.set('欢迎使用《明日》启动器®️')
-            text_desc.set('和机器人一样访问你的麦恩克拉夫特游戏🤖')
-            text_license.set('我同意从我身上榨精并遵守麻省理工学院许可。')
-            text_collect.set('发送一些并非隐私信息的信息，但并非并非(你\n需要来自 United Nations 的权限才能拒绝。')
-            text_button_chinese.set('梗中\n07007爱炉管')
+            text_welcome.set('坐和放宽™《解压文件》发射器®️')
+            text_desc.set('像软的微型副驾驶一样对我的手艺进行发射。🤖')
+            text_license.set('我对郊狼发射器在我身上榨精提供猫编程域名许可')
+            text_collect.set('发送你的todesk配置文件和账号密码，但你并非并非\n（你需要来自dream大王的权限才能拒绝，L）')
+            text_button_chinese.set('掌瓦APP')
             button.set('弹射起步')
         else:
             text_welcome.set('欢迎使用 ArkLauncher')
@@ -66,7 +66,7 @@ def welcomePage():
 
     maliang.CheckBox(cv, (50, 600), command=agreeLicense, default=False, length=23)
     maliang.CheckBox(cv, (50, 640), default=True, length=23)
-    langEN = maliang.RadioBox(cv, (260, 705), command=changeToEnglish, length=30, default=False)
+    langEN = maliang.RadioBox(cv, (290, 705), command=changeToEnglish, length=30, default=False)
     langCN = maliang.RadioBox(cv, (170, 705), command=changeToChinese, length=30, default=True)
     maliang.RadioBox.group(langCN, langEN)
 
