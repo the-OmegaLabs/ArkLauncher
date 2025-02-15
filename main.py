@@ -1,14 +1,15 @@
 import maliang
-import base64
+import darkdetect
 import keyboard
-from PIL import Image, ImageTk
-from io import BytesIO
+from PIL import Image
 
 VERSION = 'Dev'
 WIDTH = 500
 HEIGHT = 800
 
-icon = Image.open('icon.ico')
+icon = Image.open('src/icon.ico')
+icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
+icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
 
 # 定义语言词典。
 lang_dict = {
@@ -42,32 +43,30 @@ lang_dict = {
 }
 
 def createWindow(x = None, y = None):
-    global icon
     if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
     else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
-    root.tk.call('wm', 'iconphoto', root._w, ImageTk.PhotoImage(icon.resize((32, 32))))
+    root.tk.call('wm', 'iconphoto', root._w, maliang.PhotoImage(icon.resize((32, 32))))
     return root, cv
 
-def changeWindow(window, root: maliang.Tk, x, y):
+def changeWindow(window, root: maliang.Tk):
+    x, y = root.winfo_x(), root.winfo_y()
     root.__exit__()
     window(x, y)
 
 def welcomePage():
     root, cv = createWindow()
-    icon = Image.open('icon.ico')
 
-
-    maliang.Image(cv, (50, 75), image=ImageTk.PhotoImage(icon.resize((150, 150))))
+    maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
     text_welcome = maliang.Text(cv, (50, 250), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=30)
     text_desc    = maliang.Text(cv, (50, 300), text='', family='Microsoft YaHei UI bold', fontsize=17)
     text_license = maliang.Text(cv, (85, 605), text='', family='Microsoft YaHei UI Bold', weight='bold',fontsize=15)
     text_collect = maliang.Text(cv, (85, 643), text='', family='Microsoft YaHei UI Bold', weight='bold', fontsize=15)
     text_button_chinese = maliang.Text(cv, (210, 709), text="中文", fontsize=17, family='Microsoft YaHei UI Bold')
     maliang.Text(cv, (330, 709), text="English", fontsize=17, family='Microsoft YaHei UI Bold')
-    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root, root.winfo_x(), root.winfo_y()), text='', fontsize=16, family='Microsoft YaHei UI Bold')
+    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage, root), text='', fontsize=16, family='Microsoft YaHei UI Bold')
     button.disable(True)
 
     # 同意协议逻辑
@@ -108,12 +107,20 @@ def welcomePage():
 
     root.mainloop()
 
+def aboutPage(x, y):
+    root, cv = createWindow(x, y)
+    
+
+    root.mainloop()
+
 def mainPage(x, y):
     root, cv = createWindow(x, y)
-    logo = maliang.Image(cv, (50, 50), image=ImageTk.PhotoImage(icon.resize((50, 50))))
+    logo = maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50))))
     text_logo1 = maliang.Text(cv, (113, 50), text='ATCraft Network', family='Microsoft YaHei UI', fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 68), text='ArkLauncher', family='Microsoft YaHei UI Bold', fontsize=26)
 
+    maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(aboutPage, root), image=maliang.PhotoImage(icon_about.resize((55, 55))))
+    maliang.IconButton(cv, position=(340, 50), size=(50, 50), image=maliang.PhotoImage(icon_settings.resize((55, 55))))
 
     root.mainloop()
 
