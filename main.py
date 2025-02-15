@@ -85,6 +85,7 @@ lang_dict = {
     }
 }
 
+
 def createWindow(x = None, y = None):
     if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
     else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
@@ -102,8 +103,6 @@ def changeWindow(window, root: maliang.Tk):
 def welcomePage():
     global locale
     root, cv = createWindow()
-
-    ui = ui.builder(cv,FONT_FAMILY)
 
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(icon.resize((150, 150))))
 
@@ -221,6 +220,6 @@ def mainPage(x, y):
 
     root.mainloop()
 
-locale = 'egg'
-aboutPage(200, 200)
+locale = 'cn'
+welcomePage()
 
