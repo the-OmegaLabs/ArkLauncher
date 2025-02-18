@@ -2,6 +2,7 @@ import os
 import maliang
 import darkdetect
 import keyboard
+import libs.winavatar
 from PIL import Image, ImageFont    
 
 VERSION = 'Dev'
@@ -118,7 +119,7 @@ lang_dict = {
         'dev_coredev': '摆烂大王',
         'specialthanks': '暗杀名单',
         'maliang_desc': '把屎山 tkinter 干掉的牛逼东西',
-        'dev_maliang': '又一次听坚强笨女人听哭了',
+        'dev_maliang': '你们都不许骂他他是我爹',
         'setlang_cn': '华为手机 (增智慧)',
         'setlang_en': 'iPhone (自适应)',
         'setlang_sb': '公共厕所',
@@ -319,7 +320,7 @@ def settingsPage(x, y):
     icon_about     = Image.open(f'src/{darkdetect.theme()}/about.png')
     icon_language  = Image.open(f'src/{darkdetect.theme()}/language.png')
     icon_network  = Image.open(f'src/{darkdetect.theme()}/network.png')
-    icon_avatar    = Image.open(f'src/Contributors/Stevesuk0.jpg')
+    icon_avatar    = Image.open(libs.winavatar.getAvatar())
     icon_account   = Image.open(f'src/{darkdetect.theme()}/account.png')
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
