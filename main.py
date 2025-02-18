@@ -5,6 +5,10 @@ import json
 import keyboard
 from PIL import Image 
 import libs.winavatar
+from libs.olog import INFO, DEBUG, ERROR, WARN
+from libs.olog import output as log
+
+libs.olog.init()
 
 VERSION = 'Dev'
 WIDTH = 500
@@ -17,6 +21,7 @@ def openGithub(name):
     os.system(f'start https://github.com/{name}')
 
 def createWindow(x = None, y = None):
+    log(f'Creating new page at ({x}, {y}).')
     icon = Image.open('src/icon.png')
     if x and y: root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
     else: root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
@@ -27,6 +32,7 @@ def createWindow(x = None, y = None):
     return root, cv
 
 def changeWindow(window, root: maliang.Tk):
+    log(f'Perform change window to "{window.__name__}"...')
     x, y = root.winfo_x(), root.winfo_y()
     root.__exit__()
     window(x, y)
@@ -230,6 +236,7 @@ def loadLocale():
 
     for i in os.listdir('./src/lang'):
         if i.endswith('.json'):
+            log(f'Loading locale file "{i}"...')
             with open(f'./src/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
 
@@ -258,6 +265,7 @@ def settingsLanguagePage(x, y):
     text_logo2.set(translate('locale')) 
 
     def setLanguage(language):
+        log(f'Change locale to {language}.')
         global locale
         locale = language    
         text_logo1.set(translate('settings'))
@@ -272,10 +280,10 @@ def settingsLanguagePage(x, y):
 
     root.mainloop()
 
+log(f'Starting ATCraft ArkLaucher, version {VERSION}.')
 
 loadLocale()
 locale = 'en'
-
 
 mainPage(500, 200)
 #welcomePage()
