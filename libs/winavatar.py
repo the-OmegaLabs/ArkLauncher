@@ -1,5 +1,4 @@
 import os
-from PIL import Image
 
 username = os.environ.get('USERNAME')
 
