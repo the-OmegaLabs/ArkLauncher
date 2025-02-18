@@ -4,6 +4,7 @@ import darkdetect
 import json
 import keyboard
 from PIL import Image 
+import libs.winavatar
 
 VERSION = 'Dev'
 WIDTH = 500
@@ -171,7 +172,7 @@ def settingsPage(x, y):
     icon_about     = Image.open(f'src/{darkdetect.theme()}/about.png')
     icon_language  = Image.open(f'src/{darkdetect.theme()}/language.png')
     icon_network  = Image.open(f'src/{darkdetect.theme()}/network.png')
-    icon_avatar    = Image.open(f'src/Contributors/Stevesuk0.jpg')
+    icon_avatar    = Image.open(libs.winavatar.getAvatar())
     icon_account   = Image.open(f'src/{darkdetect.theme()}/account.png')
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
