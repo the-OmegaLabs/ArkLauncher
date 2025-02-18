@@ -1,8 +1,9 @@
 import os
 import maliang
 import darkdetect
+import json
 import keyboard
-from PIL import Image, ImageFont    
+from PIL import Image 
 
 VERSION = 'Dev'
 WIDTH = 500
@@ -11,157 +12,8 @@ HEIGHT = 800
 FONT_FAMILY = 'Microsoft YaHei UI'
 FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
 
-lang_dict = {
-    'en':     {
-        'welcome': 'Welcome to ArkLauncher',
-        'desc': 'Easily access and manage your Minecraft games.',
-        'license': 'I agree to using this project with the MIT License.',
-        'collect': 'Send anonymous data to help ATCraft Network\nimprove ArkLauncher App.',
-        'button': 'Start',
-        'language': 'Language',
-        'lang_chinese': '中文',
-        'lang_english': 'English',
-        'homepage': 'Homepage',
-        'account': 'ATCraft ID',
-        'about': 'About',
-        'settings': 'Settings',
-        'network': 'Networking',
-        'version': 'Version',
-        'locale': 'Language & Region',
-        'contributors': 'Contributors',
-        'dev_uiux': 'UI/UX',
-        'dev_coredev': 'Core Developer',
-        'specialthanks': 'Special thanks',
-        'maliang_desc': 'A lightweight UI framework for python.',
-        'dev_maliang': 'Developer of \'maliang\'',
-        'setlang_cn': '中文 (Chinese)',
-        'setlang_en': 'English',
-        'setlang_jp': '日本語 (Japanese)',
-        'setlang_sb': '精通八国语言 (Chinese with meme)',
-        'omegalab_desc': 'Developing a next-generation Linux\necosystem.',
-        'missing': '{Missing}',
-    },
-    'cn': {
-        'welcome': '欢迎使用 ArkLauncher',
-        'desc': '轻松访问并管理您的 Minecraft 游戏库。',
-        'license': '我同意贡献，使用此项目时遵守 MIT License。',
-        'collect': '发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。',
-        'button': '开始使用',
-        'language': '语言',
-        'lang_chinese': '中文',
-        'lang_english': 'English',
-        'homepage': '主页',
-        'about': '关于',
-        'account': 'ATCraft ID',
-        'settings': '设置',
-        'version': '版本',
-        'locale': '语言与地区',
-        'network': '网络',
-        'contributors': '贡献者',
-        'dev_uiux': '界面设计',
-        'dev_coredev': '核心开发者',
-        'specialthanks': '特别感谢',
-        'maliang_desc': '一个使用 Python 编写的轻量 UI 框架。',
-        'dev_maliang': 'maliang 的开发者',
-        'setlang_cn': '中文',
-        'setlang_en': 'English (英语)',
-        'setlang_sb': '精通八国语言 (梗体中文)',
-        'setlang_jp': '日本語 (日语)',
-        'omegalab_desc': '构建下一代 Linux 生态系统。',
-        'missing': '{缺少翻译}',
-    },
-    'jp': {
-        'welcome': 'ArkLauncherをご利用いただきありがとうございます',
-        'desc': 'Minecraftゲームライブラリを簡単にアクセスし、管理できます。',
-        'license': '貢献に同意し、このプロジェクトの使用に際してMITライセンスに従います。',
-        'collect': 'ATCraft NetworkがArkLauncherアプリの使用体験を向上させるための匿名使用情報を送信します。',
-        'button': '使用を開始する',
-        'language': '言語',
-        'lang_chinese': '中国語',
-        'lang_english': '英語',
-        'homepage': 'ホームページ',
-        'about': 'このアプリについて',
-        'settings': '設定',
-        'version': 'バージョン',
-        'locale': '言語と地域',
-        'contributors': '貢献者',
-        'dev_uiux': 'UIデザイン',
-        'dev_coredev': 'コア開発者',
-        'specialthanks': '特別な感謝',
-        'maliang_desc': 'Pythonで書かれた軽量UIフレームワーク。',
-        'dev_maliang': 'maliangの開発者',
-        'setlang_cn': '中文 (中国語)',
-        'setlang_en': 'English (英語)',
-        'setlang_sb': '精通八国语言 (梗体中国語)',
-        'setlang_jp': '日本語',
-        'omegalab_desc': '次世代Linuxエコシステムの構築。',
-        'missing': '{翻訳がありません}',
-    },
-    'egg': {  # 彩蛋语言
-        'welcome': '坐和放宽™《解压文件》发射器®️',
-        'desc': '像软的微型副驾驶一样对我的手艺进行发射。🤖',
-        'license': '我对郊狼发射器在我身上榨精提供猫编程域名许可',
-        'collect': '发送你的 todesk 配置文件和账号密码，但你并非并非\n（你需要来自dream大王的权限才能拒绝，L）',
-        'button': '弹射起步',
-        'lang_chinese': '掌瓦APP',
-        'lang_english': '崇洋媚外',
-        'homepage': '洛杉矶',
-        'about': '讲述人',
-        'settings': '仪表',
-        'account': '录管系统',
-        'locale': '你永远是中国人',
-        'network': '天翼3G',
-        'version': '圈钱',
-        'missing': '{缺少傻逼在这里拉屎}',
-        'contributors': '公交车',
-        'dev_uiux': '吴旭淳',
-        'dev_coredev': '摆烂大王',
-        'specialthanks': '暗杀名单',
-        'maliang_desc': '把屎山 tkinter 干掉的牛逼东西',
-        'dev_maliang': '又一次听坚强笨女人听哭了',
-        'setlang_cn': '华为手机 (增智慧)',
-        'setlang_en': 'iPhone (自适应)',
-        'setlang_sb': '公共厕所',
-        'setlang_jp': 'かおにまで (孙笑川国)',
-        'omegalab_desc': '构建下一代水影并 skid 欣欣内部圈钱（大粉丝有神器）'
-    },
-    'star': {
-        'welcome': '**** ***********',
-        'desc': '********* ********* ***',
-        'license': '***** ** ****** *** *******',
-        'collect': '*********** ******* ******* **\n*********** *** *****',
-        'button': '****',
-        'language': '**',
-        'lang_chinese': '**',
-        'lang_english': '*******',
-        'homepage': '**',
-        'about': '**',
-        'account': '******* **',
-        'settings': '**',
-        'version': '**',
-        'locale': '*****',
-        'network': '**',
-        'contributors': '***',
-        'dev_uiux': '****',
-        'dev_coredev': '*****',
-        'specialthanks': '****',
-        'maliang_desc': '**** ****** ***** ** **',
-        'dev_maliang': '******* ****',
-        'setlang_cn': '**',
-        'setlang_en': '******* (**)',
-        'setlang_sb': '****** (****)',
-        'setlang_jp': '*** (**)',
-        'omegalab_desc': '***** ***** ****',
-        'missing': '{:****:}',
-    }
-}
-
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
-
-def translate(target):
-    return lang_dict[locale].get(target, lang_dict[locale]['missing'])
-
 
 def createWindow(x = None, y = None):
     icon = Image.open('src/icon.png')
@@ -370,6 +222,20 @@ def settingsNetworkPage(x, y):
 
     root.mainloop()
 
+def loadLocale():
+    global lang_dict
+
+    lang_dict = {}
+
+    for i in os.listdir('./src/lang'):
+        if i.endswith('.json'):
+            with open(f'./src/lang/{i}', encoding='utf-8') as f:
+                lang_dict[i[:-5]] = json.loads(f.read())
+
+def translate(target):
+    return lang_dict.get(locale, {}).get(target, lang_dict['en'].get(target, target))
+
+
 def settingsLanguagePage(x, y):
     global locale
     root, cv = createWindow(x, y)
@@ -381,32 +247,35 @@ def settingsLanguagePage(x, y):
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
-    button_changeToCN = maliang.IconButton(cv, position=(50, 150), size=(400, 55), command=lambda: setLanguage('cn'), image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD, fontsize=18)
-    button_changeToEN = maliang.IconButton(cv, position=(50, 210), size=(400, 55), command=lambda: setLanguage('en'), image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD, fontsize=18)
-    button_changeToSB = maliang.IconButton(cv, position=(50, 270), size=(400, 55), command=lambda: setLanguage('egg'), image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD, fontsize=18)
-    button_changeToJP = maliang.IconButton(cv, position=(50, 330), size=(400, 55), command=lambda: setLanguage('jp'), image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD, fontsize=18)
-
+    HEIGHT = 150
+    lang_changebutton = []
+    for i in lang_dict:
+        lang_changebutton.append(maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda lang=i: setLanguage(lang), image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD, fontsize=18))
+        HEIGHT += 60
 
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('locale')) 
-    button_changeToCN.set(translate('setlang_cn'))
-    button_changeToEN.set(translate('setlang_en'))
-    button_changeToSB.set(translate('setlang_sb'))
-    button_changeToJP.set(translate('setlang_jp'))
 
     def setLanguage(language):
         global locale
         locale = language    
         text_logo1.set(translate('settings'))
         text_logo2.set(translate('locale'))
-        button_changeToCN.set(translate('setlang_cn'))
-        button_changeToEN.set(translate('setlang_en'))
-        button_changeToSB.set(translate('setlang_sb'))
-        button_changeToJP.set(translate('setlang_jp'))
+        tmp = []
+        for i in lang_dict:
+            tmp.append(f'setlang_{i}')
+        for i in range(len(lang_changebutton)):
+            lang_changebutton[i].set(translate(tmp[i]))
+
+    setLanguage(locale)
+
     root.mainloop()
 
 
+loadLocale()
 locale = 'en'
+
+
 mainPage(500, 200)
 #welcomePage()
 
