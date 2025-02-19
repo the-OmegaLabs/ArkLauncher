@@ -31,5 +31,7 @@
     "missing": "{Missing}",
     "return": "Return",
     "quick": "Quick Launch",
-    "customize": "Customize"
+    "customize": "Customize",
+    "dev": "Dev",
+    "release": "Release"
 }

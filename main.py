@@ -18,7 +18,8 @@ from libs.olog import WARN, ERROR, INFO, DEBUG
 
 colorama.init()
 
-VERSION = 'Dev'
+_VERSION = 'dev'
+_SUBVERSION = '25w08d'
 WIDTH = 500
 HEIGHT = 800
 
@@ -34,9 +35,9 @@ def createWindow(x=None, y=None):
     log(f'Creating new page at ({x}, {y}).')
     icon = Image.open('src/icon.png')
     if x and y:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
+        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'{translate('prodname')} {translate(_VERSION)}-{_SUBVERSION}')
     else:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
+        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate('prodname')} {translate(_VERSION)}-{_SUBVERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
@@ -157,7 +158,7 @@ def aboutPage(x, y):
 
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('about'))
-    text_version.set(f"{translate('version')}: {VERSION}")
+    text_version.set(f"{translate('version')}: {translate(_VERSION)}-{_SUBVERSION}")
     text_contributor.set(translate('contributors'))
     text_thanks.set(translate('specialthanks'))
     text_maliang_desc.set(translate('maliang_desc'))
@@ -353,21 +354,10 @@ def settingsLanguagePage(x, y):
     root.mainloop()
 
 
-def main():
-    global locale
-    log(f'Starting ATCraft ArkLaucher, version {VERSION}.')
-
-    loadLocale()
-    locale = 'en'
-
-    mainPage(500, 200)
-
-    # welcomePage()
-
 def tracebackWindow(exception: Exception):
     log('Starting Traceback window because a exception detected.', type=WARN)
     icon = Image.open('src/icon.png')
-    root = maliang.Tk(size=(1000, 500), title=f'ArkLauncher {VERSION}')
+    root = maliang.Tk(size=(1000, 500), title=f'ArkLauncher {_VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=1000, height=500)
@@ -388,6 +378,16 @@ def tracebackWindow(exception: Exception):
     root.mainloop()
 
     
+def main():
+    global locale
+    log(f'Starting ATCraft ArkLaucher, version {_VERSION}.')
+
+    loadLocale()
+    locale = 'en'
+
+    mainPage(500, 200)
+
+    # welcomePage()
 
 try:
     main()
