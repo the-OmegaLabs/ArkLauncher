@@ -5,6 +5,7 @@ import colorama
 import darkdetect
 import keyboard
 import maliang
+import traceback
 from PIL import Image
 
 if platform.system() == 'Windows':
@@ -13,6 +14,7 @@ elif platform.system() == 'Linux':
     import libs.linavatar as avatar
 
 from libs.olog import output as log
+from libs.olog import WARN, ERROR, INFO, DEBUG
 
 colorama.init()
 
@@ -177,20 +179,14 @@ def mainPage(x, y):
     maliang.Text(cv, (110, 50), text=translate('parent'), family=FONT_FAMILY, fontsize=15)
     maliang.Text(cv, (110, 68), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=26)
 
-    icon_cs2 = Image.open(f'src/project/cs2_icon.jpg')
-    button_cs2 = maliang.Button(cv, position=(50, 130), size=(400, 100))
-    maliang.Image(button_cs2, position=(25, 25), image=maliang.PhotoImage(icon_cs2.resize((50, 50), 1)))
-    maliang.Text(button_cs2, (100, 20), text='Counter-Strike 2', family=FONT_FAMILY_BOLD, fontsize=26)
-    maliang.Text(button_cs2, (100, 60), text='A 5v5 firstperson tactical shooter.', family=FONT_FAMILY, fontsize=15)
-
-    button_new = maliang.Button(cv, position=(50, 250), size=(400, 100))
+    button_new = maliang.Button(cv, position=(50, 130), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
     maliang.Tooltip(
         maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_settings.resize((55, 55), 1))), text=translate('settings'))
+                           image=maliang.PhotoImage(icon_settings.resize((55, 55), 1))), text=translate('settings'), fontsize=13)
     maliang.Tooltip(
         maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
-                           image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'))
+                           image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'), fontsize=13)
 
     root.mainloop()
 
@@ -224,15 +220,16 @@ def settingsPage(x, y):
                                         command=lambda: changeWindow(settingsNetworkPage, root),
                                         image=maliang.PhotoImage(icon_network.resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
-    button_about = maliang.IconButton(cv, position=(50, 330), size=(400, 55),
-                                      command=lambda: changeWindow(aboutPage, root),
-                                      image=maliang.PhotoImage(icon_about.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
-                                      fontsize=18)
-    button_customize = maliang.IconButton(cv, position=(50, 390), size=(400, 55),
+    button_customize = maliang.IconButton(cv, position=(50, 330), size=(400, 55),
                                           command=lambda: changeWindow(settingsCustomizePage, root),
                                           image=maliang.PhotoImage(icon_customize.resize((40, 40), 1)),
                                           family=FONT_FAMILY_BOLD,
                                           fontsize=18)
+    button_about = maliang.IconButton(cv, position=(50, 390), size=(400, 55),
+                                      command=lambda: changeWindow(aboutPage, root),
+                                      image=maliang.PhotoImage(icon_about.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
+                                      fontsize=18)
+
 
     text_logo1.set(translate('homepage'))
     text_logo2.set(translate('settings'))
@@ -242,9 +239,7 @@ def settingsPage(x, y):
     button_about.set(f' {translate('about')}')
     button_customize.set(f' {translate('customize')}')
 
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate("return"))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
     root.mainloop()
 
@@ -260,9 +255,8 @@ def settingsAccountPage(x, y):
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('account'))
 
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate("return"))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
     root.mainloop()
 
@@ -278,9 +272,8 @@ def settingsNetworkPage(x, y):
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('network'))
 
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate("return"))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
     root.mainloop()
 
@@ -296,9 +289,8 @@ def settingsCustomizePage(x, y):
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('customize'))
 
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate("return"))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
     root.mainloop()
 
@@ -341,9 +333,8 @@ def settingsLanguagePage(x, y):
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('locale'))
 
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate("return"))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
     def setLanguage(language):
         log(f'Change locale to {language}.')
@@ -362,10 +353,44 @@ def settingsLanguagePage(x, y):
     root.mainloop()
 
 
-log(f'Starting ATCraft ArkLaucher, version {VERSION}.')
+def main():
+    global locale
+    log(f'Starting ATCraft ArkLaucher, version {VERSION}.')
 
-loadLocale()
-locale = 'en'
+    loadLocale()
+    locale = 'en'
 
-mainPage(500, 200)
-# welcomePage()
+    mainPage(500, 200)
+
+    # welcomePage()
+
+def tracebackWindow(exception: Exception):
+    log('Starting Traceback window because a exception detected.', type=WARN)
+    icon = Image.open('src/icon.png')
+    root = maliang.Tk(size=(1000, 500), title=f'ArkLauncher {VERSION}')
+    root.resizable(0, 0)
+    cv = maliang.Canvas(root)
+    cv.place(width=1000, height=500)
+    root.tk.call('wm', 'iconphoto', root._w, maliang.PhotoImage(icon.resize((32, 32), 1)))
+
+    text_title = maliang.Text(cv, (50, 50), family=FONT_FAMILY_BOLD, fontsize=23)
+    text_title.set('An error detected.')
+
+    text_title = maliang.Text(cv, (50, 85), family=FONT_FAMILY, fontsize=17)
+    text_title.set('You can take an screenshot in this window, and send it to the author.')
+
+    text_trace = maliang.Text(cv, (50, 150), family='Consolas', fontsize=14)
+
+    text_trace.set(str('\n'.join(traceback.format_exception(exception))))
+    
+
+    root.center()
+    root.mainloop()
+
+    
+
+try:
+    main()
+except Exception as f:
+    log(f, type=ERROR)
+    tracebackWindow(f)
