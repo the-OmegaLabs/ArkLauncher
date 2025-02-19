@@ -1,13 +1,11 @@
 import json
 import os
 import platform
-
+import colorama
 import darkdetect
 import keyboard
 import maliang
 from PIL import Image
-
-from libs import olog
 
 if platform.system() == 'Windows':
     import libs.winavatar as avatar
@@ -16,7 +14,7 @@ elif platform.system() == 'Linux':
 
 from libs.olog import output as log
 
-olog.init()
+colorama.init()
 
 VERSION = 'Dev'
 WIDTH = 500
