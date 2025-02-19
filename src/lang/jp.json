@@ -1,4 +1,6 @@
 {
+    "parent": "ア⒯Ñぇ⒯⒲ぉℛK",
+    "prodname": "あｒｋ",
     "welcome": "ArkLauncherをご利用いただきありがとうございます",
     "desc": "Minecraftゲームライブラリを簡単にアクセスし、管理できます。",
     "license": "貢献に同意し、このプロジェクトの使用に際してMITライセンスに従います。",
@@ -23,5 +25,7 @@
     "setlang_sb": "をヨこねま",
     "setlang_jp": "日本語",
     "omegalab_desc": "次世代Linuxエコシステムの構築。",
-    "missing": "{翻訳がありません}"
+    "missing": "{翻訳がありません}",
+    "return": "戻る",
+    "quick": "クイックスタート"
 }

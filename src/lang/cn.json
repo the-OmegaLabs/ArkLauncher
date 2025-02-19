@@ -1,5 +1,7 @@
 {
-    "welcome": "欢迎使用 ArkLauncher",
+    "parent": "ATNetwork",
+    "prodname": "Ark启动器",
+    "welcome": "欢迎使用 Ark启动器",
     "desc": "轻松访问并管理您的 Minecraft 游戏库。",
     "license": "我同意贡献，使用此项目时遵守 MIT License。",
     "collect": "发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。",
@@ -26,5 +28,7 @@
     "setlang_jp": "日本語 (日语)",
     "setlang_star": "***** (海星语)",
     "omegalab_desc": "构建下一代 Linux 生态系统。",
-    "missing": "{缺少翻译}"
+    "missing": "{缺少翻译}",
+    "return": "返回",
+    "quick": "快速启动"
 }

@@ -103,13 +103,13 @@ def aboutPage(x, y):
     avatar_Xiaokang2022   = Image.open(f'src/Contributors/Xiaokang2022.jpg')
     avatar_theOmegaLabs   = Image.open(f'src/Contributors/the-OmegaLabs.png')
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
+    maliang.Tooltip(maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate('return'))
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     maliang.IconButton(cv, (110, 145), size=(75, 75), image=maliang.PhotoImage(icon.resize((73, 73))), command=lambda: openGithub('the-OmegaLabs/ArkLauncher'))
-    maliang.Text(cv, (202, 145), text='ATCraft Network', family=FONT_FAMILY, fontsize=18)
-    maliang.Text(cv, (200, 165), text='ArkLauncher', family=FONT_FAMILY_BOLD, fontsize=30)
+    maliang.Text(cv, (202, 145), text=translate("parent"), family=FONT_FAMILY, fontsize=18)
+    maliang.Text(cv, (200, 165), text=translate("prodname"), family=FONT_FAMILY_BOLD, fontsize=30)
     text_version = maliang.Text(cv, (200, 205), family=FONT_FAMILY, fontsize=15)
 
     text_contributor = maliang.Text(cv, (50, 250), family=FONT_FAMILY_BOLD, fontsize=26)    
@@ -148,13 +148,11 @@ def mainPage(x, y):
     icon_quick    = Image.open(f'src/{darkdetect.theme()}/quick.png')
     icon_testGame = Image.open(f'src/project/candee.png')
 
-    maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_settings.resize((55, 55), 1)))
-    maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_quick.resize((40, 40), 1)))
 
 
     maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50), 1)))
-    maliang.Text(cv, (110, 50), text='ATCraft Network', family=FONT_FAMILY, fontsize=15)
-    maliang.Text(cv, (110, 68), text='ArkLauncher', family=FONT_FAMILY_BOLD, fontsize=26)
+    maliang.Text(cv, (110, 50), text=translate('parent'), family=FONT_FAMILY, fontsize=15)
+    maliang.Text(cv, (110, 68), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=26)
 
     icon_cs2 = Image.open(f'src/project/cs2_icon.jpg')
     button_cs2 = maliang.Button(cv, position=(50, 130), size=(400, 100))
@@ -165,9 +163,12 @@ def mainPage(x, y):
     
     button_new = maliang.Button(cv, position=(50, 250), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
-    
-
-    
+    maliang.Tooltip(
+        maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(icon_settings.resize((55, 55), 1))), text=translate('settings'))
+    maliang.Tooltip(
+        maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
+                           image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'))
 
     root.mainloop()
 
@@ -181,7 +182,6 @@ def settingsPage(x, y):
     icon_avatar    = Image.open(libs.winavatar.getAvatar())
     icon_account   = Image.open(f'src/{darkdetect.theme()}/account.png')
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
@@ -199,6 +199,9 @@ def settingsPage(x, y):
     button_network.set(f' {translate('network')}')
     button_about.set(f' {translate('about')}')
 
+    maliang.Tooltip(maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
+                       image=maliang.PhotoImage(icon_return.resize((55, 55), 1))),text=translate("return"))
+
     root.mainloop()
 
 def settingsAccountPage(x, y):
@@ -206,12 +209,14 @@ def settingsAccountPage(x, y):
 
     icon_return     = Image.open(f'src/{darkdetect.theme()}/return.png')
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     text_logo1.set(translate('settings'))
-    text_logo2.set(translate('account')) 
+    text_logo2.set(translate('account'))
+
+    maliang.Tooltip(maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                       image=maliang.PhotoImage(icon_return.resize((55, 55), 1))),text=translate("return"))
 
     root.mainloop()
 
@@ -220,12 +225,13 @@ def settingsNetworkPage(x, y):
 
     icon_return     = Image.open(f'src/{darkdetect.theme()}/return.png')
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('network')) 
+
+    maliang.Tooltip(maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1))),text=translate("return"))
 
     root.mainloop()
 
@@ -251,7 +257,6 @@ def settingsLanguagePage(x, y):
     icon_language   = Image.open(f'src/{darkdetect.theme()}/language.png')
     icon_return     = Image.open(f'src/{darkdetect.theme()}/return.png')
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
@@ -262,7 +267,10 @@ def settingsLanguagePage(x, y):
         HEIGHT += 60
 
     text_logo1.set(translate('settings'))
-    text_logo2.set(translate('locale')) 
+    text_logo2.set(translate('locale'))
+
+    maliang.Tooltip(maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                       image=maliang.PhotoImage(icon_return.resize((55, 55), 1))),text=translate("return"))
 
     def setLanguage(language):
         log(f'Change locale to {language}.')
@@ -286,5 +294,5 @@ loadLocale()
 locale = 'en'
 
 mainPage(500, 200)
-#welcomePage()
+# welcomePage()
 

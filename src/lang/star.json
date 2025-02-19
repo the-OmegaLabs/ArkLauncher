@@ -1,4 +1,6 @@
 {
+    "parent": "GrassBlock2022",
+    "prodname": "******",
     "welcome": "**** ***********",
     "desc": "********* ********* ***",
     "license": "***** ** ****** *** *******",
@@ -26,5 +28,7 @@
     "setlang_jp": "日本語 (**)",
     "setlang_star": "*****",
     "omegalab_desc": "***** ***** ****",
-    "missing": "{:****:}"
+    "missing": "{:****:}",
+    "return": "**",
+    "quick": "****"
 }
