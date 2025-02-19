@@ -1,7 +1,7 @@
 {
-    "parent": "ATNetwork",
-    "prodname": "Ark启动器",
-    "welcome": "欢迎使用 Ark启动器",
+    "parent": "ATCraft Network",
+    "prodname": "ArkLauncher",
+    "welcome": "欢迎使用 ArkLauncher",
     "desc": "轻松访问并管理您的 Minecraft 游戏库。",
     "license": "我同意贡献，使用此项目时遵守 MIT License。",
     "collect": "发送匿名使用信息来协助 ATCraft Network 提升\nArkLauncher App 的使用体验。",
