@@ -28,5 +28,7 @@
     "missing": "{翻訳がありません}",
     "return": "戻る",
     "quick": "クイックスタート",
-    "customize": "カスタマイズ"
+    "customize": "カスタマイズ",
+    "dev": "開発",
+    "release": "リリース"
 }

@@ -31,5 +31,7 @@
     "missing": "{缺少翻译}",
     "return": "返回",
     "quick": "快速启动",
-    "customize": "个性化"
+    "customize": "个性化",
+    "dev": "开发版",
+    "release": "正式版"
 }

@@ -16,7 +16,7 @@ from libs.olog import output as log
 
 colorama.init()
 
-VERSION = 'Dev'
+_VERSION = 'dev'
 WIDTH = 500
 HEIGHT = 800
 
@@ -32,9 +32,9 @@ def createWindow(x=None, y=None):
     log(f'Creating new page at ({x}, {y}).')
     icon = Image.open('src/icon.png')
     if x and y:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'ArkLauncher {VERSION}')
+        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'{translate('prodname')} {translate(_VERSION)}')
     else:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'ArkLauncher {VERSION}')
+        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate('prodname')} {translate(_VERSION)}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
@@ -155,7 +155,7 @@ def aboutPage(x, y):
 
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('about'))
-    text_version.set(f"{translate('version')}: {VERSION}")
+    text_version.set(f"{translate('version')}: {translate(_VERSION)}")
     text_contributor.set(translate('contributors'))
     text_thanks.set(translate('specialthanks'))
     text_maliang_desc.set(translate('maliang_desc'))
@@ -362,10 +362,9 @@ def settingsLanguagePage(x, y):
     root.mainloop()
 
 
-log(f'Starting ATCraft ArkLaucher, version {VERSION}.')
-
 loadLocale()
 locale = 'en'
 
 mainPage(500, 200)
+log(f'Starting ATCraft ArkLaucher, version {translate(_VERSION)}.')
 # welcomePage()
