@@ -5,6 +5,7 @@ import colorama
 import darkdetect
 import keyboard
 import maliang
+import maliang.animation as animation
 import traceback
 from PIL import Image
 
@@ -170,6 +171,15 @@ def aboutPage(x, y):
 def mainPage(x, y):
     root, cv = createWindow(x, y)
 
+    def createNotice(str, cv, color):
+        noticeBar = maliang.Canvas(master=cv, auto_update=False, bg=color)
+        noticeBar.place(width=500, height=30, x=0, y=0)
+        
+        noticeText = maliang.Text(noticeBar, (250, 15), text=str, family=FONT_FAMILY_BOLD, anchor='center', fontsize=14, )
+
+        return [noticeBar, noticeText]
+
+
     icon = Image.open('src/icon.png')
     icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
     icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
@@ -188,6 +198,10 @@ def mainPage(x, y):
     maliang.Tooltip(
         maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
                            image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'), fontsize=13)
+
+    noticeBar, _ = createNotice('正在登录到 ATCraft Network...', cv, '#4D8DFA')
+    animation.MoveTkWidget(noticeBar, (600, 0), 1000, fps=1000, controller=animation.ease_out).start(delay=2000)
+    root.after(4000, noticeBar.destroy)
 
     root.mainloop()
 
@@ -356,22 +370,20 @@ def settingsLanguagePage(x, y):
 
 def tracebackWindow(exception: Exception):
     log('Starting Traceback window because a exception detected.', type=WARN)
-    icon = Image.open('src/icon.png')
-    root = maliang.Tk(size=(1000, 500), title=f'ArkLauncher {_VERSION}')
+    root = maliang.Tk(size=(1500, 800), title=f'ArkLauncher {_VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
-    cv.place(width=1000, height=500)
-    root.tk.call('wm', 'iconphoto', root._w, maliang.PhotoImage(icon.resize((32, 32), 1)))
+    cv.place(width=1500, height=800)
 
-    text_title = maliang.Text(cv, (50, 50), family=FONT_FAMILY_BOLD, fontsize=23)
+    text_title = maliang.Text(cv, (50, 50), family='Microsoft YaHei UI Bold', fontsize=23)
     text_title.set('An error detected.')
 
-    text_title = maliang.Text(cv, (50, 85), family=FONT_FAMILY, fontsize=17)
+    text_title = maliang.Text(cv, (50, 75), family='Microsoft YaHei UI', fontsize=17)
     text_title.set('You can take an screenshot in this window, and send it to the author.')
 
-    text_trace = maliang.Text(cv, (50, 150), family='Consolas', fontsize=14)
+    text_trace = maliang.Text(cv, (50, 130), family='Consolas', fontsize=14)
 
-    text_trace.set(str('\n'.join(traceback.format_exception(exception))))
+    text_trace.set(str(''.join(traceback.format_exception(exception))))
     
 
     root.center()
@@ -393,4 +405,4 @@ try:
     main()
 except Exception as f:
     log(f, type=ERROR)
-    tracebackWindow(f)
+    print(''.join(traceback.format_exception(f)))
