@@ -1,16 +1,22 @@
 import json
 import os
+import platform
 
 import darkdetect
 import keyboard
 import maliang
 from PIL import Image
 
-import libs.winavatar
-from libs.olog import INFO
+from libs import olog
+
+if platform.system() == 'Windows':
+    import libs.winavatar as avatar
+elif platform.system() == 'Linux':
+    import libs.linavatar as avatar
+
 from libs.olog import output as log
 
-libs.olog.init()
+olog.init()
 
 VERSION = 'Dev'
 WIDTH = 500
@@ -198,7 +204,7 @@ def settingsPage(x, y):
     icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
     icon_language = Image.open(f'src/{darkdetect.theme()}/language.png')
     icon_network = Image.open(f'src/{darkdetect.theme()}/network.png')
-    icon_avatar = Image.open(libs.winavatar.getAvatar())
+    icon_avatar = Image.open(avatar.getAvatar())
     icon_account = Image.open(f'src/{darkdetect.theme()}/account.png')
     icon_customize = Image.open(f'src/{darkdetect.theme()}/customize.png')
 
@@ -280,6 +286,7 @@ def settingsNetworkPage(x, y):
 
     root.mainloop()
 
+
 def settingsCustomizePage(x, y):
     root, cv = createWindow(x, y)
 
@@ -296,6 +303,7 @@ def settingsCustomizePage(x, y):
                            image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate("return"))
 
     root.mainloop()
+
 
 def loadLocale():
     global lang_dict
