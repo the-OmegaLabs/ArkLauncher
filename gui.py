@@ -19,8 +19,8 @@ from libs.olog import WARN, ERROR, INFO, DEBUG
 
 colorama.init()
 
-_VERSION = 'dev'
-_SUBVERSION = '25w08e'
+_VERSION = ''
+_SUBVERSION = ''
 WIDTH = 500
 HEIGHT = 800
 
@@ -39,6 +39,7 @@ def createWindow(x=None, y=None):
         root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'{translate('prodname')} {translate(_VERSION)}-{_SUBVERSION}')
     else:
         root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate('prodname')} {translate(_VERSION)}-{_SUBVERSION}')
+
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
@@ -391,7 +392,7 @@ def tracebackWindow(exception: Exception):
     
 def main():
     global locale
-    log(f'Starting ATCraft ArkLaucher, version {_VERSION}.')
+    log(f'Starting ATCraft ArkLaucher GUI, version {_VERSION}.')
 
     loadLocale()
     locale = 'en'
