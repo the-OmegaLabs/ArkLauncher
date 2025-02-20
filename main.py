@@ -20,7 +20,7 @@ from libs.olog import WARN, ERROR, INFO, DEBUG
 colorama.init()
 
 _VERSION = 'dev'
-_SUBVERSION = '25w08d'
+_SUBVERSION = '25w08e'
 WIDTH = 500
 HEIGHT = 800
 
@@ -201,7 +201,7 @@ def mainPage(x, y):
 
     noticeBar, _ = createNotice('正在登录到 ATCraft Network...', cv, '#4D8DFA')
     animation.MoveTkWidget(noticeBar, (600, 0), 1000, fps=1000, controller=animation.ease_out).start(delay=2000)
-    root.after(4000, noticeBar.destroy)
+    root.after(3100, noticeBar.destroy)
 
     root.mainloop()
 
