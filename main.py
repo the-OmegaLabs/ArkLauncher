@@ -200,7 +200,7 @@ def mainPage(x, y):
                            image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'), fontsize=13)
 
     noticeBar, _ = createNotice('正在登录到 ATCraft Network...', cv, '#4D8DFA')
-    animation.MoveTkWidget(noticeBar, (600, 0), 1000, fps=1000, controller=animation.ease_out).start(delay=2000)
+    # animation.MoveTkWidget(noticeBar, (600, 0), 1000, fps=1000, controller=animation.ease_out).start(delay=2000)
     root.after(4000, noticeBar.destroy)
 
     root.mainloop()
