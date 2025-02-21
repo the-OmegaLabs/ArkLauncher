@@ -114,7 +114,7 @@ def aboutPage(x, y):
     root, cv = createWindow(x, y)
 
     icon = Image.open('src/icon.png')
-    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_return = Image.open(f'src/{getThemeString()}/return.png')
     icon_maliang = Image.open(f'src/Contributors/maliang.png')
     avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
     avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
@@ -183,9 +183,9 @@ def mainPage(x, y):
 
 
     icon = Image.open('src/icon.png')
-    icon_about = Image.open(f'src/{_THEME}/about.png')
-    icon_settings = Image.open(f'src/{_THEME}/settings.png')
-    icon_quick = Image.open(f'src/{_THEME}/quick.png')
+    icon_about = Image.open(f'src/{getThemeString()}/about.png')
+    icon_settings = Image.open(f'src/{getThemeString()}/settings.png')
+    icon_quick = Image.open(f'src/{getThemeString()}/quick.png')
     icon_testGame = Image.open(f'src/project/candee.png')
 
     maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50), 1)))
@@ -210,13 +210,13 @@ def mainPage(x, y):
 def settingsPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{_THEME}/return.png')
-    icon_about = Image.open(f'src/{_THEME}/about.png')
-    icon_language = Image.open(f'src/{_THEME}/language.png')
-    icon_network = Image.open(f'src/{_THEME}/network.png')
+    icon_return = Image.open(f'src/{getThemeString()}/return.png')
+    icon_about = Image.open(f'src/{getThemeString()}/about.png')
+    icon_language = Image.open(f'src/{getThemeString()}/language.png')
+    icon_network = Image.open(f'src/{getThemeString()}/network.png')
     icon_avatar = Image.open(avatar.getAvatar())
-    icon_account = Image.open(f'src/{_THEME}/account.png')
-    icon_customize = Image.open(f'src/{_THEME}/customize.png')
+    icon_account = Image.open(f'src/{getThemeString()}/account.png')
+    icon_customize = Image.open(f'src/{getThemeString()}/customize.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -263,7 +263,7 @@ def settingsPage(x, y):
 def settingsAccountPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_return = Image.open(f'src/{getThemeString()}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -280,7 +280,7 @@ def settingsAccountPage(x, y):
 def settingsNetworkPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_return = Image.open(f'src/{getThemeString()}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -295,30 +295,45 @@ def settingsNetworkPage(x, y):
 
 def updateTheme(theme):
     global _THEME
-    if theme == 0:
+    if theme == 1:
+        log('Update to Dark')
         _THEME = 'Dark'
-    elif theme == 1:
+    elif theme == 2:
+        log('Update to Light')
         _THEME = 'Light'
-    else:
-        _THEME = darkdetect.theme()
+    elif theme == 3:
+        log('Update to Auto')
+        _THEME = "Auto"
 
     with open("ark.conf", "w") as f:
+        log(f"Written to ark.conf {_THEME}")
         f.write(f"Theme={_THEME}")
+
+def getThemeString():
+    global _THEME
+    if _THEME == "Auto":
+        log("Theme is Auto, using darkdetect to detect theme...")
+        return darkdetect.theme()
+    else:
+        return _THEME
 
 def getThemeNumber():
     global _THEME
-    if _THEME == "dark":
+    if _THEME == "Dark":
+        log("getThemeNumber: Dark")
         return 0
-    elif _THEME == "light":
+    elif _THEME == "Light":
+        log("getThemeNumber: Light")
         return 1
     else:
+        log("getThemeNumber: Auto")
         return 2
 
 
 def settingsCustomizePage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_return = Image.open(f'src/{getThemeString()}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -358,8 +373,8 @@ def settingsLanguagePage(x, y):
     global locale
     root, cv = createWindow(x, y)
 
-    icon_language = Image.open(f'src/{_THEME}/language.png')
-    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_language = Image.open(f'src/{getThemeString()}/language.png')
+    icon_return = Image.open(f'src/{getThemeString()}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
