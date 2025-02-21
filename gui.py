@@ -21,6 +21,7 @@ colorama.init()
 
 _VERSION = ''
 _SUBVERSION = ''
+_THEME = ''
 WIDTH = 500
 HEIGHT = 800
 
@@ -113,7 +114,7 @@ def aboutPage(x, y):
     root, cv = createWindow(x, y)
 
     icon = Image.open('src/icon.png')
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
     icon_maliang = Image.open(f'src/Contributors/maliang.png')
     avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
     avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
@@ -182,9 +183,9 @@ def mainPage(x, y):
 
 
     icon = Image.open('src/icon.png')
-    icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
-    icon_settings = Image.open(f'src/{darkdetect.theme()}/settings.png')
-    icon_quick = Image.open(f'src/{darkdetect.theme()}/quick.png')
+    icon_about = Image.open(f'src/{_THEME}/about.png')
+    icon_settings = Image.open(f'src/{_THEME}/settings.png')
+    icon_quick = Image.open(f'src/{_THEME}/quick.png')
     icon_testGame = Image.open(f'src/project/candee.png')
 
     maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50), 1)))
@@ -209,13 +210,13 @@ def mainPage(x, y):
 def settingsPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
-    icon_about = Image.open(f'src/{darkdetect.theme()}/about.png')
-    icon_language = Image.open(f'src/{darkdetect.theme()}/language.png')
-    icon_network = Image.open(f'src/{darkdetect.theme()}/network.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_about = Image.open(f'src/{_THEME}/about.png')
+    icon_language = Image.open(f'src/{_THEME}/language.png')
+    icon_network = Image.open(f'src/{_THEME}/network.png')
     icon_avatar = Image.open(avatar.getAvatar())
-    icon_account = Image.open(f'src/{darkdetect.theme()}/account.png')
-    icon_customize = Image.open(f'src/{darkdetect.theme()}/customize.png')
+    icon_account = Image.open(f'src/{_THEME}/account.png')
+    icon_customize = Image.open(f'src/{_THEME}/customize.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -262,7 +263,7 @@ def settingsPage(x, y):
 def settingsAccountPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -279,7 +280,7 @@ def settingsAccountPage(x, y):
 def settingsNetworkPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -292,14 +293,41 @@ def settingsNetworkPage(x, y):
 
     root.mainloop()
 
+def updateTheme(theme):
+    global _THEME
+    if theme == 0:
+        _THEME = 'Dark'
+    elif theme == 1:
+        _THEME = 'Light'
+    else:
+        _THEME = darkdetect.theme()
+
+    with open("ark.conf", "w") as f:
+        f.write(f"Theme={_THEME}")
+
+def getThemeNumber():
+    global _THEME
+    if _THEME == "dark":
+        return 0
+    elif _THEME == "light":
+        return 1
+    else:
+        return 2
+
 
 def settingsCustomizePage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
+
+    switcherText = maliang.Text(cv, (50, 150), family=FONT_FAMILY_BOLD, fontsize=20)
+
+    themeSwitcher = maliang.SegmentedButton(cv, (50, 190), text=(translate("dark"), translate("light"), translate("auto")), default=getThemeNumber())
+    themeSwitcher.bind("<Button-1>",lambda _:updateTheme(themeSwitcher.get()))
+    switcherText.set(translate("theme"))
 
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('customize'))
@@ -330,8 +358,8 @@ def settingsLanguagePage(x, y):
     global locale
     root, cv = createWindow(x, y)
 
-    icon_language = Image.open(f'src/{darkdetect.theme()}/language.png')
-    icon_return = Image.open(f'src/{darkdetect.theme()}/return.png')
+    icon_language = Image.open(f'src/{_THEME}/language.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)

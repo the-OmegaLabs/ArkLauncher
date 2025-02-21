@@ -33,5 +33,9 @@
     "quick": "快速启动",
     "customize": "个性化",
     "dev": "开发版",
-    "release": "正式版"
+    "release": "正式版",
+    "dark": "深色模式",
+    "light": "浅色模式",
+    "auto": "跟随系统",
+    "theme": "主题（需要重启程序）"
 }

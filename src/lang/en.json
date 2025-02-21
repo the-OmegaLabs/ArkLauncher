@@ -33,5 +33,9 @@
     "quick": "Quick Launch",
     "customize": "Customize",
     "dev": "Dev",
-    "release": "Release"
+    "release": "Release",
+    "dark": "Dark",
+    "light": "Light",
+    "auto": "System",
+    "theme": "Theme(Need restart.)"
 }
