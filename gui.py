@@ -18,10 +18,11 @@ _VERSION = ''
 _SUBVERSION = ''
 _THEME = darkdetect.theme().lower()
 WIDTH = 500
-HEIGHT = 800
+HEIGHT = 900
 
 FONT_FAMILY = 'Microsoft YaHei UI'
 FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
 if platform.system() == 'Windows':
     import libs.winavatar as avatar
@@ -110,60 +111,160 @@ def welcomePage():
 
 
 def aboutPage(x, y):
+    # Create main window
     root, cv = createWindow(x, y)
-
-    icon = Image.open('src/icon.png')
-    icon_return = Image.open(f'src/{_THEME}/return.png')
-    icon_maliang = Image.open(f'src/Contributors/maliang.png')
-    avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
-    avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
-    avatar_HRGC_Sonrai = Image.open(f'src/Contributors/HRGC-Sonrai.jpg')
-    avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
-    avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
-
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
-    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
-    text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
-
-    maliang.IconButton(cv, (110, 145), size=(75, 75), image=maliang.PhotoImage(icon.resize((73, 73))),
-                       command=lambda: openGithub('the-OmegaLabs/ArkLauncher'))
-    maliang.Text(cv, (202, 145), text=translate("parent"), family=FONT_FAMILY, fontsize=18)
-    maliang.Text(cv, (200, 165), text=translate("prodname"), family=FONT_FAMILY_BOLD, fontsize=30)
-    text_version = maliang.Text(cv, (200, 205), family=FONT_FAMILY, fontsize=15)
-
-    text_contributor = maliang.Text(cv, (50, 250), family=FONT_FAMILY_BOLD, fontsize=26)
-    maliang.IconButton(cv, position=(50, 300), size=(50, 50), command=lambda: openGithub('Stevesuk0'),
-                       image=maliang.PhotoImage(avatar_Stevesuk0.resize((47, 47), 1)))
-    maliang.IconButton(cv, position=(110, 300), size=(50, 50), command=lambda: openGithub('bzym2'),
-                       image=maliang.PhotoImage(avatar_bzym2.resize((47, 47), 1)))
-    maliang.IconButton(cv, position=(170, 300), size=(50, 50), command=lambda: openGithub('HRGC-Sonrai'),
-                       image=maliang.PhotoImage(avatar_HRGC_Sonrai.resize((47, 47), 1)))
-
-    text_thanks = maliang.Text(cv, (50, 450), family=FONT_FAMILY_BOLD, fontsize=26)
-    maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openGithub('Xiaokang2022/maliang'),
-                       image=maliang.PhotoImage(icon_maliang.resize((35, 35), 1)))
-    maliang.Text(cv, (115, 500), text='maliang', family=FONT_FAMILY_BOLD, fontsize=25)
-    text_maliang_desc = maliang.Text(cv, (115, 532), family=FONT_FAMILY, fontsize=15)
-    maliang.IconButton(cv, position=(50, 570), size=(50, 50), command=lambda: openGithub('Xiaokang2022'),
-                       image=maliang.PhotoImage(avatar_Xiaokang2022.resize((47, 47), 1)))
-    maliang.Text(cv, (115, 570), text='Zhikang Yan', family=FONT_FAMILY_BOLD, fontsize=25)
-    text_Xiaokang2022_desc = maliang.Text(cv, (115, 602), family=FONT_FAMILY, fontsize=15)
-    maliang.IconButton(cv, position=(50, 640), size=(50, 50), command=lambda: openGithub('the-OmegaLabs'),
-                       image=maliang.PhotoImage(avatar_theOmegaLabs.resize((47, 47), 1)))
-    maliang.Text(cv, (115, 640), text='Omega Labs', family=FONT_FAMILY_BOLD, fontsize=25)
-    text_omegalab_desc = maliang.Text(cv, (115, 672), family=FONT_FAMILY, fontsize=15)
-
-    text_logo1.set(translate('settings'))
-    text_logo2.set(translate('about'))
-    text_version.set(f"{translate('version')}: {translate(_VERSION)}-{_SUBVERSION}")
-    text_contributor.set(translate('contributors'))
-    text_thanks.set(translate('specialthanks'))
-    text_maliang_desc.set(translate('maliang_desc'))
-    text_Xiaokang2022_desc.set(translate('dev_maliang'))
-    text_omegalab_desc.set(translate('omegalab_desc'))
+    
+    # Load all required images
+    images = {
+        'return': Image.open(f'src/{_THEME}/return.png'),
+        'icon': Image.open('src/icon.png'),
+        'contributors': {
+            'maliang': Image.open(f'src/Contributors/maliang.png'),
+            'Stevesuk0': Image.open(f'src/Contributors/Stevesuk0.jpg'),
+            'bzym2': Image.open(f'src/Contributors/bzym2.png'),
+            'HRGC_Sonrai': Image.open(f'src/Contributors/HRGC-Sonrai.jpg'),
+            'Xiaokang2022': Image.open(f'src/Contributors/Xiaokang2022.jpg'),
+            'theOmegaLabs': Image.open(f'src/Contributors/the-OmegaLabs.png')
+        }
+    }
+    
+    # Calculate center point
+    center_x = x // 2
+    
+    # Header section
+    maliang.IconButton(
+        cv, 
+        position=(40, 40),
+        size=(50, 50),
+        command=lambda: changeWindow(settingsPage, root),
+        image=maliang.PhotoImage(images['return'].resize((55, 55), 1))
+    )
+    
+    # Title texts
+    maliang.Text(cv, (100, 40), text=translate("settings"), family=FONT_FAMILY_LIGHT, fontsize=15)
+    maliang.Text(cv, (100, 60), text=translate("about"), family=FONT_FAMILY_BOLD, fontsize=26)
+    
+    # Project information section - Centered layout
+    icon_size = 120
+    icon_x = center_x - (icon_size // 2)
+    
+    # Large centered icon
+    maliang.IconButton(
+        cv,
+        position=(icon_x, 120),
+        size=(icon_size, icon_size),
+        image=maliang.PhotoImage(images['icon'].resize((icon_size, icon_size))),
+        command=lambda: openGithub('the-OmegaLabs/ArkLauncher')
+    )
+    
+    # Center-aligned product information
+    maliang.Text(
+        cv, 
+        (center_x, 270), 
+        text="ATNetwork", 
+        family=FONT_FAMILY_LIGHT, 
+        fontsize=20,
+        anchor='center'
+    )
+    maliang.Text(
+        cv, 
+        (center_x, 300), 
+        text="ARKLauncher", 
+        family=FONT_FAMILY_BOLD, 
+        fontsize=32,
+        anchor='center'
+    )
+    maliang.Text(
+        cv, 
+        (center_x, 330),
+        text=f"Version: {translate(_VERSION)}-{_SUBVERSION}", 
+        family=FONT_FAMILY, 
+        fontsize=15,
+        anchor='center'
+    )
+    
+    # Contributors section - Centered title
+    maliang.Text(
+        cv, 
+        (center_x, 400), 
+        text=translate("contributors"), 
+        family=FONT_FAMILY_BOLD, 
+        fontsize=26,
+        anchor='center'
+    )
+    
+    # Contributors avatars - Centered as a group
+    avatar_size = 50
+    avatar_spacing = 70  # Space between avatars
+    contributors = ['Stevesuk0', 'bzym2', 'HRGC_Sonrai']
+    total_width = (len(contributors) - 1) * avatar_spacing + avatar_size
+    
+    start_x = center_x - (total_width // 2)
+    
+    for i, contributor in enumerate(contributors):
+        x_pos = start_x + (i * avatar_spacing)
+        maliang.IconButton(
+            cv,
+            position=(x_pos, 450),
+            size=(avatar_size, avatar_size),
+            command=lambda c=contributor: openGithub(c),
+            image=maliang.PhotoImage(images['contributors'][contributor].resize((47, 47), 1))
+        )
+    
+    # Special thanks section - Centered title
+    maliang.Text(
+        cv, 
+        (center_x, 520), 
+        text=translate("specialthanks"), 
+        family=FONT_FAMILY_BOLD, 
+        fontsize=26,
+        anchor='center'
+    )
+    
+    # Special thanks entries - Content blocks centered
+    content_width = 300  # Approximate width of content blocks
+    content_left = center_x - (content_width // 2)
+    
+    # Maliang
+    maliang.IconButton(
+        cv,
+        position=(content_left, 570),
+        size=(50, 50),
+        command=lambda: openGithub('Xiaokang2022/maliang'),
+        image=maliang.PhotoImage(images['contributors']['maliang'].resize((35, 35), 1))
+    )
+    maliang.Text(cv, (content_left + 65, 570), text='maliang', family=FONT_FAMILY_BOLD, fontsize=25)
+    maliang.Text(cv, (content_left + 65, 602), text='A lightweight UI framework for python.', family=FONT_FAMILY, fontsize=15)
+    
+    # Zhikang Yan
+    maliang.IconButton(
+        cv,
+        position=(content_left, 640),
+        size=(50, 50),
+        command=lambda: openGithub('Xiaokang2022'),
+        image=maliang.PhotoImage(images['contributors']['Xiaokang2022'].resize((47, 47), 1))
+    )
+    maliang.Text(cv, (content_left + 65, 640), text='Zhikang Yan', family=FONT_FAMILY_BOLD, fontsize=25)
+    maliang.Text(cv, (content_left + 65, 672), text="Developer of 'maliang'", family=FONT_FAMILY, fontsize=15)
+    
+    # Omega Labs
+    maliang.IconButton(
+        cv,
+        position=(content_left, 710),
+        size=(50, 50),
+        command=lambda: openGithub('the-OmegaLabs'),
+        image=maliang.PhotoImage(images['contributors']['theOmegaLabs'].resize((47, 47), 1))
+    )
+    maliang.Text(cv, (content_left + 65, 710), text='Omega Labs', family=FONT_FAMILY_BOLD, fontsize=25)
+    maliang.Text(
+        cv, 
+        (content_left + 65, 742), 
+        text='Developing a next-generation Linux ecosystem.', 
+        family=FONT_FAMILY, 
+        fontsize=15
+    )
+    
     root.mainloop()
-
 
 def mainPage(x, y):
     root, cv = createWindow(x, y)
@@ -214,7 +315,7 @@ def settingsPage(x, y):
     icon_account = Image.open(f'src/{_THEME}/account.png')
     icon_customize = Image.open(f'src/{_THEME}/customize.png')
 
-    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
@@ -375,13 +476,16 @@ def settingsLanguagePage(x, y):
 
         if language == 'jp':
             FONT_FAMILY = 'Yu Gothic UI'
-            FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+            FONT_FAMILY_BOLD = f'Yu Gothic UI Bold'
+            FONT_FAMILY_LIGHT = f'Yu Gothic UI Light'
         elif language in ('cn', 'sb'):
             FONT_FAMILY = 'Microsoft YaHei UI'
-            FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+            FONT_FAMILY_BOLD = f'Microsoft YaHei UI Bold'
+            FONT_FAMILY_LIGHT = f'Microsoft YaHei UI Light'
         else:
             FONT_FAMILY = 'Segoe UI'
-            FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'  
+            FONT_FAMILY_BOLD = f'Segoe UI Semibold'  
+            FONT_FAMILY_LIGHT = f'Segoe UI Light'
 
         global locale
         locale = language
