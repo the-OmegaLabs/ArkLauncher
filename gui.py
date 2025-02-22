@@ -1,18 +1,13 @@
 import json
 import os
-import platform
 import colorama
 import darkdetect
-import keyboard
+import platform
 import maliang
-import maliang.animation as animation
+import maliang.core
+import maliang.theme
 import traceback
 from PIL import Image
-
-if platform.system() == 'Windows':
-    import libs.winavatar as avatar
-elif platform.system() == 'Linux':
-    import libs.linavatar as avatar
 
 from libs.olog import output as log
 from libs.olog import WARN, ERROR, INFO, DEBUG
@@ -21,7 +16,7 @@ colorama.init()
 
 _VERSION = ''
 _SUBVERSION = ''
-_THEME = ''
+_THEME = darkdetect.theme().lower()
 WIDTH = 500
 HEIGHT = 800
 
@@ -34,13 +29,13 @@ def openGithub(name):
 
 
 def createWindow(x=None, y=None):
-    log(f'Creating new page at ({x}, {y}).')
+    log(f'Creating new page at ({x}, {y}).', type=DEBUG)
     icon = Image.open('src/icon.png')
     if x and y:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'{translate('prodname')} {translate(_VERSION)}-{_SUBVERSION}')
+        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     else:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate('prodname')} {translate(_VERSION)}-{_SUBVERSION}')
-
+        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+    
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
@@ -49,8 +44,11 @@ def createWindow(x=None, y=None):
 
 
 def changeWindow(window, root: maliang.Tk):
-    log(f'Perform change window to "{window.__name__}"...')
+    log(f'Perform change window to "{window.__name__}"...', type=DEBUG)
     x, y = root.winfo_x(), root.winfo_y()
+    if platform.system() == 'Linux':
+        x -= 5
+        y -= 31
     root.destroy()
     window(x, y)
 
@@ -93,10 +91,7 @@ def welcomePage():
 
     # 处理按下 shift 键时的彩蛋语言
     def changeToChinese(_):
-        if keyboard.is_pressed('shift'):  # 如果按下 Shift 键，切换到彩蛋语言
-            changeLanguage('egg')
-        else:
-            changeLanguage('cn')
+        changeLanguage('cn')
 
     maliang.CheckBox(cv, (50, 600), command=agreeLicense, default=False, length=23)
     maliang.CheckBox(cv, (50, 640), default=True, length=23)
@@ -114,7 +109,7 @@ def aboutPage(x, y):
     root, cv = createWindow(x, y)
 
     icon = Image.open('src/icon.png')
-    icon_return = Image.open(f'src/{getThemeString()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
     icon_maliang = Image.open(f'src/Contributors/maliang.png')
     avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
     avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
@@ -123,9 +118,8 @@ def aboutPage(x, y):
     avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
     avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
 
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1))), text=translate('return'))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
@@ -183,9 +177,9 @@ def mainPage(x, y):
 
 
     icon = Image.open('src/icon.png')
-    icon_about = Image.open(f'src/{getThemeString()}/about.png')
-    icon_settings = Image.open(f'src/{getThemeString()}/settings.png')
-    icon_quick = Image.open(f'src/{getThemeString()}/quick.png')
+    icon_about = Image.open(f'src/{_THEME}/about.png')
+    icon_settings = Image.open(f'src/{_THEME}/settings.png')
+    icon_quick = Image.open(f'src/{_THEME}/quick.png')
     icon_testGame = Image.open(f'src/project/candee.png')
 
     maliang.Image(cv, (50, 50), image=maliang.PhotoImage(icon.resize((50, 50), 1)))
@@ -210,13 +204,13 @@ def mainPage(x, y):
 def settingsPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{getThemeString()}/return.png')
-    icon_about = Image.open(f'src/{getThemeString()}/about.png')
-    icon_language = Image.open(f'src/{getThemeString()}/language.png')
-    icon_network = Image.open(f'src/{getThemeString()}/network.png')
-    icon_avatar = Image.open(avatar.getAvatar())
-    icon_account = Image.open(f'src/{getThemeString()}/account.png')
-    icon_customize = Image.open(f'src/{getThemeString()}/customize.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
+    icon_about = Image.open(f'src/{_THEME}/about.png')
+    icon_language = Image.open(f'src/{_THEME}/language.png')
+    icon_network = Image.open(f'src/{_THEME}/network.png')
+    icon_avatar = Image.open(f'src/Contributors/Stevesuk0.jpg')
+    icon_account = Image.open(f'src/{_THEME}/account.png')
+    icon_customize = Image.open(f'src/{_THEME}/customize.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -249,11 +243,11 @@ def settingsPage(x, y):
 
     text_logo1.set(translate('homepage'))
     text_logo2.set(translate('settings'))
-    button_account.set(f' {translate('account')}')
-    button_language.set(f' {translate('locale')}')
-    button_network.set(f' {translate('network')}')
-    button_about.set(f' {translate('about')}')
-    button_customize.set(f' {translate('customize')}')
+    button_account.set(f" {translate('account')}")
+    button_language.set(f" {translate('locale')}")
+    button_network.set(f" {translate('network')}")
+    button_about.set(f" {translate('about')}")
+    button_customize.set(f" {translate('customize')}")
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root), image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
@@ -263,7 +257,7 @@ def settingsPage(x, y):
 def settingsAccountPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{getThemeString()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -280,7 +274,7 @@ def settingsAccountPage(x, y):
 def settingsNetworkPage(x, y):
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{getThemeString()}/return.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -293,62 +287,50 @@ def settingsNetworkPage(x, y):
 
     root.mainloop()
 
-def updateTheme(theme):
-    global _THEME
-    if theme == 1:
-        log('Update to Dark')
-        _THEME = 'Dark'
-    elif theme == 2:
-        log('Update to Light')
-        _THEME = 'Light'
-    elif theme == 3:
-        log('Update to Auto')
-        _THEME = "Auto"
-
-    with open("ark.conf", "w") as f:
-        log(f"Written to ark.conf {_THEME}")
-        f.write(f"Theme={_THEME}")
-
-def getThemeString():
-    global _THEME
-    if _THEME == "Auto":
-        log("Theme is Auto, using darkdetect to detect theme...")
-        return darkdetect.theme()
-    else:
-        return _THEME
-
-def getThemeNumber():
-    global _THEME
-    if _THEME == "Dark":
-        log("getThemeNumber: Dark")
-        return 0
-    elif _THEME == "Light":
-        log("getThemeNumber: Light")
-        return 1
-    else:
-        log("getThemeNumber: Auto")
-        return 2
-
 
 def settingsCustomizePage(x, y):
+    global _THEME
     root, cv = createWindow(x, y)
 
-    icon_return = Image.open(f'src/{getThemeString()}/return.png')
-
+    
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
-
-    switcherText = maliang.Text(cv, (50, 150), family=FONT_FAMILY_BOLD, fontsize=20)
-
-    themeSwitcher = maliang.SegmentedButton(cv, (50, 190), text=(translate("dark"), translate("light"), translate("auto")), default=getThemeNumber())
-    themeSwitcher.bind("<Button-1>",lambda _:updateTheme(themeSwitcher.get()))
-    switcherText.set(translate("theme"))
 
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('customize'))
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
+    def changeTheme(theme):
+        global _THEME
+
+        _THEME = theme
+
+        if _THEME == 'system':
+            _THEME = darkdetect.theme().lower()
+
+        log(f"Changing window to {_THEME} style.", type=INFO)
+
+        maliang.theme.manager.set_color_mode(_THEME)
+        icon_return = Image.open(f'src/{_THEME}/return.png')
+        icon_dark = Image.open(f'src/{_THEME}/dark.png')
+        icon_light = Image.open(f'src/{_THEME}/light.png')
+        icon_auto = Image.open(f'src/{_THEME}/auto.png')
+
+        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                            image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
+
+        buttonDark = maliang.IconButton(cv, position=(50, 150), size=(400, 55), command=lambda: changeTheme('dark'), family=FONT_FAMILY_BOLD,
+                                image=maliang.PhotoImage(icon_dark.resize((40, 40), 1)), fontsize=18)
+        buttonLight = maliang.IconButton(cv, position=(50, 210), size=(400, 55), command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
+                                image=maliang.PhotoImage(icon_light.resize((40, 40), 1)), fontsize=18)
+        buttonSystem = maliang.IconButton(cv, position=(50, 270), size=(400, 55), command=lambda: changeTheme('system'), family=FONT_FAMILY_BOLD,
+                                image=maliang.PhotoImage(icon_auto.resize((40, 40), 1)), fontsize=18)
+        log(f"Instant change widget to {_THEME} style.", type=DEBUG)
+
+        buttonDark.set('Dark')
+        buttonLight.set('Light')
+        buttonSystem.set('System')
+
+    changeTheme(_THEME)
 
     root.mainloop()
 
@@ -373,8 +355,8 @@ def settingsLanguagePage(x, y):
     global locale
     root, cv = createWindow(x, y)
 
-    icon_language = Image.open(f'src/{getThemeString()}/language.png')
-    icon_return = Image.open(f'src/{getThemeString()}/return.png')
+    icon_language = Image.open(f'src/{_THEME}/language.png')
+    icon_return = Image.open(f'src/{_THEME}/return.png')
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -440,7 +422,7 @@ def main():
     loadLocale()
     locale = 'en'
 
-    mainPage(500, 200)
+    settingsCustomizePage(500, 200)
 
     # welcomePage()
 
