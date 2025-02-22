@@ -23,10 +23,14 @@ HEIGHT = 800
 FONT_FAMILY = 'Microsoft YaHei UI'
 FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
 
+if platform.system() == 'Windows':
+    import libs.winavatar as avatar
+else:
+    import libs.linavatar as avatar
+
 
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
-
 
 def createWindow(x=None, y=None):
     log(f'Creating new page at ({x}, {y}).', type=DEBUG)
@@ -208,7 +212,7 @@ def settingsPage(x, y):
     icon_about = Image.open(f'src/{_THEME}/about.png')
     icon_language = Image.open(f'src/{_THEME}/language.png')
     icon_network = Image.open(f'src/{_THEME}/network.png')
-    icon_avatar = Image.open(f'src/Contributors/Stevesuk0.jpg')
+    icon_avatar = Image.open(avatar.getAvatar())
     icon_account = Image.open(f'src/{_THEME}/account.png')
     icon_customize = Image.open(f'src/{_THEME}/customize.png')
 
@@ -326,9 +330,9 @@ def settingsCustomizePage(x, y):
                                 image=maliang.PhotoImage(icon_auto.resize((40, 40), 1)), fontsize=18)
         log(f"Instant change widget to {_THEME} style.", type=DEBUG)
 
-        buttonDark.set('Dark')
-        buttonLight.set('Light')
-        buttonSystem.set('System')
+        buttonDark.set(translate('dark'))
+        buttonLight.set(translate('light'))
+        buttonSystem.set(translate('auto'))
 
     changeTheme(_THEME)
 
