@@ -365,7 +365,7 @@ def settingsLanguagePage(x, y):
     lang_changebutton = []
     for i in lang_dict:
         lang_changebutton.append(
-            maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda lang=i: setLanguage(lang),
+            maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda lang=i: setLanguage(lang, root),
                                image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
                                fontsize=18))
         HEIGHT += 60
@@ -376,7 +376,7 @@ def settingsLanguagePage(x, y):
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
-    def setLanguage(language):
+    def setLanguage(language, root: maliang.Tk):
         log(f'Change locale to {language}.')
         global locale
         locale = language
@@ -387,8 +387,11 @@ def settingsLanguagePage(x, y):
             tmp.append(f'setlang_{i}')
         for i in range(len(lang_changebutton)):
             lang_changebutton[i].set(translate(tmp[i]))
+        
+        
+        root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
 
-    setLanguage(locale)
+    setLanguage(locale, root)
 
     root.mainloop()
 
@@ -422,7 +425,7 @@ def main():
     loadLocale()
     locale = 'en'
 
-    settingsCustomizePage(500, 200)
+    settingsLanguagePage(500, 200)
 
     # welcomePage()
 
