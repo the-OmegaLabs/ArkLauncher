@@ -117,7 +117,8 @@ def aboutPage(x, y):
     icon_maliang = Image.open(f'src/Contributors/maliang.png')
     avatar_Stevesuk0 = Image.open(f'src/Contributors/Stevesuk0.jpg')
     avatar_bzym2 = Image.open(f'src/Contributors/bzym2.png')
-    avatar_HRGC_Sonrai = Image.open(f'src/Contributors/HRGC-Sonrai.jpg')
+    avatar_suohoudaishi = Image.open(f'src/Contributors/SuoHouDaiShi.jpg')
+    avatar_grassblock2022 = Image.open(f'src/Contributors/GrassBlock2022.png')
     avatar_Xiaokang2022 = Image.open(f'src/Contributors/Xiaokang2022.jpg')
     avatar_theOmegaLabs = Image.open(f'src/Contributors/the-OmegaLabs.png')
 
@@ -137,8 +138,10 @@ def aboutPage(x, y):
                        image=maliang.PhotoImage(avatar_Stevesuk0.resize((47, 47), 1)))
     maliang.IconButton(cv, position=(110, 300), size=(50, 50), command=lambda: openGithub('bzym2'),
                        image=maliang.PhotoImage(avatar_bzym2.resize((47, 47), 1)))
-    maliang.IconButton(cv, position=(170, 300), size=(50, 50), command=lambda: openGithub('HRGC-Sonrai'),
-                       image=maliang.PhotoImage(avatar_HRGC_Sonrai.resize((47, 47), 1)))
+    maliang.IconButton(cv, position=(170, 300), size=(50, 50), command=lambda: openGithub('GrassBlock2022'),
+                       image=maliang.PhotoImage(avatar_grassblock2022.resize((47, 47), 1)))
+    maliang.IconButton(cv, position=(230, 300), size=(50, 50), command=lambda: openGithub('SuoHouDaiShi'),
+                       image=maliang.PhotoImage(avatar_suohoudaishi.resize((47, 47), 1)))
 
     text_thanks = maliang.Text(cv, (50, 450), family=FONT_FAMILY_BOLD, fontsize=26)
     maliang.IconButton(cv, position=(50, 500), size=(50, 50), command=lambda: openGithub('Xiaokang2022/maliang'),
@@ -441,7 +444,7 @@ def main():
     loadLocale()
     locale = 'en'
 
-    mainPage(500, 200)
+    settingsLanguagePage(500, 200)
 
     # welcomePage()
 
