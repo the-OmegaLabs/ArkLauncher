@@ -206,6 +206,7 @@ def mainPage(x, y):
 
 
 def settingsPage(x, y):
+    print(FONT_FAMILY)
     root, cv = createWindow(x, y)
 
     icon_return = Image.open(f'src/{_THEME}/return.png')
@@ -356,7 +357,7 @@ def translate(target):
 
 
 def settingsLanguagePage(x, y):
-    global locale
+    global locale, FONT_FAMILY, FONT_FAMILY_BOLD
     root, cv = createWindow(x, y)
 
     icon_language = Image.open(f'src/{_THEME}/language.png')
@@ -365,27 +366,41 @@ def settingsLanguagePage(x, y):
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
-    HEIGHT = 150
-    lang_changebutton = []
-    for i in lang_dict:
-        lang_changebutton.append(
-            maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda lang=i: setLanguage(lang, root),
-                               image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
-                               fontsize=18))
-        HEIGHT += 60
-
-    text_logo1.set(translate('settings'))
-    text_logo2.set(translate('locale'))
-
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
     def setLanguage(language, root: maliang.Tk):
+        global FONT_FAMILY, FONT_FAMILY_BOLD
         log(f'Change locale to {language}.')
-        global locale
-        locale = language
+
         text_logo1.set(translate('settings'))
         text_logo2.set(translate('locale'))
+
+        if language == 'jp':
+            FONT_FAMILY = 'Yu Gothic UI'
+            FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        elif language in ('cn', 'sb'):
+            FONT_FAMILY = 'Microsoft YaHei UI'
+            FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        else:
+            FONT_FAMILY = 'Segoe UI'
+            FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'  
+
+        global locale
+        locale = language
+
+        HEIGHT = 150
+        lang_changebutton = []
+        for i in lang_dict:
+            lang_changebutton.append(
+                maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda lang=i: setLanguage(lang, root),
+                                image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
+                                fontsize=18))
+            HEIGHT += 60
+
+        text_logo1.set(translate('settings'))
+        text_logo2.set(translate('locale'))
+
         tmp = []
         for i in lang_dict:
             tmp.append(f'setlang_{i}')
