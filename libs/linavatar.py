@@ -3,7 +3,7 @@ import pwd
 import subprocess
 from pathlib import Path
 
-import olog
+import libs.olog as olog
 
 
 def detect_desktop_environment():
@@ -59,7 +59,11 @@ def getAvatar():
     de = detect_desktop_environment()
     avatar_path = get_user_avatar_path(de)
     olog.output(f"Desktop Environment: {de}")
+    """ 用不了：
+    PIL.UnidentifiedImageError: cannot identify image file '/home/stevesuk/.face'
+
     if avatar_path:
         return avatar_path
     else:
-        return "src/Contributors/Stevesuk0.jpg"
+    """
+    return "src/Contributors/Stevesuk0.jpg"

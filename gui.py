@@ -48,7 +48,7 @@ def createWindow(x=None, y=None):
 
 
 def changeWindow(window, root: maliang.Tk):
-    log(f'Perform change window to "{window.__name__}"...', type=DEBUG)
+    log(f'Perform change window to "{window.__name__}"...', type=INFO)
     x, y = root.winfo_x(), root.winfo_y()
     if platform.system() == 'Linux':
         x -= 5

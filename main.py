@@ -11,4 +11,8 @@ gui._VERSION = 'dev'
 gui._SUBVERSION = '25w08f'
 
 log(f'Starting ATCraft ArkLaucher, version {gui._VERSION}-{gui._SUBVERSION}.')
-gui.main()
+
+try:
+    gui.main()
+except Exception as f:
+    gui.tracebackWindow(f)
