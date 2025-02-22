@@ -199,7 +199,7 @@ def mainPage(x, y):
         maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
                            image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'), fontsize=13)
 
-    # noticeBar, _ = createNotice('正在登录到 ATCraft Network...', cv, '#4D8DFA')
+    # noticeBar, _ = createNotice('正在登录到 ATNetwork...', cv, '#4D8DFA')
     # animation.MoveTkWidget(noticeBar, (600, 0), 1000, fps=1000, controller=animation.ease_out).start(delay=500)
 
     root.mainloop()
@@ -424,7 +424,7 @@ def tracebackWindow(exception: Exception):
     
 def main():
     global locale
-    log(f'Starting ATCraft ArkLaucher GUI, version {_VERSION}.')
+    log(f'Starting ATNetwork ArkLaucher GUI, version {_VERSION}.')
 
     loadLocale()
     locale = 'en'
