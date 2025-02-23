@@ -18,7 +18,7 @@ _VERSION = ''
 _SUBVERSION = ''
 _THEME = darkdetect.theme().lower()
 WIDTH = 500
-HEIGHT = 900
+HEIGHT = 800
 
 FONT_FAMILY = 'Microsoft YaHei UI'
 FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
@@ -122,14 +122,12 @@ def aboutPage(x, y):
             'maliang': Image.open(f'src/Contributors/maliang.png'),
             'Stevesuk0': Image.open(f'src/Contributors/Stevesuk0.jpg'),
             'bzym2': Image.open(f'src/Contributors/bzym2.png'),
-            'HRGC_Sonrai': Image.open(f'src/Contributors/HRGC-Sonrai.jpg'),
+            'HRGC-Sonrai': Image.open(f'src/Contributors/HRGC-Sonrai.jpg'),
             'Xiaokang2022': Image.open(f'src/Contributors/Xiaokang2022.jpg'),
             'theOmegaLabs': Image.open(f'src/Contributors/the-OmegaLabs.png')
         }
     }
     
-    # Calculate center point
-    center_x = x // 2
     
     # Header section
     maliang.IconButton(
@@ -146,7 +144,7 @@ def aboutPage(x, y):
     
     # Project information section - Centered layout
     icon_size = 120
-    icon_x = center_x - (icon_size // 2)
+    icon_x = 250 - (icon_size // 2)
     
     # Large centered icon
     maliang.IconButton(
@@ -160,7 +158,7 @@ def aboutPage(x, y):
     # Center-aligned product information
     maliang.Text(
         cv, 
-        (center_x, 270), 
+        (250, 270), 
         text="ATNetwork", 
         family=FONT_FAMILY_LIGHT, 
         fontsize=20,
@@ -168,15 +166,15 @@ def aboutPage(x, y):
     )
     maliang.Text(
         cv, 
-        (center_x, 300), 
-        text="ARKLauncher", 
+        (250, 300), 
+        text="ArkLauncher", 
         family=FONT_FAMILY_BOLD, 
         fontsize=32,
         anchor='center'
     )
     maliang.Text(
         cv, 
-        (center_x, 330),
+        (250, 330),
         text=f"Version: {translate(_VERSION)}-{_SUBVERSION}", 
         family=FONT_FAMILY, 
         fontsize=15,
@@ -186,7 +184,7 @@ def aboutPage(x, y):
     # Contributors section - Centered title
     maliang.Text(
         cv, 
-        (center_x, 400), 
+        (250, 400), 
         text=translate("contributors"), 
         family=FONT_FAMILY_BOLD, 
         fontsize=26,
@@ -196,74 +194,22 @@ def aboutPage(x, y):
     # Contributors avatars - Centered as a group
     avatar_size = 50
     avatar_spacing = 70  # Space between avatars
-    contributors = ['Stevesuk0', 'bzym2', 'HRGC_Sonrai']
+    contributors = ['Stevesuk0', 'bzym2', 'HRGC-Sonrai']
     total_width = (len(contributors) - 1) * avatar_spacing + avatar_size
     
-    start_x = center_x - (total_width // 2)
+    start_x = 250 - (total_width // 2)
     
     for i, contributor in enumerate(contributors):
         x_pos = start_x + (i * avatar_spacing)
         maliang.IconButton(
             cv,
-            position=(x_pos, 450),
+            position=(x_pos, 430),
             size=(avatar_size, avatar_size),
             command=lambda c=contributor: openGithub(c),
             image=maliang.PhotoImage(images['contributors'][contributor].resize((47, 47), 1))
         )
     
-    # Special thanks section - Centered title
-    maliang.Text(
-        cv, 
-        (center_x, 520), 
-        text=translate("specialthanks"), 
-        family=FONT_FAMILY_BOLD, 
-        fontsize=26,
-        anchor='center'
-    )
-    
-    # Special thanks entries - Content blocks centered
-    content_width = 300  # Approximate width of content blocks
-    content_left = center_x - (content_width // 2)
-    
-    # Maliang
-    maliang.IconButton(
-        cv,
-        position=(content_left, 570),
-        size=(50, 50),
-        command=lambda: openGithub('Xiaokang2022/maliang'),
-        image=maliang.PhotoImage(images['contributors']['maliang'].resize((35, 35), 1))
-    )
-    maliang.Text(cv, (content_left + 65, 570), text='maliang', family=FONT_FAMILY_BOLD, fontsize=25)
-    maliang.Text(cv, (content_left + 65, 602), text='A lightweight UI framework for python.', family=FONT_FAMILY, fontsize=15)
-    
-    # Zhikang Yan
-    maliang.IconButton(
-        cv,
-        position=(content_left, 640),
-        size=(50, 50),
-        command=lambda: openGithub('Xiaokang2022'),
-        image=maliang.PhotoImage(images['contributors']['Xiaokang2022'].resize((47, 47), 1))
-    )
-    maliang.Text(cv, (content_left + 65, 640), text='Zhikang Yan', family=FONT_FAMILY_BOLD, fontsize=25)
-    maliang.Text(cv, (content_left + 65, 672), text="Developer of 'maliang'", family=FONT_FAMILY, fontsize=15)
-    
-    # Omega Labs
-    maliang.IconButton(
-        cv,
-        position=(content_left, 710),
-        size=(50, 50),
-        command=lambda: openGithub('the-OmegaLabs'),
-        image=maliang.PhotoImage(images['contributors']['theOmegaLabs'].resize((47, 47), 1))
-    )
-    maliang.Text(cv, (content_left + 65, 710), text='Omega Labs', family=FONT_FAMILY_BOLD, fontsize=25)
-    maliang.Text(
-        cv, 
-        (content_left + 65, 742), 
-        text='Developing a next-generation Linux ecosystem.', 
-        family=FONT_FAMILY, 
-        fontsize=15
-    )
-    
+
     root.mainloop()
 
 def mainPage(x, y):
@@ -519,18 +465,24 @@ def settingsLanguagePage(x, y):
 
 def tracebackWindow(exception: Exception):
     log('Starting Traceback window because a exception detected.', type=WARN)
+    
+    
+    tracelist = ''.join(traceback.format_exception(exception)).split('\n')
+    
+    for i in tracelist[:-1]:
+        log(i, type=ERROR)
     root = maliang.Tk(size=(1500, 800), title=f'ArkLauncher {_VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=1500, height=800)
 
-    text_title = maliang.Text(cv, (50, 50), family='Microsoft YaHei UI Bold', fontsize=23)
+    text_title = maliang.Text(cv, (50, 50), fontsize=23)
     text_title.set('An error detected.')
 
-    text_title = maliang.Text(cv, (50, 75), family='Microsoft YaHei UI', fontsize=17)
+    text_title = maliang.Text(cv, (50, 75), fontsize=17)
     text_title.set('You can take an screenshot in this window, and send it to the author.')
 
-    text_trace = maliang.Text(cv, (50, 130), family='Consolas', fontsize=14)
+    text_trace = maliang.Text(cv, (50, 130), fontsize=14)
 
     text_trace.set(str(''.join(traceback.format_exception(exception))))
     
@@ -546,7 +498,7 @@ def main():
     loadLocale()
     locale = 'en'
 
-    mainPage(500, 200)
+    aboutPage(500, 200)
 
     # welcomePage()
 
