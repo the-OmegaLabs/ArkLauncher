@@ -522,7 +522,8 @@ def tracebackWindow(exception: Exception):
 try:
     loadLocale()
     locale = 'en'
-    settingsPage(500, 200)
+
+    mainPage(500, 200)
 
     # welcomePage()
 
