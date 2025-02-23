@@ -498,7 +498,7 @@ def main():
     loadLocale()
     locale = 'en'
 
-    aboutPage(500, 200)
+    mainPage(500, 200)
 
     # welcomePage()
 
