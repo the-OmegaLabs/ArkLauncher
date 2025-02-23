@@ -203,7 +203,6 @@ def mainPage(x, y):
 
 
 def settingsPage(x, y):
-    print(FONT_FAMILY)
     root, cv = createWindow(x, y)
 
     icon_return = Image.open(f'src/{_THEME}/return.png')
@@ -382,6 +381,8 @@ def settingsLanguagePage(x, y):
         else:
             FONT_FAMILY = 'Segoe UI'
             FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'  
+
+        log(f'Change font to {FONT_FAMILY}', type=DEBUG)
 
         global locale
         locale = language
