@@ -1,17 +1,17 @@
 {
-    "parent": "ATNetwork",
+    "parent": "Artistic Network",
     "prodname": "ArkLauncher",
     "welcome": "ArkLauncher를 使用해 주셔서 感謝합니다",
     "desc": "Minecraft 遊戲 라이브러리를 쉽게 接續하고 管理하세요.",
     "license": "本 프로젝트를 MIT License에 따라 使用하고 寄與하는 데 同意합니다.",
-    "collect": "匿名 使用 데이터 傳送을 통해 ATNetwork가\nArkLauncher 앱 改善에 助力할 수 있습니다.",
+    "collect": "匿名 使用 데이터 傳送을 통해 Artistic Network가\nArkLauncher 앱 改善에 助力할 수 있습니다.",
     "button": "始作하기",
     "language": "言語",
     "lang_chinese": "中國語",
     "lang_english": "English",
     "homepage": "홈페이지",
     "about": "關於",
-    "account": "ATNetwork ID",
+    "account": "Artistic ID",
     "settings": "設定",
     "version": "版",
     "locale": "言語 & 地域",
@@ -26,6 +26,7 @@
     "setlang_en": "English (英語)",
     "setlang_sb": "클릭하면 驚喜!",
     "setlang_jp": "日本語 (日本語)",
+    "setlang_ko": "한국어",
     "omegalab_desc": "次世代 Linux 生態系를 構築합니다.",
     "missing": "{翻譯 缺落}",
     "return": "復歸",
@@ -35,6 +36,5 @@
     "release": "正式版",
     "dark": "暗色 Mode",
     "light": "明色 Mode",
-    "auto": "系統 設定 追從",
-    "theme": "Theme(再始動 必要)"
+    "auto": "系統 設定 追從"
 }

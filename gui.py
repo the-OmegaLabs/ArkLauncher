@@ -1,3 +1,15 @@
+_VERSION = 'dev'
+_SUBVERSION = '25w09a'
+
+from libs.olog import output as log
+import libs.olog as olog
+
+
+olog.logLevel = 5
+
+log(f'Starting Artistic Network ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
+
+import ark
 import json
 import os
 import colorama
@@ -6,16 +18,14 @@ import platform
 import maliang
 import maliang.core
 import maliang.theme
+import maliang.animation
 import traceback
 from PIL import Image
 
-from libs.olog import output as log
-from libs.olog import WARN, ERROR, INFO, DEBUG
-
 colorama.init()
 
-_VERSION = ''
-_SUBVERSION = ''
+
+
 _THEME = darkdetect.theme().lower()
 WIDTH = 500
 HEIGHT = 800
@@ -34,7 +44,7 @@ def openGithub(name):
     os.system(f'start https://github.com/{name}')
 
 def createWindow(x=None, y=None):
-    log(f'Creating new page at ({x}, {y}).', type=DEBUG)
+    log(f'Creating new page at ({x}, {y}).', type=olog.Type.DEBUG)
     icon = Image.open('src/icon.png')
     if x and y:
         root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
@@ -49,7 +59,7 @@ def createWindow(x=None, y=None):
 
 
 def changeWindow(window, root: maliang.Tk):
-    log(f'Perform change window to "{window.__name__}"...', type=INFO)
+    log(f'Perform change window to "{window.__name__}"...', type=olog.Type.INFO)
     x, y = root.winfo_x(), root.winfo_y()
     if platform.system() == 'Linux':
         x -= 5
@@ -159,7 +169,7 @@ def aboutPage(x, y):
     maliang.Text(
         cv, 
         (250, 270), 
-        text="ATNetwork", 
+        text="Artistic Network", 
         family=FONT_FAMILY_LIGHT, 
         fontsize=20,
         anchor='center'
@@ -193,7 +203,7 @@ def aboutPage(x, y):
     
     # Contributors avatars - Centered as a group
     avatar_size = 50
-    avatar_spacing = 70  # Space between avatars
+    avatar_spacing = 60  # Space between avatars
     contributors = ['Stevesuk0', 'bzym2', 'HRGC-Sonrai']
     total_width = (len(contributors) - 1) * avatar_spacing + avatar_size
     
@@ -215,13 +225,19 @@ def aboutPage(x, y):
 def mainPage(x, y):
     root, cv = createWindow(x, y)
 
-    def createNotice(str, cv, color):
-        noticeBar = maliang.Canvas(master=cv, auto_update=False, bg=color)
-        noticeBar.place(width=500, height=30, x=0, y=0)
+    def createNotice(str, sub, cv, spin):
+        noticeBar = maliang.Canvas(master=cv)
+        noticeBar.place(width=320, height=70, x=90, y=700)
         
-        noticeText = maliang.Text(noticeBar, (250, 15), text=str, family=FONT_FAMILY_BOLD, anchor='center', fontsize=14, )
 
-        return [noticeBar, noticeText]
+        noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
+        noticeSubText = maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
+
+        if spin == True:
+            noticeSpinner = maliang.Spinner(noticeBar, (35, 35), mode="indeterminate", anchor='center')
+            return [noticeBar, noticeText, noticeSpinner]
+        else:
+            return [noticeBar, noticeText]
 
 
     icon = Image.open('src/icon.png')
@@ -243,9 +259,7 @@ def mainPage(x, y):
         maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
                            image=maliang.PhotoImage(icon_quick.resize((40, 40), 1))), text=translate('quick'), fontsize=13)
 
-    # noticeBar, _ = createNotice('正在登录到 ATNetwork...', cv, '#4D8DFA')
-    # animation.MoveTkWidget(noticeBar, (600, 0), 1000, fps=1000, controller=animation.ease_out).start(delay=500)
-
+    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", translate('wait'), cv, 1)
     root.mainloop()
 
 
@@ -266,24 +280,30 @@ def settingsPage(x, y):
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(icon_avatar.resize((45, 45), 1)))
 
-    button_account = maliang.IconButton(cv, position=(50, 150), size=(400, 55),
+
+    HEIGHT = 150
+    button_account = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                         command=lambda: changeWindow(settingsAccountPage, root),
                                         image=maliang.PhotoImage(icon_account.resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
-    button_language = maliang.IconButton(cv, position=(50, 210), size=(400, 55),
+    HEIGHT += 56
+    button_language = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                          command=lambda: changeWindow(settingsLanguagePage, root),
                                          image=maliang.PhotoImage(icon_language.resize((40, 40), 1)),
                                          family=FONT_FAMILY_BOLD, fontsize=18)
-    button_network = maliang.IconButton(cv, position=(50, 270), size=(400, 55),
+    HEIGHT += 56
+    button_network = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                         command=lambda: changeWindow(settingsNetworkPage, root),
                                         image=maliang.PhotoImage(icon_network.resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
-    button_customize = maliang.IconButton(cv, position=(50, 330), size=(400, 55),
+    HEIGHT += 56
+    button_customize = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                           command=lambda: changeWindow(settingsCustomizePage, root),
                                           image=maliang.PhotoImage(icon_customize.resize((40, 40), 1)),
                                           family=FONT_FAMILY_BOLD,
                                           fontsize=18)
-    button_about = maliang.IconButton(cv, position=(50, 390), size=(400, 55),
+    HEIGHT += 56
+    button_about = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                       command=lambda: changeWindow(aboutPage, root),
                                       image=maliang.PhotoImage(icon_about.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
                                       fontsize=18)
@@ -355,7 +375,7 @@ def settingsCustomizePage(x, y):
         if _THEME == 'system':
             _THEME = darkdetect.theme().lower()
 
-        log(f"Changing window to {_THEME} style.", type=INFO)
+        log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
 
         maliang.theme.manager.set_color_mode(_THEME)
         icon_return = Image.open(f'src/{_THEME}/return.png')
@@ -366,13 +386,16 @@ def settingsCustomizePage(x, y):
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                             image=maliang.PhotoImage(icon_return.resize((55, 55), 1)))
 
-        buttonDark = maliang.IconButton(cv, position=(50, 150), size=(400, 55), command=lambda: changeTheme('dark'), family=FONT_FAMILY_BOLD,
+        HEIGHT = 150
+        buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'), family=FONT_FAMILY_BOLD,
                                 image=maliang.PhotoImage(icon_dark.resize((40, 40), 1)), fontsize=18)
-        buttonLight = maliang.IconButton(cv, position=(50, 210), size=(400, 55), command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
+        HEIGHT += 56
+        buttonLight = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
                                 image=maliang.PhotoImage(icon_light.resize((40, 40), 1)), fontsize=18)
-        buttonSystem = maliang.IconButton(cv, position=(50, 270), size=(400, 55), command=lambda: changeTheme('system'), family=FONT_FAMILY_BOLD,
+        HEIGHT += 56
+        buttonSystem = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('system'), family=FONT_FAMILY_BOLD,
                                 image=maliang.PhotoImage(icon_auto.resize((40, 40), 1)), fontsize=18)
-        log(f"Instant change widget to {_THEME} style.", type=DEBUG)
+        log(f"Instant change widget to {_THEME} style.", type=olog.Type.DEBUG)
 
         buttonDark.set(translate('dark'))
         buttonLight.set(translate('light'))
@@ -432,7 +455,7 @@ def settingsLanguagePage(x, y):
             FONT_FAMILY_BOLD = f'Segoe UI Semibold'  
             FONT_FAMILY_LIGHT = f'Segoe UI Light'
 
-        log(f'Change font to {FONT_FAMILY}', type=DEBUG)
+        log(f'Change font to {FONT_FAMILY}', type=olog.Type.DEBUG)
 
         global locale
         locale = language
@@ -444,7 +467,7 @@ def settingsLanguagePage(x, y):
                 maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda lang=i: setLanguage(lang, root),
                                 image=maliang.PhotoImage(icon_language.resize((40, 40), 1)), family=FONT_FAMILY_BOLD,
                                 fontsize=18))
-            HEIGHT += 60
+            HEIGHT += 56
 
         text_logo1.set(translate('settings'))
         text_logo2.set(translate('locale'))
@@ -464,41 +487,45 @@ def settingsLanguagePage(x, y):
 
 
 def tracebackWindow(exception: Exception):
-    log('Starting Traceback window because a exception detected.', type=WARN)
+    log('Starting Traceback window because a exception detected.', type=olog.Type.WARN)
     
     
     tracelist = ''.join(traceback.format_exception(exception)).split('\n')
     
     for i in tracelist[:-1]:
-        log(i, type=ERROR)
-    root = maliang.Tk(size=(1500, 800), title=f'ArkLauncher {_VERSION}')
+        log(i, type=olog.Type.ERROR)
+
+    width = 1000
+    height = len(tracelist[:-1]) * 20 + 200
+    root = maliang.Tk(size=(width, height), title=f'ArkLauncher {_VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
-    cv.place(width=1500, height=800)
+    cv.place(width=width, height=height)
 
     text_title = maliang.Text(cv, (50, 50), fontsize=23)
     text_title.set('An error detected.')
 
-    text_title = maliang.Text(cv, (50, 75), fontsize=17)
+    text_title = maliang.Text(cv, (50, 80), fontsize=17)
     text_title.set('You can take an screenshot in this window, and send it to the author.')
 
     text_trace = maliang.Text(cv, (50, 130), fontsize=14)
 
     text_trace.set(str(''.join(traceback.format_exception(exception))))
-    
+
+    root.at_exit(exit)    
 
     root.center()
     root.mainloop()
 
-    
-def main():
-    global locale
-    log(f'Starting ATNetwork ArkLaucher GUI, version {_VERSION}.')
 
+
+try:
     loadLocale()
     locale = 'en'
-
-    aboutPage(500, 200)
+    settingsPage(500, 200)
 
     # welcomePage()
 
+except Exception as f:
+    tracebackWindow(f)
+    
