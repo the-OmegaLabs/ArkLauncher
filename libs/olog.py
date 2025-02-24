@@ -6,7 +6,6 @@ from colorama import Fore, Style, Back
 
 
 class Type():
-    PERF = f'{Back.CYAN} PERF {Back.RESET}'
     INFO = f'{Back.BLUE} INFO {Back.RESET}'
     ERROR = f'{Back.RED}{Style.BRIGHT} FAIL {Back.RESET}{Fore.RED}'
     WARN = f'{Back.YELLOW} WARN {Back.RESET}{Fore.YELLOW}'
