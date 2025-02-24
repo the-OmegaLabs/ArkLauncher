@@ -436,10 +436,14 @@ def settingsLanguagePage(x, y):
             FONT_FAMILY = 'Yu Gothic UI'
             FONT_FAMILY_BOLD = f'Yu Gothic UI Bold'
             FONT_FAMILY_LIGHT = f'Yu Gothic UI Light'
-        elif language in ('cn', 'sb'):
+        elif language in ('cn'):
             FONT_FAMILY = 'Microsoft YaHei UI'
             FONT_FAMILY_BOLD = f'Microsoft YaHei UI Bold'
             FONT_FAMILY_LIGHT = f'Microsoft YaHei UI Light'
+        elif language in ('sb'):
+            FONT_FAMILY = 'Simsun'
+            FONT_FAMILY_BOLD = f'Simhei'
+            FONT_FAMILY_LIGHT = f'FangSong'
         else:
             FONT_FAMILY = 'Segoe UI'
             FONT_FAMILY_BOLD = f'Segoe UI Semibold'  
