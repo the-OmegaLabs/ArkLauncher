@@ -6,4 +6,4 @@ import libs.olog as olog
 
 
 olog.logLevel = 5
-log(f'Starting Artistic Network ArkLauncher Core, version {_VERSION}-{_SUBVERSION}.', type=olog.Type.DEBUG)
+log(f'Starting Artistic Network ArkLauncher Core, version {_VERSION}-{_SUBVERSION}.', type=olog.Type.INFO)
