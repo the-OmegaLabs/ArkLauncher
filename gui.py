@@ -6,7 +6,7 @@ import libs.olog as olog
 
 olog.logLevel = 5
 
-log(f'Starting Artistic Network ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
+log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 import ark # core
 import json
@@ -41,9 +41,8 @@ elif platform.system() == 'Linux':
 
 images = {}
 
-def refreshImage(init = False):
-    if not init:
-        log('Refreshing image cache...', type=olog.Type.DEBUG)
+def refreshImage():
+    log('Refreshing image cache...', type=olog.Type.DEBUG)
     global images
     images = {
         'contributors': {
@@ -370,7 +369,7 @@ def settingsCustomizePage(x, y):
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
 
         maliang.theme.manager.set_color_mode(_THEME)
-        refreshImage(1)
+        refreshImage()
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                             image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
@@ -507,9 +506,9 @@ try:
     loadLocale()
     locale = 'en'
 
-    refreshImage()
+    refreshImage() # generate image cache
 
-    settingsCustomizePage(500, 200)
+    mainPage(500, 200)
 
     # welcomePage()
 
