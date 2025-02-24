@@ -34,7 +34,5 @@
     "release": "正式版",
     "dark": "鸭子",
     "light": "灯泡",
-    "auto": "汽车",
-    "logging_in": "正在入",
-    "wait": "别急。"
+    "auto": "汽车"
 }

@@ -36,7 +36,5 @@
     "release": "正式版",
     "dark": "暗色 Mode",
     "light": "明色 Mode",
-    "auto": "系統 設定 追從",
-    "logging_in": "登入中",
-    "wait": "請稍等 片刻。"
+    "auto": "系統 設定 追從"
 }
