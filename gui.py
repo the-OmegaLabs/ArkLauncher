@@ -58,7 +58,7 @@ def refreshImage():
             'jp': Image.open(f'src/both/country_jp.png'),
             'ko': Image.open(f'src/both/country_ko.png'),
             'en': Image.open(f'src/both/country_us.png'),
-            'sb': Image.open(f'src/{_THEME}/transgender.png') 
+            'sb': Image.open(f'src/both/transgender.png') 
         },
         'avatar': Image.open(avatar.getAvatar()),
         'icon_quick': Image.open(f'src/both/quick.png'),
