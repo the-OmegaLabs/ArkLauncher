@@ -1,5 +1,3 @@
-import ark
-
 _VERSION = 'dev'
 _SUBVERSION = '25w09b'
 
@@ -383,7 +381,7 @@ def settingsNetworkPage(x, y):
 
     buttons = []
 
-    def handleInput(url: maliang.InputBox, button: maliang. Button):
+    def handleInput(url: maliang.InputBox, button: maliang.Button):
         if not url.get():
             button.destroy()
 
@@ -393,9 +391,9 @@ def settingsNetworkPage(x, y):
 
         button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
-        maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD, command=lambda: handleInput(url, button))
+        maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD,
+                       command=lambda: handleInput(url, button))
 
-        
         buttons.append(button)
 
         HEIGHT += 110
