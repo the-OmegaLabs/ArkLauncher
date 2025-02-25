@@ -43,6 +43,12 @@ elif platform.system() == 'Linux':
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
+def getAvatar2():
+    if getSubConf("avatar") == "Auto":
+        return avatar.getAvatar()
+    else:
+        return getSubConf("avatar")
+
 images = {
     'contributors': {
         'maliang': ImageLoader.X(f'src/Contributors/maliang.png'),
@@ -59,7 +65,7 @@ images = {
         'en': ImageLoader.X(f'src/both/country_us.png'),
         'sb': ImageLoader.X(f'src/both/transgender.png')
     },
-    'avatar': ImageLoader.X(avatar.getAvatar()),
+    'avatar': ImageLoader.X(getAvatar2()),
     'icon_quick': ImageLoader.X(f'src/both/quick.png'),
     'icon_logo': ImageLoader.X('src/icon.png'),
     'icon_return': ImageLoader.X(f'src/{_THEME}/return.png'),
@@ -412,7 +418,7 @@ def settingsCustomizePage(x, y):
             _THEME = darkdetect.theme().lower()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
-
+        reloadImages()
         maliang.theme.manager.set_color_mode(_THEME)
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
