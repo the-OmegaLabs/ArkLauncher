@@ -38,5 +38,9 @@
   "light": "Light",
   "auto": "System",
   "logging_in": "Logging into",
-  "wait": "You should wait a while now."
+  "wait": "You should wait a while now.",
+  "good_morning": "Good Morning!",
+  "good_afternoon": "Good Afternoon!",
+  "good_evening": "Good Evening!",
+  "good_night": "Good Night!"
 }

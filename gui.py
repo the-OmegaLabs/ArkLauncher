@@ -16,6 +16,7 @@ from libs.olog import output as log
 from libs.imgCacher import ImageLoader
 import libs.config as configLib
 import ark
+from datetime import datetime
 
 _VERSION = 'dev'
 _SUBVERSION = '25w09c'
@@ -270,9 +271,19 @@ def aboutPage(x, y):
 def mainPage(x, y):
     root, cv = createWindow(x, y)
 
+    def getTimeBasedGreeting():
+        current_hour = datetime.now().hour
+        if 5 <= current_hour < 12:
+            return translate('good_morning')
+        elif 12 <= current_hour < 18:
+            return translate('good_afternoon')
+        elif 18 <= current_hour < 22:
+            return translate('good_evening')
+        else:
+            return translate('good_night')
+
     def createNotice(str, sub, cv, spin):
         noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 700))
-
         noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
         noticeSubText = maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
 
@@ -282,22 +293,41 @@ def mainPage(x, y):
         else:
             return [noticeBar, noticeText]
 
-    maliang.Image(cv, (50, 50), image=maliang.PhotoImage(images['icon_logo'].resize((50, 50), 1)))
-    maliang.Text(cv, (110, 50), text=translate('parent'), family=FONT_FAMILY, fontsize=15)
-    maliang.Text(cv, (110, 68), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=26)
 
-    button_new = maliang.Button(cv, position=(50, 130), size=(400, 100))
+    icon_x = 50
+    icon_y = 40
+    icon_size = 60
+    logo_icon = maliang.Image(cv, (icon_x, icon_y), 
+                             image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
+    
+
+    greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),  
+                               text=getTimeBasedGreeting(), 
+                               family=FONT_FAMILY_BOLD, 
+                               fontsize=24)
+
+
+    content_start_y = icon_y + icon_size + 65
+
+    button_new = maliang.Button(cv, position=(50, content_start_y), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
+    
+
     maliang.Tooltip(
-        maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
+        maliang.IconButton(cv, position=(400, 40), size=(50, 50), 
+                          command=lambda: changeWindow(settingsPage, root),
+                          image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
         text=translate('settings'), fontsize=13)
+    
     maliang.Tooltip(
-        maliang.IconButton(cv, position=(340, 50), size=(50, 50), command=lambda: changeWindow(mainPage, root),
-                           image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))), text=translate('quick'),
+        maliang.IconButton(cv, position=(340, 40), size=(50, 50), 
+                          command=lambda: changeWindow(mainPage, root),
+                          image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))), 
+        text=translate('quick'),
         fontsize=13)
 
-    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", translate('wait'), cv, 1)
+    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", 
+                                 translate('wait'), cv, 1)
     root.mainloop()
 
 
@@ -507,6 +537,10 @@ def settingsLanguagePage(x, y):
             FONT_FAMILY = 'Simsun'
             FONT_FAMILY_BOLD = f'Simhei'
             FONT_FAMILY_LIGHT = f'FangSong'
+        elif language in ('ko'):
+            FONT_FAMILY = 'Malgun Gothic'
+            FONT_FAMILY_BOLD = f'Malgun Gothic Bold'
+            FONT_FAMILY_LIGHT = f'Malgun Gothic'
         else:
             FONT_FAMILY = 'Segoe UI'
             FONT_FAMILY_BOLD = f'Segoe UI Semibold'
@@ -581,7 +615,7 @@ def tracebackWindow(exception: Exception):
 try:
     loadLocale()
     
-    settingsNetworkPage(500, 200)
+    mainPage(500, 200)
     # welcomePage()
 
 except Exception as f:

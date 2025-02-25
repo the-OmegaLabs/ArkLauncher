@@ -38,5 +38,9 @@
   "light": "浅色模式",
   "auto": "跟随系统",
   "logging_in": "正在登录",
-  "wait": "请稍作等待。"
+  "wait": "请稍作等待。",
+  "good_morning": "早上好!",
+  "good_afternoon": "下午好!",
+  "good_evening": "晚上好",
+  "good_night": "晚安!"
 }
