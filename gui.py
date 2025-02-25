@@ -1,10 +1,12 @@
+import ark
+
 _VERSION = 'dev'
 _SUBVERSION = '25w09b'
 
-import ark
 import libs.olog as olog
-from libs.image import Loader
+from libs.imgCacher import ImageLoader
 from libs.olog import output as log
+from libs.readconf import *
 
 olog.logLevel = 5
 
@@ -41,36 +43,61 @@ elif platform.system() == 'Linux':
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
+
+def getAvatar2():
+    if getSubConf("avatar") == "Auto":
+        return avatar.getAvatar()
+    else:
+        return getSubConf("avatar")
+
+
 images = {
     'contributors': {
-        'maliang': Loader.load_image(f'src/Contributors/maliang.png'),
-        'Stevesuk0': Loader.load_image(f'src/Contributors/Stevesuk0.jpg'),
-        'bzym2': Loader.load_image(f'src/Contributors/bzym2.png'),
-        'HRGC-Sonrai': Loader.load_image(f'src/Contributors/HRGC-Sonrai.jpg'),
-        'Xiaokang2022': Loader.load_image(f'src/Contributors/Xiaokang2022.jpg'),
-        'the-OmegaLabs': Loader.load_image(f'src/Contributors/the-OmegaLabs.png')
+        'maliang': ImageLoader.X(f'src/Contributors/maliang.png'),
+        'Stevesuk0': ImageLoader.X(f'src/Contributors/Stevesuk0.jpg'),
+        'bzym2': ImageLoader.X(f'src/Contributors/bzym2.png'),
+        'HRGC-Sonrai': ImageLoader.X(f'src/Contributors/HRGC-Sonrai.jpg'),
+        'Xiaokang2022': ImageLoader.X(f'src/Contributors/Xiaokang2022.jpg'),
+        'the-OmegaLabs': ImageLoader.X(f'src/Contributors/the-OmegaLabs.png')
     },
     "country": {
-        'cn': Loader.load_image(f'src/both/country_cn.png'),
-        'jp': Loader.load_image(f'src/both/country_jp.png'),
-        'ko': Loader.load_image(f'src/both/country_ko.png'),
-        'en': Loader.load_image(f'src/both/country_us.png'),
-        'sb': Loader.load_image(f'src/both/transgender.png')
+        'cn': ImageLoader.X(f'src/both/country_cn.png'),
+        'jp': ImageLoader.X(f'src/both/country_jp.png'),
+        'ko': ImageLoader.X(f'src/both/country_ko.png'),
+        'en': ImageLoader.X(f'src/both/country_us.png'),
+        'sb': ImageLoader.X(f'src/both/transgender.png')
     },
-    'avatar': Loader.load_image(avatar.getAvatar()),
-    'icon_quick': Loader.load_image(f'src/both/quick.png'),
-    'icon_logo': Loader.load_image('src/icon.png'),
-    'icon_return': Loader.load_image(f'src/{_THEME}/return.png'),
-    'icon_settings': Loader.load_image(f'src/{_THEME}/settings.png'),
-    'icon_about': Loader.load_image(f'src/{_THEME}/about.png'),
-    'icon_language': Loader.load_image(f'src/{_THEME}/language.png'),
-    'icon_network': Loader.load_image(f'src/{_THEME}/network.png'),
-    'icon_account': Loader.load_image(f'src/{_THEME}/account.png'),
-    'icon_customize': Loader.load_image(f'src/{_THEME}/customize.png'),
-    'icon_dark': Loader.load_image(f'src/{_THEME}/dark.png'),
-    'icon_light': Loader.load_image(f'src/{_THEME}/light.png'),
-    'icon_auto': Loader.load_image(f'src/{_THEME}/auto.png')
+    'avatar': ImageLoader.X(getAvatar2()),
+    'icon_quick': ImageLoader.X(f'src/both/quick.png'),
+    'icon_logo': ImageLoader.X('src/icon.png'),
+    'icon_return': ImageLoader.X(f'src/{_THEME}/return.png'),
+    'icon_settings': ImageLoader.X(f'src/{_THEME}/settings.png'),
+    'icon_about': ImageLoader.X(f'src/{_THEME}/about.png'),
+    'icon_language': ImageLoader.X(f'src/{_THEME}/language.png'),
+    'icon_network': ImageLoader.X(f'src/{_THEME}/network.png'),
+    'icon_account': ImageLoader.X(f'src/{_THEME}/account.png'),
+    'icon_customize': ImageLoader.X(f'src/{_THEME}/customize.png'),
+    'icon_dark': ImageLoader.X(f'src/{_THEME}/dark.png'),
+    'icon_light': ImageLoader.X(f'src/{_THEME}/light.png'),
+    'icon_auto': ImageLoader.X(f'src/{_THEME}/auto.png')
 }
+
+
+def reloadImages():
+    ImageLoader.C()
+    theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
+    images.update({
+        'icon_return': ImageLoader.X(f'src/{theme}/return.png'),
+        'icon_settings': ImageLoader.X(f'src/{theme}/settings.png'),
+        'icon_about': ImageLoader.X(f'src/{theme}/about.png'),
+        'icon_language': ImageLoader.X(f'src/{theme}/language.png'),
+        'icon_network': ImageLoader.X(f'src/{theme}/network.png'),
+        'icon_account': ImageLoader.X(f'src/{theme}/account.png'),
+        'icon_customize': ImageLoader.X(f'src/{theme}/customize.png'),
+        'icon_dark': ImageLoader.X(f'src/{theme}/dark.png'),
+        'icon_light': ImageLoader.X(f'src/{theme}/light.png'),
+        'icon_auto': ImageLoader.X(f'src/{theme}/auto.png')
+    })
 
 
 def openGithub(name):
@@ -243,7 +270,6 @@ def mainPage(x, y):
 
     def createNotice(str, sub, cv, spin):
         noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 700))
-        
 
         noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
         noticeSubText = maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
@@ -281,7 +307,6 @@ def settingsPage(x, y):
 
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['avatar'].resize((45, 45), 1)))
-
 
     HEIGHT = 130
     button_account = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
@@ -339,20 +364,23 @@ def settingsAccountPage(x, y):
 
     root.mainloop()
 
+
 def settingsNetworkPage(x, y):
     root, cv = createWindow(x, y)
+
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
-    
+
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('network'))
-    
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                       image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
     HEIGHT = 130
     button_new = maliang.Button(cv, position=(50, 130), size=(400, 100), command=lambda: createSource())
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
-    
+
     buttons = []
 
     def handleInput(url: maliang.InputBox, button: maliang. Button):
@@ -362,7 +390,7 @@ def settingsNetworkPage(x, y):
     def createSource():
         nonlocal button_new, HEIGHT, buttons
         button_new.destroy()
-        
+
         button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
         maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD, command=lambda: handleInput(url, button))
@@ -373,7 +401,7 @@ def settingsNetworkPage(x, y):
         HEIGHT += 110
         button_new = maliang.Button(cv, position=(50, HEIGHT), size=(400, 100), command=createSource)
         maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
-    
+
     createSource()
 
     root.mainloop()
@@ -398,14 +426,15 @@ def settingsCustomizePage(x, y):
             _THEME = darkdetect.theme().lower()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
-
+        reloadImages()
         maliang.theme.manager.set_color_mode(_THEME)
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
         HEIGHT = 130
-        buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'), family=FONT_FAMILY_BOLD,
-                                image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
+        buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'),
+                                        family=FONT_FAMILY_BOLD,
+                                        image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
         HEIGHT += 65
         buttonLight = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                          command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
@@ -538,8 +567,7 @@ def tracebackWindow(exception: Exception):
 
 try:
     loadLocale()
-    locale = 'en'
-
+    locale = getSubConf("language")
 
     settingsNetworkPage(500, 200)
 
