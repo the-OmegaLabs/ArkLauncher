@@ -1,4 +1,6 @@
-from PIL import Image, ImageOps
+# useless.
+
+from PIL import Image
 import functools
 
 class Loader:
