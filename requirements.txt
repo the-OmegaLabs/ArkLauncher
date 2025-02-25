@@ -1,0 +1,8 @@
+colorama==0.4.6
+darkdetect==0.8.0
+hPyT==1.4.0
+maliang==3.0.0
+pillow==11.1.0
+pywinstyles==1.8
+typing_extensions==4.12.2
+win32material==1.0.7
