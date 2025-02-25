@@ -4,6 +4,7 @@ _SUBVERSION = '25w09b'
 import libs.olog as olog
 from libs.imgCacher import ImageLoader
 from libs.olog import output as log
+from libs.readconf import *
 
 olog.logLevel = 5
 
@@ -40,6 +41,12 @@ elif platform.system() == 'Linux':
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
+def getAvatar2():
+    if getSubConf("avatar") == "Auto":
+        return avatar.getAvatar()
+    else:
+        return getSubConf("avatar")
+
 images = {
     'contributors': {
         'maliang': ImageLoader.X(f'src/Contributors/maliang.png'),
@@ -56,7 +63,7 @@ images = {
         'en': ImageLoader.X(f'src/both/country_us.png'),
         'sb': ImageLoader.X(f'src/both/transgender.png')
     },
-    'avatar': ImageLoader.X(avatar.getAvatar()),
+    'avatar': ImageLoader.X(getAvatar2()),
     'icon_quick': ImageLoader.X(f'src/both/quick.png'),
     'icon_logo': ImageLoader.X('src/icon.png'),
     'icon_return': ImageLoader.X(f'src/{_THEME}/return.png'),
@@ -71,6 +78,21 @@ images = {
     'icon_auto': ImageLoader.X(f'src/{_THEME}/auto.png')
 }
 
+def reloadImages():
+    ImageLoader.C()
+    theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
+    images.update({
+        'icon_return': ImageLoader.X(f'src/{theme}/return.png'),
+        'icon_settings': ImageLoader.X(f'src/{theme}/settings.png'),
+        'icon_about': ImageLoader.X(f'src/{theme}/about.png'),
+        'icon_language': ImageLoader.X(f'src/{theme}/language.png'),
+        'icon_network': ImageLoader.X(f'src/{theme}/network.png'),
+        'icon_account': ImageLoader.X(f'src/{theme}/account.png'),
+        'icon_customize': ImageLoader.X(f'src/{theme}/customize.png'),
+        'icon_dark': ImageLoader.X(f'src/{theme}/dark.png'),
+        'icon_light': ImageLoader.X(f'src/{theme}/light.png'),
+        'icon_auto': ImageLoader.X(f'src/{theme}/auto.png')
+    })
 
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
@@ -365,14 +387,13 @@ def settingsCustomizePage(x, y):
 
     def changeTheme(theme):
         global _THEME
-
         _THEME = theme
 
         if _THEME == 'system':
             _THEME = darkdetect.theme().lower()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
-
+        reloadImages()
         maliang.theme.manager.set_color_mode(_THEME)
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
@@ -513,7 +534,7 @@ def tracebackWindow(exception: Exception):
 
 try:
     loadLocale()
-    locale = 'en'
+    locale = getSubConf("language")
 
     settingsLanguagePage(500, 200)
 

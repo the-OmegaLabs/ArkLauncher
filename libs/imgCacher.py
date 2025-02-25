@@ -1,7 +1,6 @@
 from PIL import Image
 import functools
 
-
 class ImageLoader:
     _cache = {}
 
@@ -19,3 +18,8 @@ class ImageLoader:
                 print(f"Error loading image {path}: {e}")
                 return None
         return ImageLoader._cache[key]
+
+    @classmethod
+    def C(cls):
+        cls.X.cache_clear()
+        cls._cache.clear()
