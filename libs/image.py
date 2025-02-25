@@ -1,21 +1,20 @@
-from PIL import Image
+from PIL import Image, ImageOps
 import functools
 
-
-class ImageLoader:
+class Loader:
     _cache = {}
 
     @staticmethod
     @functools.lru_cache(maxsize=32)
-    def X(path, size=None):
+    def load_image(path, size=None):
         key = (path, size)
-        if key not in ImageLoader._cache:
+        if key not in Loader._cache:
             try:
                 img = Image.open(path)
                 if size:
                     img = img.resize(size, Image.Resampling.LANCZOS)
-                ImageLoader._cache[key] = img
+                Loader._cache[key] = img
             except Exception as e:
                 print(f"Error loading image {path}: {e}")
                 return None
-        return ImageLoader._cache[key]
+        return Loader._cache[key]
