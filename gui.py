@@ -1,3 +1,5 @@
+import ark
+
 _VERSION = 'dev'
 _SUBVERSION = '25w09b'
 
