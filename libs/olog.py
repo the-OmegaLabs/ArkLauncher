@@ -2,8 +2,9 @@ import datetime
 import sys
 import inspect
 
-from colorama import Fore, Style, Back
+from colorama import Fore, Style, Back, init
 
+init()
 
 class Type():
     INFO = f'{Back.BLUE} INFO {Back.RESET}'
@@ -11,6 +12,7 @@ class Type():
     WARN = f'{Back.YELLOW} WARN {Back.RESET}{Fore.YELLOW}'
     DEBUG = f'{Back.MAGENTA} DEBG {Back.RESET}'
 
+global logLevel
 logLevel = 5
 
 def output(value: str, end: str = "\n", type: str = Type.INFO):
@@ -26,3 +28,4 @@ def output(value: str, end: str = "\n", type: str = Type.INFO):
     else:
         pass            
     sys.stdout.write(f'{end}')
+    sys.stdout.flush()
