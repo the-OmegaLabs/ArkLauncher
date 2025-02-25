@@ -378,33 +378,35 @@ def settingsNetworkPage(x, y):
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
-
+    buttons = [
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    ]
+    
     HEIGHT = 130
-    button_new = maliang.Button(cv, position=(50, 130), size=(400, 100), command=lambda: createSource())
-    maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
-
-    buttons = []
 
     def handleInput(url: maliang.InputBox, button: maliang.Button):
         if not url.get():
             button.destroy()
+            buttons.remove(button)
 
     def createSource():
         nonlocal button_new, HEIGHT, buttons
-        button_new.destroy()
 
         button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
         maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD,
                        command=lambda: handleInput(url, button))
 
-        buttons.append(button)
-
         HEIGHT += 110
-        button_new = maliang.Button(cv, position=(50, HEIGHT), size=(400, 100), command=createSource)
-        maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
 
-    createSource()
+
+    button_new = maliang.Button(cv, position=(400, 50), size=(50, 50), command=createSource)
+    maliang.Text(button_new, (25, 22), text='+', family=FONT_FAMILY, fontsize=50, anchor='center')
 
     root.mainloop()
 
@@ -575,7 +577,7 @@ def tracebackWindow(exception: Exception):
 try:
     loadLocale()
     
-    settingsCustomizePage(500, 200)
+    settingsNetworkPage(500, 200)
     # welcomePage()
 
 except Exception as f:
