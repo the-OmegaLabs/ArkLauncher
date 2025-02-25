@@ -43,11 +43,13 @@ elif platform.system() == 'Linux':
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
+
 def getAvatar2():
     if getSubConf("avatar") == "Auto":
         return avatar.getAvatar()
     else:
         return getSubConf("avatar")
+
 
 images = {
     'contributors': {
@@ -80,6 +82,7 @@ images = {
     'icon_auto': ImageLoader.X(f'src/{_THEME}/auto.png')
 }
 
+
 def reloadImages():
     ImageLoader.C()
     theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
@@ -95,6 +98,7 @@ def reloadImages():
         'icon_light': ImageLoader.X(f'src/{theme}/light.png'),
         'icon_auto': ImageLoader.X(f'src/{theme}/auto.png')
     })
+
 
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
@@ -267,7 +271,6 @@ def mainPage(x, y):
     def createNotice(str, sub, cv, spin):
         noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 700))
 
-
         noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
         noticeSubText = maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
 
@@ -304,7 +307,6 @@ def settingsPage(x, y):
 
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['avatar'].resize((45, 45), 1)))
-
 
     HEIGHT = 130
     button_account = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
@@ -372,7 +374,8 @@ def settingsNetworkPage(x, y):
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('network'))
 
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root), image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                       image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
     HEIGHT = 130
     button_new = maliang.Button(cv, position=(50, 130), size=(400, 100), command=lambda: createSource())
@@ -386,7 +389,8 @@ def settingsNetworkPage(x, y):
 
         button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
-        maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD, command=lambda: ark.getSourceContent(url.get()))
+        maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD,
+                       command=lambda: ark.getSourceContent(url.get()))
 
         buttons.append(button)
 
@@ -424,8 +428,9 @@ def settingsCustomizePage(x, y):
                            image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
         HEIGHT = 130
-        buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'), family=FONT_FAMILY_BOLD,
-                                image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
+        buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'),
+                                        family=FONT_FAMILY_BOLD,
+                                        image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
         HEIGHT += 65
         buttonLight = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                          command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
@@ -559,7 +564,6 @@ def tracebackWindow(exception: Exception):
 try:
     loadLocale()
     locale = getSubConf("language")
-
 
     settingsNetworkPage(500, 200)
 

@@ -1,5 +1,7 @@
-from PIL import Image
 import functools
+
+from PIL import Image
+
 
 class ImageLoader:
     _cache = {}

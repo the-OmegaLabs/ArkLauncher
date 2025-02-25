@@ -1,7 +1,8 @@
-import os
 import getpass
+import os
 
 username = getpass.getuser()
+
 
 def getAvatar():
     account_pictures_dir = f"C:\\Users\\{username}\\AppData\\Roaming\\Microsoft\\Windows\\AccountPictures"
