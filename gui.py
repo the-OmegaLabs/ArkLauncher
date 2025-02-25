@@ -416,7 +416,7 @@ def translate(target):
     return lang_dict.get(locale, {}).get(target, lang_dict['en'].get(target, target))
 
 def settingsLanguagePage(x, y):
-    global locale, FONT_FAMILY, FONT_FAMILY_BOLD
+    global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
     root, cv = createWindow(x, y)
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
