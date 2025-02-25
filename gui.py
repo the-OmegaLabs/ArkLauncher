@@ -1,17 +1,3 @@
-import ark
-
-_VERSION = 'dev'
-_SUBVERSION = '25w09b'
-
-import libs.olog as olog
-from libs.imgCacher import ImageLoader
-from libs.olog import output as log
-from libs.readconf import *
-
-olog.logLevel = 5
-
-log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
-
 import json
 import os
 import colorama
@@ -22,34 +8,45 @@ import maliang.core
 import maliang.theme
 import maliang.animation
 import traceback
+import libs.olog as olog
+import libs.config as configLib
+from libs.imgCacher import ImageLoader
+from libs.olog import output as log
+import ark
 
-colorama.init()
+_VERSION = 'dev'
+_SUBVERSION = '25w09c'
 
-_THEME = darkdetect.theme().lower()
-log(f'Detected system theme: {_THEME}', type=olog.Type.INFO)
 WIDTH = 500
 HEIGHT = 800
 
+configLib.loadConfig()
+config = configLib.config
+locale = config['language']
+_THEME = config['theme']
+
+if _THEME in ('system', 'auto'):
+    _THEME = darkdetect.theme().lower()
+
 if platform.system() == 'Windows':
     import libs.winavatar as avatar
-
     FONT_FAMILY = 'Microsoft YaHei UI'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 elif platform.system() == 'Linux':
     import libs.linavatar as avatar
-
     FONT_FAMILY = 'Noto Sans'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
+olog.logLevel = 5
 
-def getAvatar2():
-    if getSubConf("avatar") == "Auto":
-        return avatar.getAvatar()
-    else:
-        return getSubConf("avatar")
+log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
+if platform.system() == 'Windows':
+    import libs.winavatar as avatar
+elif platform.system() == 'Linux':
+    import libs.linavatar as avatar
 
 images = {
     'contributors': {
@@ -67,7 +64,7 @@ images = {
         'en': ImageLoader.X(f'src/both/country_us.png'),
         'sb': ImageLoader.X(f'src/both/transgender.png')
     },
-    'avatar': ImageLoader.X(getAvatar2()),
+    'avatar': ImageLoader.X(avatar.getAvatar()),
     'icon_quick': ImageLoader.X(f'src/both/quick.png'),
     'icon_logo': ImageLoader.X('src/icon.png'),
     'icon_return': ImageLoader.X(f'src/{_THEME}/return.png'),
@@ -82,6 +79,8 @@ images = {
     'icon_auto': ImageLoader.X(f'src/{_THEME}/auto.png')
 }
 
+
+colorama.init()
 
 def reloadImages():
     ImageLoader.C()
@@ -421,6 +420,8 @@ def settingsCustomizePage(x, y):
         global _THEME
 
         _THEME = theme
+        configLib.setConfig('theme', _THEME)
+        configLib.sync()
 
         if _THEME == 'system':
             _THEME = darkdetect.theme().lower()
@@ -507,6 +508,9 @@ def settingsLanguagePage(x, y):
         global locale
         locale = language
 
+        configLib.setConfig('language', locale)
+        configLib.sync()
+
         HEIGHT = 130
         lang_changebutton = []
         for i in lang_dict:
@@ -567,10 +571,8 @@ def tracebackWindow(exception: Exception):
 
 try:
     loadLocale()
-    locale = getSubConf("language")
-
-    settingsNetworkPage(500, 200)
-
+    
+    settingsCustomizePage(500, 200)
     # welcomePage()
 
 except Exception as f:
