@@ -1,5 +1,5 @@
 _VERSION = 'dev'
-_SUBVERSION = '25w09b'
+_SUBVERSION = '25w09d'
 
 import json
 import os
@@ -420,21 +420,22 @@ def settingsNetworkPage(x, y):
     def handleInput(url: maliang.InputBox, button: maliang.Button):
         if not url.get():
             button.destroy()
-            buttons.remove(button)
+            index = buttons.index(button)
+            buttons.pop(index)
+            buttons.insert(index, None)
+            log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
 
 
     def createSource():
         nonlocal button_new, buttons, cv
 
-        for i in range(6):
-            HEIGHT = 130 + 110 * i
-            if buttons[i] == None:
-                button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
-                url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
-                maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD, command=lambda: handleInput(url, button))
-                buttons[i] = button
-                break
-
+        index = buttons.index(None)
+        HEIGHT = 130 + 110 * index
+        button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
+        url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
+        maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD, command=lambda: handleInput(url, button))
+        buttons[index] = button
+        log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
                 
     button_new = maliang.Button(cv, position=(400, 50), size=(50, 50), command=createSource)
     maliang.Text(button_new, (25, 22), text='+', family=FONT_FAMILY, fontsize=50, anchor='center')
@@ -616,7 +617,7 @@ def tracebackWindow(exception: Exception):
 try:
     loadLocale()
     
-    mainPage(500, 200)
+    settingsNetworkPage(500, 200)
     # welcomePage()
 
 except Exception as f:
