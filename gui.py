@@ -66,46 +66,70 @@ def refreshImage():
             print(f"Error loading image {path}: {e}")
             return None
 
-    def threadedImageOpen(path, dict_key):
-        """Threaded image loading function."""
+    def threadedImageOpen(path, dict_key, category=None):
+        """Threaded image loading function with category support."""
         img = loadImage(path)
         if img:
-            images[dict_key] = img
+            if category:
+                if category not in images:
+                    images[category] = {}
+                images[category][dict_key] = img
+            else:
+                images[dict_key] = img
             log(f"Loaded image: {path}", type=olog.Type.DEBUG)
 
     theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
 
+    # Initialize images dictionary with categories
     images = {
-        'maliang': 'src/Contributors/maliang.png',
-        'Stevesuk0': 'src/Contributors/Stevesuk0.jpg',
-        'bzym2': 'src/Contributors/bzym2.png',
-        'HRGC-Sonrai': 'src/Contributors/HRGC-Sonrai.jpg',
-        'Xiaokang2022': 'src/Contributors/Xiaokang2022.jpg',
-        'the-OmegaLabs': 'src/Contributors/the-OmegaLabs.png',
-        'cn': 'src/both/country_cn.png',
-        'jp': 'src/both/country_jp.png',
-        'ko': 'src/both/country_ko.png',
-        'en': 'src/both/country_us.png',
-        'sb': 'src/both/transgender.png',
-        'avatar': avatar.getAvatar(),
-        'icon_quick': 'src/both/quick.png',
-        'icon_logo': 'src/icon.png',
-        'icon_return': f'src/{theme}/return.png',
-        'icon_settings': f'src/{theme}/settings.png',
-        'icon_about': f'src/{theme}/about.png',
-        'icon_language': f'src/{theme}/language.png',
-        'icon_network': f'src/{theme}/network.png',
-        'icon_account': f'src/{theme}/account.png',
-        'icon_customize': f'src/{theme}/customize.png',
-        'icon_dark': f'src/{theme}/dark.png',
-        'icon_light': f'src/{theme}/light.png',
-        'icon_auto': f'src/{theme}/auto.png'
+        'contributors': {},
+        'country': {}
     }
-    for key, path in images.items(): threading.Thread(target=threadedImageOpen, args=(path, key)).start()
+
+    # Define image paths with categories
+    image_paths = {
+        'contributors': {
+            'maliang': 'src/Contributors/maliang.png',
+            'Stevesuk0': 'src/Contributors/Stevesuk0.jpg',
+            'bzym2': 'src/Contributors/bzym2.png',
+            'HRGC-Sonrai': 'src/Contributors/HRGC-Sonrai.jpg',
+            'Xiaokang2022': 'src/Contributors/Xiaokang2022.jpg',
+            'the-OmegaLabs': 'src/Contributors/the-OmegaLabs.png',
+        },
+        'country': {
+            'cn': 'src/both/country_cn.png',
+            'jp': 'src/both/country_jp.png',
+            'ko': 'src/both/country_ko.png',
+            'en': 'src/both/country_us.png',
+            'sb': 'src/both/transgender.png',
+        },
+        None: {  # Regular images without category
+            'avatar': avatar.getAvatar(),
+            'icon_quick': 'src/both/quick.png',
+            'icon_logo': 'src/icon.png',
+            'icon_return': f'src/{theme}/return.png',
+            'icon_settings': f'src/{theme}/settings.png',
+            'icon_about': f'src/{theme}/about.png',
+            'icon_language': f'src/{theme}/language.png',
+            'icon_network': f'src/{theme}/network.png',
+            'icon_account': f'src/{theme}/account.png',
+            'icon_customize': f'src/{theme}/customize.png',
+            'icon_dark': f'src/{theme}/dark.png',
+            'icon_light': f'src/{theme}/light.png',
+            'icon_auto': f'src/{theme}/auto.png'
+        }
+    }
+
+    # Load all images with their respective categories
+    for category, items in image_paths.items():
+        for key, path in items.items():
+            threading.Thread(
+                target=threadedImageOpen,
+                args=(path, key, category)
+            ).start()
 
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
-
 
 def createWindow(x=None, y=None):
     log(f'Creating new page at ({x}, {y}).', type=olog.Type.DEBUG)
@@ -115,7 +139,6 @@ def createWindow(x=None, y=None):
     else:
         root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
 
-    
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
     root.minsize(WIDTH, HEIGHT)
@@ -123,7 +146,6 @@ def createWindow(x=None, y=None):
     maliang.theme.manager.customize_window(root, disable_maximize_button=True)
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
-
 
 def changeWindow(window, root: maliang.Tk):
     log(f'Perform change window to "{window.__name__}"...', type=olog.Type.INFO)
@@ -133,7 +155,6 @@ def changeWindow(window, root: maliang.Tk):
         y -= 31
     root.destroy()
     window(x, y)
-
 
 def welcomePage():
     global locale
@@ -165,11 +186,9 @@ def welcomePage():
         text_button_chinese.set(translate('lang_chinese'))
         button.set(translate('button'))
 
-    # 切换到英文
     def changeToEnglish(_):
         changeLanguage('en')
 
-    # 处理按下 shift 键时的彩蛋语言
     def changeToChinese(_):
         changeLanguage('cn')
 
@@ -179,33 +198,26 @@ def welcomePage():
     langCN = maliang.RadioBox(cv, (170, 705), command=changeToChinese, length=30, default=True)
     maliang.RadioBox.group(langCN, langEN)
 
-    # 初始化时使用中文
     changeLanguage('cn')
 
     root.mainloop()
 
-
 def aboutPage(x, y):
-    # Create main window
     root, cv = createWindow(x, y)
 
-    # Header section
     maliang.IconButton(
         cv,
         position=(50, 50),
         size=(50, 50),
         command=lambda: changeWindow(settingsPage, root),
-        image=maliang.PhotoImage(image=images['icon_return'].resize((55, 55), 1))
+        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1))
     )
 
-    # Title texts
     maliang.Text(cv, (110, 50), text=translate("settings"), family=FONT_FAMILY_LIGHT, fontsize=15)
     maliang.Text(cv, (110, 70), text=translate("about"), family=FONT_FAMILY_BOLD, fontsize=26)
 
-    # Project information section - Centered layout
     icon_x = 250 - (120 // 2)
 
-    # Large centered icon
     maliang.IconButton(
         cv,
         position=(icon_x, 120),
@@ -214,7 +226,6 @@ def aboutPage(x, y):
         command=lambda: openGithub('the-OmegaLabs/ArkLauncher')
     )
 
-    # Center-aligned product information
     maliang.Text(
         cv,
         (250, 270),
@@ -240,7 +251,6 @@ def aboutPage(x, y):
         anchor='center'
     )
 
-    # Contributors section - Centered title
     maliang.Text(
         cv,
         (250, 400),
@@ -250,9 +260,8 @@ def aboutPage(x, y):
         anchor='center'
     )
 
-    # Contributors avatars - Centered as a group
     avatar_size = 50
-    avatar_spacing = 60  # Space between avatars
+    avatar_spacing = 60
     contributors = ['Stevesuk0', 'bzym2', 'HRGC-Sonrai']
     total_width = (len(contributors) - 1) * avatar_spacing + avatar_size
 
@@ -260,16 +269,16 @@ def aboutPage(x, y):
 
     for i, contributor in enumerate(contributors):
         x_pos = start_x + (i * avatar_spacing)
-        maliang.IconButton(
-            cv,
-            position=(x_pos, 430),
-            size=(avatar_size, avatar_size),
-            command=lambda c=contributor: openGithub(c),
-            image=maliang.PhotoImage(images['contributors'][contributor].resize((47, 47), 1))
-        )
+        if contributor in images['contributors']:
+            maliang.IconButton(
+                cv,
+                position=(x_pos, 430),
+                size=(avatar_size, avatar_size),
+                command=lambda c=contributor: openGithub(c),
+                image=maliang.PhotoImage(images['contributors'][contributor].resize((47, 47), 1))
+            )
 
     root.mainloop()
-
 
 def mainPage(x, y):
     root, cv = createWindow(x, y)
@@ -300,16 +309,13 @@ def mainPage(x, y):
         animation = maliang.animation.MoveWidget(notice, offset=(0, -100), duration=500, controller=maliang.animation.ease_out, fps=500)
         animation.start()
 
-
     subtitle, title = (None, None)
-
 
     icon_x = 50
     icon_y = 40
     icon_size = 60
     logo_icon = maliang.Image(cv, (icon_x, icon_y), 
                              image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
-    
 
     greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),  
                                family=FONT_FAMILY_BOLD, 
@@ -321,7 +327,6 @@ def mainPage(x, y):
 
     button_new = maliang.Button(cv, position=(50, content_start_y), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
-    
 
     maliang.Tooltip(
         maliang.IconButton(cv, position=(400, 50), size=(50, 50), 
@@ -341,7 +346,6 @@ def mainPage(x, y):
     
     playToastAnimation(noticeBar)
     root.mainloop()
-
 
 def settingsPage(x, y):
     root, cv = createWindow(x, y)
@@ -393,7 +397,6 @@ def settingsPage(x, y):
 
     root.mainloop()
 
-
 def settingsAccountPage(x, y):
     root, cv = createWindow(x, y)
 
@@ -407,7 +410,6 @@ def settingsAccountPage(x, y):
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
     root.mainloop()
-
 
 def settingsNetworkPage(x, y):
     root, cv = createWindow(x, y)
@@ -444,7 +446,7 @@ def settingsNetworkPage(x, y):
         
             if boxinput.startswith('https://') or boxinput.startswith('http://'):
                 response = ark.getSourceContent(boxinput)
-                if response[0]: # 400 100
+                if response[0]:
                     url.destroy()
                     confirm.destroy()
                     
@@ -453,7 +455,6 @@ def settingsNetworkPage(x, y):
                     motd.set(response[1]['name'])
                     desc = maliang.Text(button, (100, 55), family=FONT_FAMILY_LIGHT, fontsize=16)
                     desc.set(f"{response[1]['type']} · {boxinput.split('/')[2].split('/')[0]}")
-
 
     def createSource():
         nonlocal button_new, buttons, cv
@@ -464,8 +465,8 @@ def settingsNetworkPage(x, y):
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
         url.set('http://127.0.0.1:8000/')
         confirm = maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD)
-        confirm.bind('<Button-1>', lambda event: handleInput(url, button, confirm)) # I want fuck tk event.
-        url.bind('<Return>', lambda event: handleInput(url, button, confirm)) # process enter
+        confirm.bind('<Button-1>', lambda event: handleInput(url, button, confirm))
+        url.bind('<Return>', lambda event: handleInput(url, button, confirm))
 
         buttons[index] = button
         log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
@@ -474,7 +475,6 @@ def settingsNetworkPage(x, y):
     maliang.Text(button_new, (25, 22), text='+', family=FONT_FAMILY, fontsize=50, anchor='center')
     
     root.mainloop()
-
 
 def settingsCustomizePage(x, y):
     global _THEME
@@ -526,7 +526,6 @@ def settingsCustomizePage(x, y):
 
     root.mainloop()
 
-
 def loadLocale():
     global lang_dict
 
@@ -538,10 +537,8 @@ def loadLocale():
             with open(f'./src/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
 
-
 def translate(target):
     return lang_dict.get(locale, {}).get(target, lang_dict['en'].get(target, target))
-
 
 def settingsLanguagePage(x, y):
     global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
@@ -554,11 +551,8 @@ def settingsLanguagePage(x, y):
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
     def setLanguage(language, root: maliang.Tk):
-        global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
+        global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT, locale
         log(f'Change locale to {language}.')
-
-        text_logo1.set(translate('settings'))
-        text_logo2.set(translate('locale'))
 
         if language == 'jp':
             FONT_FAMILY = 'Yu Gothic UI'
@@ -583,38 +577,40 @@ def settingsLanguagePage(x, y):
 
         log(f'Change font to {FONT_FAMILY}', type=olog.Type.DEBUG)
 
-        global locale
         locale = language
-
         configLib.setConfig('language', locale)
         configLib.sync()
 
         HEIGHT = 165
         lang_changebutton = []
-        for i in lang_dict:
-            lang_changebutton.append(
-                maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
-                                   command=lambda lang=i: setLanguage(lang, root),
-                                   image=maliang.PhotoImage(images['country'][i].resize((40, 40), 1)),
-                                   family=FONT_FAMILY_BOLD,
-                                   fontsize=18))
-            HEIGHT += 65
+        
+        if 'country' in images:
+            for i in lang_dict:
+                if i in images['country']:
+                    lang_changebutton.append(
+                        maliang.IconButton(
+                            cv,
+                            position=(50, HEIGHT),
+                            size=(400, 55),
+                            command=lambda lang=i: setLanguage(lang, root),
+                            image=maliang.PhotoImage(images['country'][i].resize((40, 40), 1)),
+                            family=FONT_FAMILY_BOLD,
+                            fontsize=18
+                        )
+                    )
+                    HEIGHT += 65
 
         text_logo1.set(translate('settings'))
         text_logo2.set(translate('locale'))
 
-        tmp = []
-        for i in lang_dict:
-            tmp.append(f'setlang_{i}')
+        tmp = [f'setlang_{i}' for i in lang_dict]
         for i in range(len(lang_changebutton)):
             lang_changebutton[i].set(translate(tmp[i]))
 
         root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
 
     setLanguage(locale, root)
-
     root.mainloop()
-
 
 def tracebackWindow(exception: Exception):
     log('Starting Traceback window because a exception detected.', type=olog.Type.WARN)
@@ -638,14 +634,11 @@ def tracebackWindow(exception: Exception):
     text_title.set('You can take an screenshot in this window, and send it to the author.')
 
     text_trace = maliang.Text(cv, (50, 130), fontsize=14)
-
     text_trace.set(str(''.join(traceback.format_exception(exception))))
 
     root.at_exit(exit)
-
     root.center()
     root.mainloop()
-
 
 try:
     loadLocale()
