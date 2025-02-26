@@ -18,7 +18,6 @@ import libs.config as configLib
 import ark
 from datetime import datetime
 import threading
-import hPyT
 
 WIDTH = 500
 HEIGHT = 800
@@ -121,7 +120,7 @@ def createWindow(x=None, y=None):
     cv.place(width=WIDTH, height=HEIGHT)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
-    hPyT.maximize_button.disable(root)
+    maliang.theme.manager.customize_window(root, disable_maximize_button=True)
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
