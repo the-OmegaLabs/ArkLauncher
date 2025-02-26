@@ -38,5 +38,9 @@
   "light": "ライトモード",
   "auto": "システム設定に従う",
   "logging_in": "ログイン中",
-  "wait": "しばらくお待ちください。"
+  "wait": "しばらくお待ちください。",
+  "good_morning": "おはようございます！",
+  "good_afternoon": "こんにちは！",
+  "good_evening": "こんばんは！",
+  "good_night": "おやすみなさい！"
 }

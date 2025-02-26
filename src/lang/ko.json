@@ -38,5 +38,9 @@
   "light": "明色 Mode",
   "auto": "系統 設定 追從",
   "logging_in": "登入中",
-  "wait": "請稍等 片刻。"
+  "wait": "請稍等 片刻。",
+  "good_morning": "安寧하세요!",
+  "good_afternoon": "安寧하세요!",
+  "good_evening": "安寧하세요!",
+  "good_night": "安寧하세요!"
 }
