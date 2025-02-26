@@ -1,3 +1,6 @@
+_VERSION = 'dev'
+_SUBVERSION = '25w09d'
+
 import json
 import os
 import colorama
@@ -15,9 +18,6 @@ from libs.imgCacher import ImageLoader
 import libs.config as configLib
 import ark
 from datetime import datetime
-
-_VERSION = 'dev'
-_SUBVERSION = '25w09c'
 
 WIDTH = 500
 HEIGHT = 800
