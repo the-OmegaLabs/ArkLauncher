@@ -1,6 +1,3 @@
-_VERSION = 'dev'
-_SUBVERSION = '25w09d'
-
 import json
 import os
 import colorama
