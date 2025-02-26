@@ -6,18 +6,18 @@ import os
 import colorama
 import darkdetect
 import platform
-from PIL import ImageTk
+from PIL import Image
 import maliang
 import maliang.core
 import maliang.theme
 import maliang.animation
 import traceback
-import libs.olog as olog
+from libs import olog as olog
 from libs.olog import output as log
-from libs.imgCacher import ImageLoader
 import libs.config as configLib
 import ark
 from datetime import datetime
+import threading
 
 WIDTH = 500
 HEIGHT = 800
@@ -26,17 +26,18 @@ configLib.loadConfig()
 config = configLib.config
 locale = config['language']
 _THEME = config['theme']
+maliang.theme.manager.set_color_mode(_THEME)
 
 if _THEME in ('system', 'auto'):
     _THEME = darkdetect.theme().lower()
 
 if platform.system() == 'Windows':
-    import libs.winavatar as avatar
+    import libs.avatar.Windows as avatar
     FONT_FAMILY = 'Microsoft YaHei UI'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 elif platform.system() == 'Linux':
-    import libs.linavatar as avatar
+    import libs.avatar.Linux as avatar
     FONT_FAMILY = 'Noto Sans'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
@@ -46,60 +47,61 @@ olog.logLevel = 5
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 if platform.system() == 'Windows':
-    import libs.winavatar as avatar
+    import libs.avatar.Windows as avatar
 elif platform.system() == 'Linux':
-    import libs.linavatar as avatar
-
-images = {
-    'contributors': {
-        'maliang': ImageLoader.X(f'src/Contributors/maliang.png'),
-        'Stevesuk0': ImageLoader.X(f'src/Contributors/Stevesuk0.jpg'),
-        'bzym2': ImageLoader.X(f'src/Contributors/bzym2.png'),
-        'HRGC-Sonrai': ImageLoader.X(f'src/Contributors/HRGC-Sonrai.jpg'),
-        'Xiaokang2022': ImageLoader.X(f'src/Contributors/Xiaokang2022.jpg'),
-        'the-OmegaLabs': ImageLoader.X(f'src/Contributors/the-OmegaLabs.png')
-    },
-    "country": {
-        'cn': ImageLoader.X(f'src/both/country_cn.png'),
-        'jp': ImageLoader.X(f'src/both/country_jp.png'),
-        'ko': ImageLoader.X(f'src/both/country_ko.png'),
-        'en': ImageLoader.X(f'src/both/country_us.png'),
-        'sb': ImageLoader.X(f'src/both/transgender.png')
-    },
-    'avatar': ImageLoader.X(avatar.getAvatar()),
-    'icon_quick': ImageLoader.X(f'src/both/quick.png'),
-    'icon_logo': ImageLoader.X('src/icon.png'),
-    'icon_return': ImageLoader.X(f'src/{_THEME}/return.png'),
-    'icon_settings': ImageLoader.X(f'src/{_THEME}/settings.png'),
-    'icon_about': ImageLoader.X(f'src/{_THEME}/about.png'),
-    'icon_language': ImageLoader.X(f'src/{_THEME}/language.png'),
-    'icon_network': ImageLoader.X(f'src/{_THEME}/network.png'),
-    'icon_account': ImageLoader.X(f'src/{_THEME}/account.png'),
-    'icon_customize': ImageLoader.X(f'src/{_THEME}/customize.png'),
-    'icon_dark': ImageLoader.X(f'src/{_THEME}/dark.png'),
-    'icon_light': ImageLoader.X(f'src/{_THEME}/light.png'),
-    'icon_auto': ImageLoader.X(f'src/{_THEME}/auto.png')
-}
-
+    import libs.avatar.Linux as avatar
 
 colorama.init()
 
-def reloadImages():
-    ImageLoader.C()
-    theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
-    images.update({
-        'icon_return': ImageLoader.X(f'src/{theme}/return.png'),
-        'icon_settings': ImageLoader.X(f'src/{theme}/settings.png'),
-        'icon_about': ImageLoader.X(f'src/{theme}/about.png'),
-        'icon_language': ImageLoader.X(f'src/{theme}/language.png'),
-        'icon_network': ImageLoader.X(f'src/{theme}/network.png'),
-        'icon_account': ImageLoader.X(f'src/{theme}/account.png'),
-        'icon_customize': ImageLoader.X(f'src/{theme}/customize.png'),
-        'icon_dark': ImageLoader.X(f'src/{theme}/dark.png'),
-        'icon_light': ImageLoader.X(f'src/{theme}/light.png'),
-        'icon_auto': ImageLoader.X(f'src/{theme}/auto.png')
-    })
+images = {}
 
+def refreshImage():
+    global images
+
+    def loadImage(path):
+        try:
+            img = Image.open(path)
+            return img
+        except Exception as e:
+            print(f"Error loading image {path}: {e}")
+            return None
+
+    def threadedImageOpen(path, dict_key):
+        """Threaded image loading function."""
+        img = loadImage(path)
+        if img:
+            images[dict_key] = img
+            log(f"Loaded image: {path}", type=olog.Type.DEBUG)
+
+    theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
+
+    images = {
+        'maliang': 'src/Contributors/maliang.png',
+        'Stevesuk0': 'src/Contributors/Stevesuk0.jpg',
+        'bzym2': 'src/Contributors/bzym2.png',
+        'HRGC-Sonrai': 'src/Contributors/HRGC-Sonrai.jpg',
+        'Xiaokang2022': 'src/Contributors/Xiaokang2022.jpg',
+        'the-OmegaLabs': 'src/Contributors/the-OmegaLabs.png',
+        'cn': 'src/both/country_cn.png',
+        'jp': 'src/both/country_jp.png',
+        'ko': 'src/both/country_ko.png',
+        'en': 'src/both/country_us.png',
+        'sb': 'src/both/transgender.png',
+        'avatar': avatar.getAvatar(),
+        'icon_quick': 'src/both/quick.png',
+        'icon_logo': 'src/icon.png',
+        'icon_return': f'src/{theme}/return.png',
+        'icon_settings': f'src/{theme}/settings.png',
+        'icon_about': f'src/{theme}/about.png',
+        'icon_language': f'src/{theme}/language.png',
+        'icon_network': f'src/{theme}/network.png',
+        'icon_account': f'src/{theme}/account.png',
+        'icon_customize': f'src/{theme}/customize.png',
+        'icon_dark': f'src/{theme}/dark.png',
+        'icon_light': f'src/{theme}/light.png',
+        'icon_auto': f'src/{theme}/auto.png'
+    }
+    for key, path in images.items(): threading.Thread(target=threadedImageOpen, args=(path, key)).start()
 
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
@@ -281,7 +283,7 @@ def mainPage(x, y):
             return translate('good_night')
 
     def createNotice(str, sub, cv, spin):
-        noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 700))
+        noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 800))
         noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
         noticeSubText = maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
 
@@ -290,8 +292,15 @@ def mainPage(x, y):
             return [noticeBar, noticeText, noticeSpinner]
         else:
             return [noticeBar, noticeText]
-        
-        
+
+    def playToastAnimation(notice: maliang.Label):
+        animation = maliang.animation.MoveWidget(notice, offset=(0, -100), duration=500, controller=maliang.animation.ease_out, fps=500)
+        animation.start()
+
+
+    subtitle, title = (None, None)
+
+
     icon_x = 50
     icon_y = 40
     icon_size = 60
@@ -326,6 +335,8 @@ def mainPage(x, y):
 
     noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", 
                                  translate('wait'), cv, 1)
+    
+    playToastAnimation(noticeBar)
     root.mainloop()
 
 
@@ -483,7 +494,7 @@ def settingsCustomizePage(x, y):
             _THEME = darkdetect.theme().lower()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
-        reloadImages()
+        refreshImage()
         maliang.theme.manager.set_color_mode(_THEME)
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
@@ -635,11 +646,12 @@ def tracebackWindow(exception: Exception):
 
 try:
     loadLocale()
+    refreshImage()
     
     if configLib.first:
         welcomePage()
     else:
-        mainPage(500, 200)
+        mainPage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)

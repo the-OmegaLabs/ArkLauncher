@@ -55,7 +55,7 @@ def get_user_avatar_path(de):
     return None
 
 
-def getAvatarPath():
+def getAvatar():
     de = detect_desktop_environment()
     avatar_path = get_user_avatar_path(de)
     olog.output(f"Desktop Environment: {de}")
