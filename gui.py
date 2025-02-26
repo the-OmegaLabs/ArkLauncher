@@ -18,6 +18,7 @@ import libs.config as configLib
 import ark
 from datetime import datetime
 import threading
+import hPyT
 
 WIDTH = 500
 HEIGHT = 800
@@ -115,10 +116,13 @@ def createWindow(x=None, y=None):
     else:
         root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
 
-    root.resizable(0, 0)
+    
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
-    root.tk.call('wm', 'iconphoto', root._w, maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
+    root.minsize(WIDTH, HEIGHT)
+    root.maxsize(WIDTH, HEIGHT)
+    hPyT.maximize_button.disable(root)
+    root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
 
@@ -449,7 +453,7 @@ def settingsNetworkPage(x, y):
                     motd = maliang.Text(button, (100, 23), family=FONT_FAMILY, fontsize=22)
                     motd.set(response[1]['name'])
                     desc = maliang.Text(button, (100, 55), family=FONT_FAMILY_LIGHT, fontsize=16)
-                    desc.set(f'{response[1]['type']} · {boxinput.split('/')[2].split('/')[0]}')
+                    desc.set(f"{response[1]['type']} · {boxinput.split('/')[2].split('/')[0]}")
 
 
     def createSource():
