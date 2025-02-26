@@ -1,8 +1,13 @@
+certifi==2025.1.31
+charset-normalizer==3.4.1
 colorama==0.4.6
 darkdetect==0.8.0
 hPyT==1.4.0
+idna==3.10
 maliang==3.0.0
 pillow==11.1.0
 pywinstyles==1.8
+requests==2.32.3
 typing_extensions==4.12.2
+urllib3==2.3.0
 win32material==1.0.7

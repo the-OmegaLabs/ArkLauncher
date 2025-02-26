@@ -3,6 +3,7 @@ import json
 import os
 
 config = {}
+first = False
 
 def _getConfigPath():
     #return os.path.join(os.path.expanduser(f'~/.config/arklauncher/'))
@@ -10,6 +11,9 @@ def _getConfigPath():
 
 
 def _generateConfig(path):
+    global first
+
+    first = True
     os.makedirs(path, exist_ok=True)
     template = {
         'theme': 'system',

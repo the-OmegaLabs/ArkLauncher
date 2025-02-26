@@ -6,6 +6,7 @@ import os
 import colorama
 import darkdetect
 import platform
+from PIL import ImageTk
 import maliang
 import maliang.core
 import maliang.theme
@@ -292,8 +293,8 @@ def mainPage(x, y):
             return [noticeBar, noticeText, noticeSpinner]
         else:
             return [noticeBar, noticeText]
-
-
+        
+        
     icon_x = 50
     icon_y = 40
     icon_size = 60
@@ -302,25 +303,25 @@ def mainPage(x, y):
     
 
     greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),  
-                               text=getTimeBasedGreeting(), 
                                family=FONT_FAMILY_BOLD, 
                                fontsize=24)
 
+    greeting_text.set(getTimeBasedGreeting())
 
-    content_start_y = icon_y + icon_size + 65
+    content_start_y = 165
 
     button_new = maliang.Button(cv, position=(50, content_start_y), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
     
 
     maliang.Tooltip(
-        maliang.IconButton(cv, position=(400, 40), size=(50, 50), 
+        maliang.IconButton(cv, position=(400, 50), size=(50, 50), 
                           command=lambda: changeWindow(settingsPage, root),
                           image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
         text=translate('settings'), fontsize=13)
     
     maliang.Tooltip(
-        maliang.IconButton(cv, position=(340, 40), size=(50, 50), 
+        maliang.IconButton(cv, position=(340, 50), size=(50, 50), 
                           command=lambda: changeWindow(mainPage, root),
                           image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))), 
         text=translate('quick'),
@@ -340,7 +341,7 @@ def settingsPage(x, y):
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['avatar'].resize((45, 45), 1)))
 
-    HEIGHT = 130
+    HEIGHT = 165
     button_account = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
                                         command=lambda: changeWindow(settingsAccountPage, root),
                                         image=maliang.PhotoImage(images['icon_account'].resize((40, 40), 1)),
@@ -413,27 +414,48 @@ def settingsNetworkPage(x, y):
         None,
         None,
         None,
-        None,
-        None,
+        None
     ]
 
-    def handleInput(url: maliang.InputBox, button: maliang.Button):
-        if not url.get():
+    def handleInput(url: maliang.InputBox, button: maliang.Label, confirm: maliang.Button):
+        boxinput = url.get()
+        if not boxinput:
             button.destroy()
             index = buttons.index(button)
             buttons.pop(index)
             buttons.insert(index, None)
             log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
+        else:
+            confirm.destroy()
+            url.disable()
+
+            confirm = maliang.Spinner(button, size=(35, 35), position=(330, 33), mode='indeterminate')
+        
+            if boxinput.startswith('https://') or boxinput.startswith('http://'):
+                response = ark.getSourceContent(boxinput)
+                if response[0]: # 400 100
+                    url.destroy()
+                    confirm.destroy()
+                    
+                    logo = maliang.Image(button, (25, 20), size=(60, 60), image=maliang.PhotoImage(response[1]['icon'].resize((50, 50), 1)))
+                    motd = maliang.Text(button, (100, 23), family=FONT_FAMILY, fontsize=22)
+                    motd.set(response[1]['name'])
+                    desc = maliang.Text(button, (100, 55), family=FONT_FAMILY_LIGHT, fontsize=16)
+                    desc.set(f'{response[1]['type']} · {boxinput.split('/')[2].split('/')[0]}')
 
 
     def createSource():
         nonlocal button_new, buttons, cv
 
         index = buttons.index(None)
-        HEIGHT = 130 + 110 * index
+        HEIGHT = 165 + 110 * index
         button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
-        maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD, command=lambda: handleInput(url, button))
+        url.set('http://127.0.0.1:8000/')
+        confirm = maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD)
+        confirm.bind('<Button-1>', lambda event: handleInput(url, button, confirm)) # I want fuck tk event.
+        url.bind('<Return>', lambda event: handleInput(url, button, confirm)) # process enter
+
         buttons[index] = button
         log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
                 
@@ -469,7 +491,7 @@ def settingsCustomizePage(x, y):
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
-        HEIGHT = 130
+        HEIGHT = 165
         buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'),
                                         family=FONT_FAMILY_BOLD,
                                         image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
@@ -556,7 +578,7 @@ def settingsLanguagePage(x, y):
         configLib.setConfig('language', locale)
         configLib.sync()
 
-        HEIGHT = 130
+        HEIGHT = 165
         lang_changebutton = []
         for i in lang_dict:
             lang_changebutton.append(
@@ -617,8 +639,10 @@ def tracebackWindow(exception: Exception):
 try:
     loadLocale()
     
-    settingsNetworkPage(500, 200)
-    # welcomePage()
+    if configLib.first:
+        welcomePage()
+    else:
+        mainPage(500, 200)
 
 except Exception as f:
     tracebackWindow(f)
