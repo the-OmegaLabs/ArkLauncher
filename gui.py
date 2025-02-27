@@ -1,23 +1,25 @@
 _VERSION = 'dev'
-_SUBVERSION = '25w09d'
+_SUBVERSION = '25w09f'
 
 import json
 import os
+import platform
+import threading
+import traceback
+from datetime import datetime
+
 import colorama
 import darkdetect
-import platform
-from PIL import Image
 import maliang
+import maliang.animation
 import maliang.core
 import maliang.theme
-import maliang.animation
-import traceback
+from PIL import Image
+
+import ark
+import libs.config as configLib
 from libs import olog as olog
 from libs.olog import output as log
-import libs.config as configLib
-import ark
-from datetime import datetime
-import threading
 
 WIDTH = 500
 HEIGHT = 800
@@ -34,11 +36,13 @@ if _THEME in ('system', 'auto'):
 
 if platform.system() == 'Windows':
     import libs.avatar.Windows as avatar
+
     FONT_FAMILY = 'Microsoft YaHei UI'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 elif platform.system() == 'Linux':
     import libs.avatar.Linux as avatar
+
     FONT_FAMILY = 'Noto Sans'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
@@ -55,6 +59,7 @@ elif platform.system() == 'Linux':
 colorama.init()
 
 images = {}
+
 
 def refreshImage():
     global images
@@ -129,8 +134,10 @@ def refreshImage():
                 args=(path, key, category)
             ).start()
 
+
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
+
 
 def createWindow(x=None, y=None):
     log(f'Creating new page at ({x}, {y}).', type=olog.Type.DEBUG)
@@ -148,6 +155,7 @@ def createWindow(x=None, y=None):
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
+
 def changeWindow(window, root: maliang.Tk):
     log(f'Perform change window to "{window.__name__}"...', type=olog.Type.INFO)
     x, y = root.winfo_x(), root.winfo_y()
@@ -156,6 +164,7 @@ def changeWindow(window, root: maliang.Tk):
         y -= 31
     root.destroy()
     window(x, y)
+
 
 def welcomePage():
     global locale
@@ -202,6 +211,7 @@ def welcomePage():
     changeLanguage('cn')
 
     root.mainloop()
+
 
 def aboutPage(x, y):
     root, cv = createWindow(x, y)
@@ -281,6 +291,7 @@ def aboutPage(x, y):
 
     root.mainloop()
 
+
 def mainPage(x, y):
     root, cv = createWindow(x, y)
 
@@ -307,7 +318,8 @@ def mainPage(x, y):
             return [noticeBar, noticeText]
 
     def playToastAnimation(notice: maliang.Label):
-        animation = maliang.animation.MoveWidget(notice, offset=(0, -100), duration=500, controller=maliang.animation.ease_out, fps=500)
+        animation = maliang.animation.MoveWidget(notice, offset=(0, -100), duration=500,
+                                                 controller=maliang.animation.ease_out, fps=500)
         animation.start()
 
     subtitle, title = (None, None)
@@ -315,12 +327,12 @@ def mainPage(x, y):
     icon_x = 50
     icon_y = 40
     icon_size = 60
-    logo_icon = maliang.Image(cv, (icon_x, icon_y), 
-                             image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
+    logo_icon = maliang.Image(cv, (icon_x, icon_y),
+                              image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
 
-    greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),  
-                               family=FONT_FAMILY_BOLD, 
-                               fontsize=24)
+    greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),
+                                 family=FONT_FAMILY_BOLD,
+                                 fontsize=24)
 
     greeting_text.set(getTimeBasedGreeting())
 
@@ -330,23 +342,24 @@ def mainPage(x, y):
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
 
     maliang.Tooltip(
-        maliang.IconButton(cv, position=(400, 50), size=(50, 50), 
-                          command=lambda: changeWindow(settingsPage, root),
-                          image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
+        maliang.IconButton(cv, position=(400, 50), size=(50, 50),
+                           command=lambda: changeWindow(settingsPage, root),
+                           image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
         text=translate('settings'), fontsize=13)
-    
+
     maliang.Tooltip(
-        maliang.IconButton(cv, position=(340, 50), size=(50, 50), 
-                          command=lambda: changeWindow(mainPage, root),
-                          image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))), 
+        maliang.IconButton(cv, position=(340, 50), size=(50, 50),
+                           command=lambda: changeWindow(mainPage, root),
+                           image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))),
         text=translate('quick'),
         fontsize=13)
 
-    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", 
-                                 translate('wait'), cv, 1)
-    
+    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...",
+                                   translate('wait'), cv, 1)
+
     playToastAnimation(noticeBar)
     root.mainloop()
+
 
 def settingsPage(x, y):
     root, cv = createWindow(x, y)
@@ -398,6 +411,7 @@ def settingsPage(x, y):
 
     root.mainloop()
 
+
 def settingsAccountPage(x, y):
     root, cv = createWindow(x, y)
 
@@ -411,6 +425,7 @@ def settingsAccountPage(x, y):
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
     root.mainloop()
+
 
 def settingsNetworkPage(x, y):
     root, cv = createWindow(x, y)
@@ -444,14 +459,15 @@ def settingsNetworkPage(x, y):
             url.disable()
 
             confirm = maliang.Spinner(button, size=(35, 35), position=(330, 33), mode='indeterminate')
-        
+
             if boxinput.startswith('https://') or boxinput.startswith('http://'):
                 response = ark.getSourceContent(boxinput)
                 if response[0]:
                     url.destroy()
                     confirm.destroy()
-                    
-                    logo = maliang.Image(button, (25, 20), size=(60, 60), image=maliang.PhotoImage(response[1]['icon'].resize((50, 50), 1)))
+
+                    logo = maliang.Image(button, (25, 20), size=(60, 60),
+                                         image=maliang.PhotoImage(response[1]['icon'].resize((50, 50), 1)))
                     motd = maliang.Text(button, (100, 23), family=FONT_FAMILY, fontsize=22)
                     motd.set(response[1]['name'])
                     desc = maliang.Text(button, (100, 55), family=FONT_FAMILY_LIGHT, fontsize=16)
@@ -465,17 +481,19 @@ def settingsNetworkPage(x, y):
         button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
         url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
         url.set('http://127.0.0.1:8000/')
-        confirm = maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+', family=FONT_FAMILY_BOLD)
+        confirm = maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+',
+                                 family=FONT_FAMILY_BOLD)
         confirm.bind('<Button-1>', lambda event: handleInput(url, button, confirm))
         url.bind('<Return>', lambda event: handleInput(url, button, confirm))
 
         buttons[index] = button
         log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
-                
+
     button_new = maliang.Button(cv, position=(400, 50), size=(50, 50), command=createSource)
     maliang.Text(button_new, (25, 22), text='+', family=FONT_FAMILY, fontsize=50, anchor='center')
-    
+
     root.mainloop()
+
 
 def settingsCustomizePage(x, y):
     global _THEME
@@ -527,6 +545,7 @@ def settingsCustomizePage(x, y):
 
     root.mainloop()
 
+
 def loadLocale():
     global lang_dict
 
@@ -538,8 +557,10 @@ def loadLocale():
             with open(f'./src/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
 
+
 def translate(target):
     return lang_dict.get(locale, {}).get(target, lang_dict['en'].get(target, target))
+
 
 def settingsLanguagePage(x, y):
     global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
@@ -584,7 +605,7 @@ def settingsLanguagePage(x, y):
 
         HEIGHT = 165
         lang_changebutton = []
-        
+
         if 'country' in images:
             for i in lang_dict:
                 if i in images['country']:
@@ -612,6 +633,7 @@ def settingsLanguagePage(x, y):
 
     setLanguage(locale, root)
     root.mainloop()
+
 
 def tracebackWindow(exception: Exception):
     log('Starting Traceback window because a exception detected.', type=olog.Type.WARN)
@@ -641,10 +663,11 @@ def tracebackWindow(exception: Exception):
     root.center()
     root.mainloop()
 
+
 try:
     loadLocale()
     refreshImage()
-    
+
     if configLib.first:
         welcomePage()
     else:
