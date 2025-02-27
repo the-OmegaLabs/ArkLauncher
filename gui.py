@@ -1,3 +1,5 @@
+from pyglet.resource import animation
+
 _VERSION = 'dev'
 _SUBVERSION = '25w09f'
 
@@ -6,7 +8,11 @@ import os
 import platform
 import threading
 import traceback
+if platform.system() == 'Windows':
+    import win32material
 from datetime import datetime
+if platform.system() == 'Windows':
+    from ctypes import windll, c_char_p
 
 import colorama
 import darkdetect
@@ -29,6 +35,7 @@ config = configLib.config
 locale = config['language']
 _THEME = config['theme']
 _BORDER = config['border']
+_WINDOW_STYLE = config['style']
 maliang.theme.manager.set_color_mode(_THEME)
 
 if _THEME in ('system', 'auto'):
@@ -152,6 +159,8 @@ def createWindow(x=None, y=None):
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
+    if platform.system() == 'Windows':
+        hwid = windll.user32.FindWindowW(c_char_p(None), f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
@@ -287,7 +296,7 @@ def aboutPage(x, y):
                 size=(avatar_size, avatar_size),
                 command=lambda c=contributor: openGithub(c),
                 image=maliang.PhotoImage(images['contributors'][contributor].resize((47, 47), 1))
-            )
+                )
 
     root.mainloop()
 
