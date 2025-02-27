@@ -17,7 +17,8 @@ def _generateConfig(path):
     os.makedirs(path, exist_ok=True)
     template = {
         'theme': 'system',
-        'language': 'en'
+        'language': 'en',
+        'border': 'smallround'
     }
     with open(f'{path}/config.json', 'w', encoding='utf-8') as f:
         f.write(json.dumps(template, ensure_ascii=False, indent=4))

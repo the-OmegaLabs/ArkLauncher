@@ -1,4 +1,5 @@
 {
     "theme": "system",
-    "language": "cn"
+    "language": "cn",
+    "border": "smallround"
 }

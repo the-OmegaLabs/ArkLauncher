@@ -26,6 +26,7 @@ configLib.loadConfig()
 config = configLib.config
 locale = config['language']
 _THEME = config['theme']
+_BORDER = config['border']
 maliang.theme.manager.set_color_mode(_THEME)
 
 if _THEME in ('system', 'auto'):
@@ -144,6 +145,7 @@ def createWindow(x=None, y=None):
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.customize_window(root, disable_maximize_button=True)
+    maliang.theme.manager.customize_window(root, border_type=_BORDER)
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
