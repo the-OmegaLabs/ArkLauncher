@@ -5,6 +5,7 @@ import json
 import os
 import platform
 import threading
+import time
 import traceback
 from datetime import datetime
 import colorama
@@ -311,11 +312,18 @@ def mainPage(x, y):
         else:
             return [noticeBar, noticeText]
 
-    def playToastAnimation(notice: maliang.Label):
-        animation = maliang.animation.MoveWidget(notice, offset=(0, -100), duration=500,
-                                                 controller=maliang.animation.ease_out, fps=500)
+    def playToastAnimation():
+        nonlocal animation
+        animation.start(delay=150)
+
+    def stopAniAndChangeWindow(window: object, root: maliang.Tk):
+        nonlocal animation
+        animation.stop()
+        animation = maliang.animation.MoveWidget(noticeBar, offset=(0, 100), duration=200,
+                                            controller=maliang.animation.ease_in, fps=1000, end=lambda: changeWindow(window, root))
         animation.start()
 
+        
 
     icon_x = 50
     icon_y = 40
@@ -336,21 +344,24 @@ def mainPage(x, y):
 
     maliang.Tooltip(
         maliang.IconButton(cv, position=(400, 50), size=(50, 50),
-                           command=lambda: changeWindow(settingsPage, root),
+                           command=lambda: stopAniAndChangeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
         text=translate('settings'), fontsize=13)
 
     maliang.Tooltip(
         maliang.IconButton(cv, position=(340, 50), size=(50, 50),
-                           command=lambda: changeWindow(mainPage, root),
+                           command=lambda: stopAniAndChangeWindow(mainPage, root),
                            image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))),
         text=translate('quick'),
         fontsize=13)
 
     noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...",
                                    translate('wait'), cv, 1)
+        
+    animation = maliang.animation.MoveWidget(noticeBar, offset=(0, -100), duration=500,
+                                            controller=maliang.animation.ease_out, fps=1000)
 
-    playToastAnimation(noticeBar)
+    playToastAnimation()
     root.mainloop()
 
 
