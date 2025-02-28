@@ -1,11 +1,11 @@
 _VERSION = 'dev'
 _SUBVERSION = '25w09f'
 
+# base
 import json
 import os
 import platform
 import threading
-import time
 import traceback
 from datetime import datetime
 import colorama
@@ -16,35 +16,42 @@ import maliang.core
 import maliang.theme
 from PIL import Image
 
+# customed
 import ark
 import libs.config as configLib
 from libs import olog as olog
 from libs.olog import output as log
 
+
+# config
 WIDTH = 500
 HEIGHT = 800
 
 configLib.loadConfig()
 config = configLib.config
 locale = config['language']
+
+images = {}
 _THEME = config['theme']
 _BORDER = config['border']
-maliang.theme.manager.set_color_mode(_THEME)
+_SYSTEM = platform.system()
 
+# theme
+maliang.theme.manager.set_color_mode(_THEME)
 if _THEME in ('system', 'auto'):
     _THEME = darkdetect.theme().lower()
 
-if platform.system() == 'Windows':
+if _SYSTEM == 'Windows':
     import libs.avatar.Windows as avatar
-    from ctypes import windll, c_char_p
+elif _SYSTEM == 'Linux':
+    import libs.avatar.Linux as avatar
 
+if _SYSTEM == 'Windows':
     FONT_FAMILY = 'Microsoft YaHei UI'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
-elif platform.system() == 'Linux':
-    import libs.avatar.Linux as avatar
-
+if _SYSTEM == 'Linux':
     FONT_FAMILY = 'Noto Sans'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
@@ -54,8 +61,6 @@ olog.logLevel = 5
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
-
-images = {}
 
 
 def refreshImage():
@@ -91,34 +96,34 @@ def refreshImage():
     # Define image paths with categories
     image_paths = {
         'contributors': {
-            'maliang': 'src/Contributors/maliang.png',
-            'Stevesuk0': 'src/Contributors/Stevesuk0.jpg',
-            'bzym2': 'src/Contributors/bzym2.png',
-            'HRGC-Sonrai': 'src/Contributors/HRGC-Sonrai.jpg',
-            'Xiaokang2022': 'src/Contributors/Xiaokang2022.jpg',
-            'the-OmegaLabs': 'src/Contributors/the-OmegaLabs.png',
+            'maliang':       'src/icon/contributors/maliang.png',
+            'Stevesuk0':     'src/icon/contributors/Stevesuk0.jpg',
+            'bzym2':         'src/icon/contributors/bzym2.png',
+            'HRGC-Sonrai':   'src/icon/contributors/HRGC-Sonrai.jpg',
+            'Xiaokang2022':  'src/icon/contributors/Xiaokang2022.jpg',
+            'the-OmegaLabs': 'src/icon/contributors/the-OmegaLabs.png',
         },
         'country': {
-            'cn': 'src/both/country_cn.png',
-            'jp': 'src/both/country_jp.png',
-            'ko': 'src/both/country_ko.png',
-            'en': 'src/both/country_us.png',
-            'sb': 'src/both/transgender.png',
+            'cn': 'src/icon/both/country_cn.png',
+            'jp': 'src/icon/both/country_jp.png',
+            'ko': 'src/icon/both/country_ko.png',
+            'en': 'src/icon/both/country_us.png',
+            'sb': 'src/icon/both/transgender.png',
         },
         None: {  # Regular images without category
             'avatar': avatar.getAvatar(),
-            'icon_quick': 'src/both/quick.png',
-            'icon_logo': 'src/icon.png',
-            'icon_return': f'src/{theme}/return.png',
-            'icon_settings': f'src/{theme}/settings.png',
-            'icon_about': f'src/{theme}/about.png',
-            'icon_language': f'src/{theme}/language.png',
-            'icon_network': f'src/{theme}/network.png',
-            'icon_account': f'src/{theme}/account.png',
-            'icon_customize': f'src/{theme}/customize.png',
-            'icon_dark': f'src/{theme}/dark.png',
-            'icon_light': f'src/{theme}/light.png',
-            'icon_auto': f'src/{theme}/auto.png'
+            'icon_quick':      'src/icon/both/quick.png',
+            'icon_logo':       'src/icon/main.png',
+            'icon_return':    f'src/icon/{theme}/return.png',
+            'icon_settings':  f'src/icon/{theme}/settings.png',
+            'icon_about':     f'src/icon/{theme}/about.png',
+            'icon_language':  f'src/icon/{theme}/language.png',
+            'icon_network':   f'src/icon/{theme}/network.png',
+            'icon_account':   f'src/icon/{theme}/account.png',
+            'icon_customize': f'src/icon/{theme}/customize.png',
+            'icon_dark':      f'src/icon/{theme}/dark.png',
+            'icon_light':     f'src/icon/{theme}/light.png',
+            'icon_auto':      f'src/icon/{theme}/auto.png'
         }
     }
 
@@ -158,7 +163,7 @@ def changeWindow(window, root: maliang.Tk):
     if platform.system() == 'Linux':
         x -= 5
         y -= 31
-    root.destroy()
+    root.__exit__()
     window(x, y)
 
 
@@ -320,9 +325,11 @@ def mainPage(x, y):
         nonlocal animation
         animation.stop()
         animation = maliang.animation.MoveWidget(noticeBar, offset=(0, 100), duration=200,
-                                            controller=maliang.animation.ease_in, fps=1000, end=lambda: changeWindow(window, root))
+                                            controller=maliang.animation.ease_in, fps=1000,
+                                            end=lambda: (animation.stop(), changeWindow(window, root)))
         animation.start()
 
+        #changeWindow(window, root)
         
 
     icon_x = 50
