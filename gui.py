@@ -1,5 +1,3 @@
-from pyglet.resource import animation
-
 _VERSION = 'dev'
 _SUBVERSION = '25w09f'
 
@@ -8,12 +6,7 @@ import os
 import platform
 import threading
 import traceback
-if platform.system() == 'Windows':
-    import win32material
 from datetime import datetime
-if platform.system() == 'Windows':
-    from ctypes import windll, c_char_p
-
 import colorama
 import darkdetect
 import maliang
@@ -35,7 +28,6 @@ config = configLib.config
 locale = config['language']
 _THEME = config['theme']
 _BORDER = config['border']
-_WINDOW_STYLE = config['style']
 maliang.theme.manager.set_color_mode(_THEME)
 
 if _THEME in ('system', 'auto'):
@@ -43,10 +35,12 @@ if _THEME in ('system', 'auto'):
 
 if platform.system() == 'Windows':
     import libs.avatar.Windows as avatar
+    from ctypes import windll, c_char_p
 
     FONT_FAMILY = 'Microsoft YaHei UI'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+
 elif platform.system() == 'Linux':
     import libs.avatar.Linux as avatar
 
@@ -57,11 +51,6 @@ elif platform.system() == 'Linux':
 olog.logLevel = 5
 
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
-
-if platform.system() == 'Windows':
-    import libs.avatar.Windows as avatar
-elif platform.system() == 'Linux':
-    import libs.avatar.Linux as avatar
 
 colorama.init()
 
@@ -80,7 +69,6 @@ def refreshImage():
             return None
 
     def threadedImageOpen(path, dict_key, category=None):
-        """Threaded image loading function with category support."""
         img = loadImage(path)
         if img:
             if category:
@@ -150,7 +138,7 @@ def createWindow(x=None, y=None):
     log(f'Creating new page at ({x}, {y}).', type=olog.Type.DEBUG)
     if x and y:
         root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
-                          title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+                            title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     else:
         root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
 
@@ -159,8 +147,6 @@ def createWindow(x=None, y=None):
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
-    if platform.system() == 'Windows':
-        hwid = windll.user32.FindWindowW(c_char_p(None), f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
@@ -195,7 +181,6 @@ def welcomePage():
 
     def changeLanguage(lang_key):
         global locale
-        lang = lang_dict.get(lang_key, lang_dict['en'])
         locale = lang_key
 
         text_welcome.set(translate('welcome'))
@@ -318,7 +303,7 @@ def mainPage(x, y):
     def createNotice(str, sub, cv, spin):
         noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 800))
         noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
-        noticeSubText = maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
+        maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
 
         if spin == True:
             noticeSpinner = maliang.Spinner(noticeBar, (35, 35), mode="indeterminate", anchor='center')
@@ -331,12 +316,11 @@ def mainPage(x, y):
                                                  controller=maliang.animation.ease_out, fps=500)
         animation.start()
 
-    subtitle, title = (None, None)
 
     icon_x = 50
     icon_y = 40
     icon_size = 60
-    logo_icon = maliang.Image(cv, (icon_x, icon_y),
+    maliang.Image(cv, (icon_x, icon_y),
                               image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
 
     greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),
@@ -475,7 +459,7 @@ def settingsNetworkPage(x, y):
                     url.destroy()
                     confirm.destroy()
 
-                    logo = maliang.Image(button, (25, 20), size=(60, 60),
+                    maliang.Image(button, (25, 20), size=(60, 60),
                                          image=maliang.PhotoImage(response[1]['icon'].resize((50, 50), 1)))
                     motd = maliang.Text(button, (100, 23), family=FONT_FAMILY, fontsize=22)
                     motd.set(response[1]['name'])
