@@ -1,22 +1,22 @@
-import tkinter as tk
-from tkinter import ttk, messagebox, scrolledtext
-from tkinter.simpledialog import Dialog
-import threading
+import json
 import queue
 import socket
+import threading
 import time
-import requests
-import json
-import os
-import maliang
-import maliang.theme
+import tkinter as tk
 from datetime import datetime
+from tkinter import ttk, messagebox, scrolledtext
+from tkinter.simpledialog import Dialog
+
+import maliang.theme
+import requests
+
 
 class IPOptimizer:
     def __init__(self, master):
         self.master = master
         self.master.title("IP优选工具 v1.2")
-        self.master.geometry(size=(800,600))
+        self.master.geometry(size=(800, 600))
 
         self.config = {
             'timeout': 2,
@@ -164,6 +164,7 @@ class IPOptimizer:
         results_window = tk.Toplevel(self.master)
         ResultsWindow(results_window, valid_results, self)
 
+
 class SourceSelector(Dialog):
     def __init__(self, parent, controller):
         self.controller = controller
@@ -200,7 +201,6 @@ class SourceSelector(Dialog):
             label.config(text=f"{latency:.1f}ms")
         except:
             label.config(text="超时", foreground="red")
-
 
     def apply(self):
         selected = self.source_var.get()
