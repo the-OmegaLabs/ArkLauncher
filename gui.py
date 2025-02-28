@@ -1,5 +1,5 @@
 _VERSION = 'dev'
-_SUBVERSION = '25w09f'
+_SUBVERSION = '25w09g'
 
 # base
 import json
@@ -14,7 +14,9 @@ import maliang
 import maliang.animation
 import maliang.core
 import maliang.theme
+import maliang.toolbox
 from PIL import Image
+import ctypes
 
 # customed
 import ark
@@ -22,6 +24,9 @@ import libs.config as configLib
 from libs import olog as olog
 from libs.olog import output as log
 
+hwnd = ctypes.windll.user32.GetForegroundWindow()   
+user32 = ctypes.windll.user32
+user32.SetWindowTextW(hwnd, f'ArkLauncher Console Interface - {_VERSION}, {_SUBVERSION}.')
 
 # config
 WIDTH = 500
@@ -36,7 +41,49 @@ _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
 
-# theme
+# font
+def load_font(font_path, private=True, enumerable=False):
+    if _SYSTEM != "Windows":
+
+        if isinstance(font_path, str):
+            path_buffer = ctypes.create_unicode_buffer(font_path)
+            add_font_resource_ex = ctypes.windll.gdi32.AddFontResourceExW
+        else:
+            path_buffer = ctypes.create_string_buffer(font_path)
+            add_font_resource_ex = ctypes.windll.gdi32.AddFontResourceExA
+
+        flags = (0x10 if private else 0) | (0x20 if not enumerable else 0)
+        num_fonts_added = add_font_resource_ex(ctypes.byref(path_buffer), flags, 0)
+
+        if num_fonts_added > 0:
+            ctypes.windll.gdi32.SendMessageW(0xFFFF, 0x1D, 0, 0)
+            log('Font load completed.', olog.Type.INFO)
+            return True
+        
+        log('Font load failed.', olog.Type.ERROR)
+        return False
+    
+
+def unload_font(font_path, private=False, enumerable=False):
+    if _SYSTEM == "Windows":
+        if isinstance(font_path, str):
+            path_buffer = ctypes.create_unicode_buffer(font_path)
+            remove_font_resource_ex = ctypes.windll.gdi32.RemoveFontResourceExW
+        else:
+            path_buffer = ctypes.create_string_buffer(font_path)
+            remove_font_resource_ex = ctypes.windll.gdi32.RemoveFontResourceExA
+
+        flags = (0x10 if private else 0) | (0x20 if not enumerable else 0)
+        success = remove_font_resource_ex(ctypes.byref(path_buffer), flags, 0)
+
+        if success:
+            ctypes.windll.gdi32.SendMessageW(0xFFFF, 0x1D, 0, 0)
+            log('Font unload completed.', type=olog.Type.INFO)
+            return True
+        
+        log('Font unload failed.', type=olog.Type.ERROR)
+        return False
+
 maliang.theme.manager.set_color_mode(_THEME)
 if _THEME in ('system', 'auto'):
     _THEME = darkdetect.theme().lower()
@@ -47,7 +94,7 @@ elif _SYSTEM == 'Linux':
     import libs.avatar.Linux as avatar
 
 if _SYSTEM == 'Windows':
-    FONT_FAMILY = 'Microsoft YaHei UI'
+    FONT_FAMILY = 'Inter'
     FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
 
@@ -96,24 +143,24 @@ def refreshImage():
     # Define image paths with categories
     image_paths = {
         'contributors': {
-            'maliang':       'src/icon/contributors/maliang.png',
-            'Stevesuk0':     'src/icon/contributors/Stevesuk0.jpg',
-            'bzym2':         'src/icon/contributors/bzym2.png',
-            'HRGC-Sonrai':   'src/icon/contributors/HRGC-Sonrai.jpg',
-            'Xiaokang2022':  'src/icon/contributors/Xiaokang2022.jpg',
-            'the-OmegaLabs': 'src/icon/contributors/the-OmegaLabs.png',
+            'maliang':        f'src/icon/contributors/maliang.png',
+            'Stevesuk0':      f'src/icon/contributors/Stevesuk0.jpg',
+            'bzym2':          f'src/icon/contributors/bzym2.png',
+            'HRGC-Sonrai':    f'src/icon/contributors/HRGC-Sonrai.jpg',
+            'Xiaokang2022':   f'src/icon/contributors/Xiaokang2022.jpg',
+            'the-OmegaLabs':  f'src/icon/contributors/the-OmegaLabs.png',
         },
         'country': {
-            'cn': 'src/icon/both/country_cn.png',
-            'jp': 'src/icon/both/country_jp.png',
-            'ko': 'src/icon/both/country_ko.png',
-            'en': 'src/icon/both/country_us.png',
-            'sb': 'src/icon/both/transgender.png',
+            'cn':             f'src/icon/both/country_cn.png',
+            'jp':             f'src/icon/both/country_jp.png',
+            'ko':             f'src/icon/both/country_ko.png',
+            'en':             f'src/icon/both/country_us.png',
+            'sb':             f'src/icon/both/transgender.png',
         },
         None: {  # Regular images without category
             'avatar': avatar.getAvatar(),
-            'icon_quick':      'src/icon/both/quick.png',
-            'icon_logo':       'src/icon/main.png',
+            'icon_quick':     f'src/icon/both/quick.png',
+            'icon_logo':      f'src/icon/main.png',
             'icon_return':    f'src/icon/{theme}/return.png',
             'icon_settings':  f'src/icon/{theme}/settings.png',
             'icon_about':     f'src/icon/{theme}/about.png',
@@ -676,8 +723,11 @@ def tracebackWindow(exception: Exception):
 
 
 try:
-    loadLocale()
     refreshImage()
+    loadLocale()
+
+    unload_font('src/font/inter.ttf', private=True)
+    load_font('src/font/inter.ttf', private=True)
 
     if configLib.first:
         welcomePage()
