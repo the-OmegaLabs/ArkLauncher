@@ -1,4 +1,4 @@
-import getpass
+import platform
 import json
 import os
 
@@ -17,8 +17,9 @@ def _generateConfig(path):
     os.makedirs(path, exist_ok=True)
     template = {
         'theme': 'system',
+        'style': f'{platform.system()}{platform.release()}',
         'language': 'en',
-        'border': 'smallround'
+        'border': 'smallround',
     }
     with open(f'{path}/config.json', 'w', encoding='utf-8') as f:
         f.write(json.dumps(template, ensure_ascii=False, indent=4))
