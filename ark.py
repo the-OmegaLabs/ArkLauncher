@@ -101,9 +101,9 @@ def updateFont():
         
     log(f'Loaded {len(os.listdir('src/font'))} fonts.')
 
-    FONT_FAMILY = '源流黑体 CJK'
-    FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
-    FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
+    FONT_FAMILY = 'Microsoft YaHei UI'
+    FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+    FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
