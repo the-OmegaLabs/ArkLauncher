@@ -49,7 +49,8 @@ _FONTS = []
 _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
-_STYLE = maliang.configs.Env.get_default_system()
+#_STYLE = maliang.configs.Env.get_default_system()
+_STYLE = config['style']
 maliang.configs.Env.system = _STYLE
 
 maliang.theme.manager.set_color_mode(_THEME)
