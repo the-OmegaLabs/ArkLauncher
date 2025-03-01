@@ -42,5 +42,9 @@
     "good_morning": "Good Morning!",
     "good_afternoon": "Good Afternoon!",
     "good_evening": "Good Evening!",
-    "good_night": "Good Night!"
+    "good_night": "Good Night!",
+    "square": "Square",
+    "round": "Round",
+    "color": "Color",
+    "style": "Style"
 }

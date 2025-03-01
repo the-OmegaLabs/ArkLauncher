@@ -1,6 +1,9 @@
 _VERSION = 'dev'
 _SUBVERSION = '25w09g'
 
+import time
+startLoadTime = time.time()
+
 # base
 from io import BytesIO
 import json
@@ -14,15 +17,15 @@ import darkdetect
 import maliang
 import maliang.animation
 import maliang.core
+import maliang.color
+import maliang.standard
 import maliang.theme
 import maliang.toolbox
-import maliang.core.configs
 from PIL import Image
 import ctypes
 import socket
 import requests
-
-maliang.configs.Env.system = 'Windows 11'
+import gc
 
 # customed
 import libs.config as configLib
@@ -42,12 +45,12 @@ config = configLib.config
 locale = config['language']
 
 images = {}
+_FONTS = []
 _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
-
-# font
-maliang.toolbox.load_font('src/font/Genryu-Gothic-CJK.ttf', private=True) # must be private.
+_STYLE = maliang.configs.Env.get_default_system()
+maliang.configs.Env.system = _STYLE
 
 maliang.theme.manager.set_color_mode(_THEME)
 if _THEME in ('system', 'auto'):
@@ -63,6 +66,13 @@ olog.logLevel = 5
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
+
+def loadFont(fontPath):
+    global _FONTS
+    if not fontPath in _FONTS:
+        _FONTS.append(fontPath)
+        maliang.toolbox.load_font(fontPath, private=True) # must be private.
+        log(f'Loaded font \"{fontPath}\".')
 
 def testConnection():
     try:
@@ -82,23 +92,27 @@ def getSourceContent(url):
     metadata['icon'] = Image.open(BytesIO(image.content))
     return (True, metadata)
 
-
 def updateFont():
     global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
-
+    
+    
+    for i in os.listdir('src/font'):
+        loadFont(f'src/font/{i}')
+        
+    log(f'Loaded {len(os.listdir('src/font'))} fonts.')
 
     FONT_FAMILY = '源流黑体 CJK'
-    FONT_FAMILY_BOLD = FONT_FAMILY
-    FONT_FAMILY_LIGHT = FONT_FAMILY
+    FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
+    FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
         FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     elif locale in ('cn'):
-        FONT_FAMILY = '源流黑体 CJK'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
+    FONT_FAMILY       = f'Noto Sans'
+    FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
+    FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     elif locale in ('sb'):
         FONT_FAMILY       = f'Simsun'
         FONT_FAMILY_BOLD  = f'Simhei'
@@ -114,6 +128,9 @@ def updateFont():
 
 def refreshImage():
     global images
+
+    del images
+    gc.collect()
 
     def loadImage(path):
         try:
@@ -132,7 +149,7 @@ def refreshImage():
                 images[category][dict_key] = img
             else:
                 images[dict_key] = img
-            log(f"Loaded image: {path}", type=olog.Type.DEBUG)
+            log(f"Loaded image: {path}")
 
     theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
 
@@ -171,7 +188,10 @@ def refreshImage():
             'icon_customize': f'src/icon/{theme}/customize.png',
             'icon_dark':      f'src/icon/{theme}/dark.png',
             'icon_light':     f'src/icon/{theme}/light.png',
-            'icon_auto':      f'src/icon/{theme}/auto.png'
+            'icon_auto':      f'src/icon/{theme}/auto.png',
+            'icon_info':      f'src/icon/{theme}/info.png',
+            'icon_round':     f'src/icon/{theme}/round.png',
+            'icon_square':    f'src/icon/{theme}/square.png',
         }
     }
 
@@ -182,6 +202,8 @@ def refreshImage():
                 target=threadedImageOpen,
                 args=(path, key, category)
             ).start()
+    
+    log(f'Loaded {len(image_paths['contributors']) + len(image_paths["country"]) + len(image_paths[None])} images.')
 
 
 def openGithub(name):
@@ -212,6 +234,8 @@ def changeWindow(window, root: maliang.Tk):
         x -= 5
         y -= 31
     root.__exit__()
+    del root
+    gc.collect()
     window(x, y)
 
 
@@ -401,13 +425,16 @@ def mainPage(x, y):
         maliang.IconButton(cv, position=(400, 50), size=(50, 50),
                            command=lambda: stopAniAndChangeWindow(settingsPage, root),
                            image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
-        text=translate('settings'), fontsize=13)
+        text=translate('settings'), 
+        family=FONT_FAMILY, 
+        fontsize=13)
 
     maliang.Tooltip(
         maliang.IconButton(cv, position=(340, 50), size=(50, 50),
                            command=lambda: stopAniAndChangeWindow(mainPage, root),
                            image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))),
         text=translate('quick'),
+        family=FONT_FAMILY,
         fontsize=13)
 
     noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...",
@@ -429,29 +456,30 @@ def settingsPage(x, y):
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['avatar'].resize((45, 45), 1)))
 
-    HEIGHT = 165
-    button_account = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
+    Label = maliang.Button(cv, position=(50, 165), size=(400, 290), family=FONT_FAMILY, fontsize=15)
+    HEIGHT = 5
+    button_account = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                         command=lambda: changeWindow(settingsAccountPage, root),
                                         image=maliang.PhotoImage(images['icon_account'].resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
-    HEIGHT += 65
-    button_language = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
+    HEIGHT += 56
+    button_language = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                          command=lambda: changeWindow(settingsLanguagePage, root),
                                          image=maliang.PhotoImage(images['icon_language'].resize((40, 40), 1)),
                                          family=FONT_FAMILY_BOLD, fontsize=18)
-    HEIGHT += 65
-    button_network = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
+    HEIGHT += 56
+    button_network = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                         command=lambda: changeWindow(settingsNetworkPage, root),
                                         image=maliang.PhotoImage(images['icon_network'].resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
-    HEIGHT += 65
-    button_customize = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
+    HEIGHT += 56
+    button_customize = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                           command=lambda: changeWindow(settingsCustomizePage, root),
                                           image=maliang.PhotoImage(images['icon_customize'].resize((40, 40), 1)),
                                           family=FONT_FAMILY_BOLD,
                                           fontsize=18)
-    HEIGHT += 65
-    button_about = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
+    HEIGHT += 56
+    button_about = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                       command=lambda: changeWindow(aboutPage, root),
                                       image=maliang.PhotoImage(images['icon_about'].resize((40, 40), 1)),
                                       family=FONT_FAMILY_BOLD,
@@ -497,61 +525,15 @@ def settingsNetworkPage(x, y):
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
-    buttons = [
-        None,
-        None,
-        None,
-        None,
-        None
-    ]
+    
+    noticeLabel = maliang.Label(cv, position=(50, 165), size=(400, 95), family=FONT_FAMILY, fontsize=15)
+    noticeLabel.set('When you launch your Minecraft instance using ArkLa\nuncher, We will automatically take over Minecraft\'s ne\ntwork and attempt to accelerate it.')
 
-    def handleInput(url: maliang.InputBox, button: maliang.Label, confirm: maliang.Button):
-        boxinput = url.get()
-        if not boxinput:
-            button.destroy()
-            index = buttons.index(button)
-            buttons.pop(index)
-            buttons.insert(index, None)
-            log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
-        else:
-            confirm.destroy()
-            url.disable()
 
-            confirm = maliang.Spinner(button, size=(35, 35), position=(330, 33), mode='indeterminate')
-
-            if boxinput.startswith('https://') or boxinput.startswith('http://'):
-                response = getSourceContent(boxinput)
-                if response[0]:
-                    url.destroy()
-                    confirm.destroy()
-
-                    maliang.Image(button, (25, 20), size=(60, 60),
-                                         image=maliang.PhotoImage(response[1]['icon'].resize((50, 50), 1)))
-                    motd = maliang.Text(button, (100, 23), family=FONT_FAMILY, fontsize=22)
-                    motd.set(response[1]['name'])
-                    desc = maliang.Text(button, (100, 55), family=FONT_FAMILY_LIGHT, fontsize=16)
-                    desc.set(f"{response[1]['type']} · {boxinput.split('/')[2].split('/')[0]}")
-
-    def createSource():
-        nonlocal button_new, buttons, cv
-
-        index = buttons.index(None)
-        HEIGHT = 165 + 110 * index
-        button = maliang.Label(cv, position=(50, HEIGHT), size=(400, 100))
-        url = maliang.InputBox(button, position=(25, 25), placeholder="URL", size=(290, 50), fontsize=16)
-        url.set('http://127.0.0.1:8000/')
-        confirm = maliang.Button(button, size=(50, 50), position=(325, 25), fontsize=35, text='+',
-                                 family=FONT_FAMILY_BOLD)
-        confirm.bind('<Button-1>', lambda event: handleInput(url, button, confirm))
-        url.bind('<Return>', lambda event: handleInput(url, button, confirm))
-
-        buttons[index] = button
-        log(f'Buttons: {buttons}', type=olog.Type.DEBUG)
-
-    button_new = maliang.Button(cv, position=(400, 50), size=(50, 50), command=createSource)
-    maliang.Text(button_new, (25, 22), text='+', family=FONT_FAMILY, fontsize=50, anchor='center')
+    #label = maliang.Label(cv, position=(50, 500), size=(400, 100))
 
     root.mainloop()
+
 
 
 def settingsCustomizePage(x, y):
@@ -564,43 +546,92 @@ def settingsCustomizePage(x, y):
     text_logo1.set(translate('settings'))
     text_logo2.set(translate('customize'))
 
-    def changeTheme(theme):
+    first = False
+    
+    colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 200), family=FONT_FAMILY, fontsize=15)
+    styleLabel = maliang.Button(cv, position=(50, 370), size=(400, 200), family=FONT_FAMILY, fontsize=15)
+
+    def changeTheme(theme, style):
         global _THEME
+        nonlocal first, root, colorLabel, styleLabel
+        
+        if first:
+            colorLabel.destroy()
+            styleLabel.destroy()
+            colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 200), family=FONT_FAMILY, fontsize=15)
+            styleLabel = maliang.Button(cv, position=(50, 370), size=(400, 200), family=FONT_FAMILY, fontsize=15)
 
         _THEME = theme
-        configLib.setConfig('theme', _THEME)
-        configLib.sync()
+        _STYLE = style
 
-        if _THEME == 'system':
-            _THEME = darkdetect.theme().lower()
+        configLib.setConfig('theme', _THEME)
+        configLib.setConfig('style', _STYLE)
+        configLib.sync()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
         refreshImage()
         maliang.theme.manager.set_color_mode(_THEME)
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                           image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
-        HEIGHT = 165
-        buttonDark = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55), command=lambda: changeTheme('dark'),
+        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+
+        colorLabelText = maliang.Text(colorLabel, position=(8, 5), family=FONT_FAMILY, fontsize=15)
+
+        HEIGHT = 30
+        buttonDark = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme('dark', _STYLE),
                                         family=FONT_FAMILY_BOLD,
                                         image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
-        HEIGHT += 65
-        buttonLight = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
-                                         command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
-                                         image=maliang.PhotoImage(images['icon_light'].resize((40, 40), 1)),
+        HEIGHT += 56
+        buttonLight = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
+                                        command=lambda: changeTheme('light', _STYLE), family=FONT_FAMILY_BOLD,
+                                        image=maliang.PhotoImage(images['icon_light'].resize((40, 40), 1)),
+                                        fontsize=18)
+        HEIGHT += 56
+        buttonSystem = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
+                                        command=lambda: changeTheme(darkdetect.theme().lower(), _STYLE), family=FONT_FAMILY_BOLD,
+                                        image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
+                                        fontsize=18)
+
+        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+
+        styleLabelText = maliang.Text(styleLabel, position=(8, 5), family=FONT_FAMILY, fontsize=15)
+
+        HEIGHT = 30
+        maliang.Env.system = 'Windows10'
+        button10 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme(theme=_THEME, style='Windows10'),
+                                        family=FONT_FAMILY_BOLD,
+                                        image=maliang.PhotoImage(images['icon_square'].resize((40, 40), 1)), fontsize=18)
+        HEIGHT += 56
+        maliang.Env.system = 'Windows11'
+        button11 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
+                                         command=lambda: changeTheme(theme=_THEME, style='Windows11'), family=FONT_FAMILY_BOLD,
+                                         image=maliang.PhotoImage(images['icon_round'].resize((40, 40), 1)),
                                          fontsize=18)
-        HEIGHT += 65
-        buttonSystem = maliang.IconButton(cv, position=(50, HEIGHT), size=(400, 55),
-                                          command=lambda: changeTheme('system'), family=FONT_FAMILY_BOLD,
+        HEIGHT += 56
+        maliang.configs.Env.system = _STYLE
+        buttonSystem2 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
+                                          command=lambda: changeTheme(theme=_THEME, style=maliang.configs.Env.get_default_system()), family=FONT_FAMILY_BOLD,
                                           image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
                                           fontsize=18)
+
+
         log(f"Instant change widget to {_THEME} style.", type=olog.Type.DEBUG)
+        
+        first = True
+
+        colorLabelText.set(translate('color'))
+        styleLabelText.set(translate('style'))
 
         buttonDark.set(translate('dark'))
         buttonLight.set(translate('light'))
         buttonSystem.set(translate('auto'))
 
-    changeTheme(_THEME)
+        button10.set(translate('square'))
+        button11.set(translate('round'))
+        buttonSystem2.set(translate('auto'))
+
+    changeTheme(_THEME, _STYLE)
 
     root.mainloop()
 
@@ -612,9 +643,10 @@ def loadLocale():
 
     for i in os.listdir('./src/lang'):
         if i.endswith('.json'):
-            log(f'Loading locale file "{i}"...')
             with open(f'./src/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
+                
+            log(f'Loaded locale file "{i}"...')
 
 
 def translate(target):
@@ -709,10 +741,13 @@ try:
     loadLocale()
     updateFont() # auto select font
 
+    endLoadTime = time.time() - startLoadTime
+
+    log(f'Loaded ArkLauncher in {int(endLoadTime * 1000)}ms.')
     if configLib.first:
         welcomePage()
     else:
-        mainPage(710, 200)
+        settingsCustomizePage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
