@@ -548,8 +548,8 @@ def settingsCustomizePage(x, y):
 
     first = False
     
-    colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 200), family=FONT_FAMILY, fontsize=15)
-    styleLabel = maliang.Button(cv, position=(50, 370), size=(400, 200), family=FONT_FAMILY, fontsize=15)
+    colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 177), family=FONT_FAMILY, fontsize=15)
+    styleLabel = maliang.Button(cv, position=(50, 392), size=(400, 177), family=FONT_FAMILY, fontsize=15)
 
     def changeTheme(theme, style):
         global _THEME
@@ -558,8 +558,8 @@ def settingsCustomizePage(x, y):
         if first:
             colorLabel.destroy()
             styleLabel.destroy()
-            colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 200), family=FONT_FAMILY, fontsize=15)
-            styleLabel = maliang.Button(cv, position=(50, 370), size=(400, 200), family=FONT_FAMILY, fontsize=15)
+            colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 177), family=FONT_FAMILY, fontsize=15)
+            styleLabel = maliang.Button(cv, position=(50, 392), size=(400, 177), family=FONT_FAMILY, fontsize=15)
 
         _THEME = theme
         _STYLE = style
@@ -572,12 +572,12 @@ def settingsCustomizePage(x, y):
         refreshImage()
         maliang.theme.manager.set_color_mode(_THEME)
 
-        maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
+        maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage, root),
                         image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
-        colorLabelText = maliang.Text(colorLabel, position=(8, 5), family=FONT_FAMILY, fontsize=15)
+        colorLabelText = maliang.Text(colorLabel, position=(5, -30), family=FONT_FAMILY, fontsize=15)
 
-        HEIGHT = 30
+        HEIGHT = 5
         buttonDark = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme('dark', _STYLE),
                                         family=FONT_FAMILY_BOLD,
                                         image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
@@ -595,9 +595,9 @@ def settingsCustomizePage(x, y):
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                         image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
-        styleLabelText = maliang.Text(styleLabel, position=(8, 5), family=FONT_FAMILY, fontsize=15)
+        styleLabelText = maliang.Text(styleLabel, position=(5, -30), family=FONT_FAMILY, fontsize=15)
 
-        HEIGHT = 30
+        HEIGHT = 5
         maliang.Env.system = 'Windows10'
         button10 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme(theme=_THEME, style='Windows10'),
                                         family=FONT_FAMILY_BOLD,
