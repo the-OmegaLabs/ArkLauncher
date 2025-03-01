@@ -8,15 +8,14 @@ from datetime import datetime
 from tkinter import ttk, messagebox, scrolledtext
 from tkinter.simpledialog import Dialog
 
-import maliang.theme
 import requests
 
 
 class IPOptimizer:
     def __init__(self, master):
         self.master = master
-        self.master.title("IP优选工具 v1.2")
-        self.master.geometry(size=(800, 600))
+        self.master.title("IP优选工具 v1.3")
+        self.master.geometry("800x600")
 
         self.config = {
             'timeout': 2,
@@ -273,7 +272,6 @@ class ResultsWindow:
 
 
 if __name__ == "__main__":
-    root = maliang.Tk()
-    maliang.theme.set_color_mode('light')
+    root = tk.Tk()
     app = IPOptimizer(root)
     root.mainloop()
