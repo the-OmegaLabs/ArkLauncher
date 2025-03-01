@@ -42,47 +42,7 @@ _BORDER = config['border']
 _SYSTEM = platform.system()
 
 # font
-def load_font(font_path, private=True, enumerable=False):
-    if _SYSTEM != "Windows":
-
-        if isinstance(font_path, str):
-            path_buffer = ctypes.create_unicode_buffer(font_path)
-            add_font_resource_ex = ctypes.windll.gdi32.AddFontResourceExW
-        else:
-            path_buffer = ctypes.create_string_buffer(font_path)
-            add_font_resource_ex = ctypes.windll.gdi32.AddFontResourceExA
-
-        flags = (0x10 if private else 0) | (0x20 if not enumerable else 0)
-        num_fonts_added = add_font_resource_ex(ctypes.byref(path_buffer), flags, 0)
-
-        if num_fonts_added > 0:
-            ctypes.windll.gdi32.SendMessageW(0xFFFF, 0x1D, 0, 0)
-            log('Font load completed.', olog.Type.INFO)
-            return True
-        
-        log('Font load failed.', olog.Type.ERROR)
-        return False
-    
-
-def unload_font(font_path, private=False, enumerable=False):
-    if _SYSTEM == "Windows":
-        if isinstance(font_path, str):
-            path_buffer = ctypes.create_unicode_buffer(font_path)
-            remove_font_resource_ex = ctypes.windll.gdi32.RemoveFontResourceExW
-        else:
-            path_buffer = ctypes.create_string_buffer(font_path)
-            remove_font_resource_ex = ctypes.windll.gdi32.RemoveFontResourceExA
-
-        flags = (0x10 if private else 0) | (0x20 if not enumerable else 0)
-        success = remove_font_resource_ex(ctypes.byref(path_buffer), flags, 0)
-
-        if success:
-            ctypes.windll.gdi32.SendMessageW(0xFFFF, 0x1D, 0, 0)
-            log('Font unload completed.', type=olog.Type.INFO)
-            return True
-        
-        log('Font unload failed.', type=olog.Type.ERROR)
-        return False
+maliang.toolbox.load_font('src/font/Genryu-Gothic-CJK.ttf', private=True) # must be private.
 
 maliang.theme.manager.set_color_mode(_THEME)
 if _THEME in ('system', 'auto'):
@@ -93,22 +53,38 @@ if _SYSTEM == 'Windows':
 elif _SYSTEM == 'Linux':
     import libs.avatar.Linux as avatar
 
-if _SYSTEM == 'Windows':
-    FONT_FAMILY = 'Inter'
-    FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-    FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-
-if _SYSTEM == 'Linux':
-    FONT_FAMILY = 'Noto Sans'
-    FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-    FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-
 olog.logLevel = 5
 
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
 
+def updateFont():
+    global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
+    if locale == 'jp':
+        FONT_FAMILY       = f'Yu Gothic UI'
+        FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    elif locale in ('cn'):
+        FONT_FAMILY = '源流黑体 CJK'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
+    elif locale in ('sb'):
+        FONT_FAMILY       = f'Simsun'
+        FONT_FAMILY_BOLD  = f'Simhei'
+        FONT_FAMILY_LIGHT = f'FangSong'
+    elif locale in ('ko'):
+        FONT_FAMILY       = f'Malgun Gothic'
+        FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'Malgun Gothic'
+    elif locale in ('en'):
+        FONT_FAMILY       = f'源流黑体 CJK'
+        FONT_FAMILY_BOLD  = f'{FONT_FAMILY}'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
+    """elif locale in ('en'):
+        FONT_FAMILY       = f'Segoe UI'
+        FONT_FAMILY_BOLD  = f'Segoe UI Semibold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'"""
 
 def refreshImage():
     global images
@@ -632,30 +608,11 @@ def settingsLanguagePage(x, y):
 
     def setLanguage(language, root: maliang.Tk):
         global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT, locale
-        log(f'Change locale to {language}.')
+        log(f'Change locale to \"{language}\".')
 
-        if language == 'jp':
-            FONT_FAMILY = 'Yu Gothic UI'
-            FONT_FAMILY_BOLD = f'Yu Gothic UI Bold'
-            FONT_FAMILY_LIGHT = f'Yu Gothic UI Light'
-        elif language in ('cn'):
-            FONT_FAMILY = 'Microsoft YaHei UI'
-            FONT_FAMILY_BOLD = f'Microsoft YaHei UI Bold'
-            FONT_FAMILY_LIGHT = f'Microsoft YaHei UI Light'
-        elif language in ('sb'):
-            FONT_FAMILY = 'Simsun'
-            FONT_FAMILY_BOLD = f'Simhei'
-            FONT_FAMILY_LIGHT = f'FangSong'
-        elif language in ('ko'):
-            FONT_FAMILY = 'Malgun Gothic'
-            FONT_FAMILY_BOLD = f'Malgun Gothic Bold'
-            FONT_FAMILY_LIGHT = f'Malgun Gothic'
-        else:
-            FONT_FAMILY = 'Segoe UI'
-            FONT_FAMILY_BOLD = f'Segoe UI Semibold'
-            FONT_FAMILY_LIGHT = f'Segoe UI Light'
+        updateFont()
 
-        log(f'Change font to {FONT_FAMILY}', type=olog.Type.DEBUG)
+        log(f'Change font to \"{FONT_FAMILY}\".', type=olog.Type.DEBUG)
 
         locale = language
         configLib.setConfig('language', locale)
@@ -725,9 +682,7 @@ def tracebackWindow(exception: Exception):
 try:
     refreshImage()
     loadLocale()
-
-    unload_font('src/font/inter.ttf', private=True)
-    load_font('src/font/inter.ttf', private=True)
+    updateFont() # auto select font
 
     if configLib.first:
         welcomePage()
