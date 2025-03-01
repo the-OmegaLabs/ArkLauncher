@@ -2,6 +2,7 @@ _VERSION = 'dev'
 _SUBVERSION = '25w09g'
 
 # base
+from io import BytesIO
 import json
 import os
 import platform
@@ -15,11 +16,15 @@ import maliang.animation
 import maliang.core
 import maliang.theme
 import maliang.toolbox
+import maliang.core.configs
 from PIL import Image
 import ctypes
+import socket
+import requests
+
+maliang.configs.Env.system = 'Windows 11'
 
 # customed
-import ark
 import libs.config as configLib
 from libs import olog as olog
 from libs.olog import output as log
@@ -59,9 +64,34 @@ log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
 
+def testConnection():
+    try:
+        socket.create_connection(("1.1.1.1", 53), timeout=5)
+        return True
+    except Exception as e:
+        return False    
+
+def getSourceContent(url):
+    olog.output(f'Sending requests to {url}/metadata.json...')
+    response = requests.get(f'{url}/metadata.json')
+    metadata = response.json()
+    log(f'Response from remote: {metadata}', type=olog.Type.DEBUG)
+    
+    log(f'Sending requests to: {url}/{metadata['icon']}', type=olog.Type.DEBUG)
+    image = requests.get(f'{url}{metadata['icon']}')
+    metadata['icon'] = Image.open(BytesIO(image.content))
+    return (True, metadata)
+
+
 def updateFont():
     global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
-    if locale == 'jp':
+
+
+    FONT_FAMILY = '源流黑体 CJK'
+    FONT_FAMILY_BOLD = FONT_FAMILY
+    FONT_FAMILY_LIGHT = FONT_FAMILY
+    """
+        if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
         FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
@@ -78,10 +108,6 @@ def updateFont():
         FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'Malgun Gothic'
     elif locale in ('en'):
-        FONT_FAMILY       = f'源流黑体 CJK'
-        FONT_FAMILY_BOLD  = f'{FONT_FAMILY}'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
-    """elif locale in ('en'):
         FONT_FAMILY       = f'Segoe UI'
         FONT_FAMILY_BOLD  = f'Segoe UI Semibold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'"""
@@ -120,10 +146,9 @@ def refreshImage():
     image_paths = {
         'contributors': {
             'maliang':        f'src/icon/contributors/maliang.png',
-            'Stevesuk0':      f'src/icon/contributors/Stevesuk0.jpg',
+            'Stevesuk0':      f'src/icon/contributors/Stevesuk0.png',
             'bzym2':          f'src/icon/contributors/bzym2.png',
-            'HRGC-Sonrai':    f'src/icon/contributors/HRGC-Sonrai.jpg',
-            'Xiaokang2022':   f'src/icon/contributors/Xiaokang2022.jpg',
+            'HRGC-Sonrai':    f'src/icon/contributors/HRGC-Sonrai.png',
             'the-OmegaLabs':  f'src/icon/contributors/the-OmegaLabs.png',
         },
         'country': {
@@ -495,7 +520,7 @@ def settingsNetworkPage(x, y):
             confirm = maliang.Spinner(button, size=(35, 35), position=(330, 33), mode='indeterminate')
 
             if boxinput.startswith('https://') or boxinput.startswith('http://'):
-                response = ark.getSourceContent(boxinput)
+                response = getSourceContent(boxinput)
                 if response[0]:
                     url.destroy()
                     confirm.destroy()
