@@ -42,5 +42,9 @@
     "good_morning": "おはようございます！",
     "good_afternoon": "こんにちは！",
     "good_evening": "こんばんは！",
-    "good_night": "おやすみなさい！"
+    "good_night": "おやすみなさい！",
+    "square": "スクエア",
+    "round": "ラウンド",
+    "color": "カラー",
+    "style": "スタイル"
 }
