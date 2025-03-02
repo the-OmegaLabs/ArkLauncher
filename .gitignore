@@ -5,5 +5,5 @@ config.json
 
 __pycache__
 build
-dist
 *.spec
+dist
