@@ -115,9 +115,14 @@ def updateFont():
         
     log(f'Loaded {len(os.listdir('src/font'))} fonts.')
 
-    FONT_FAMILY = 'Microsoft YaHei UI'
-    FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-    FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    if locale == 'en':
+        FONT_FAMILY = 'Segoe UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    else:
+        FONT_FAMILY = 'Microsoft YaHei UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -423,15 +428,15 @@ def mainPage(x, y):
         
 
     icon_x = 50
-    icon_y = 40
-    icon_size = 60
-    maliang.Image(cv, (icon_x, icon_y),
+    icon_y = 50
+    icon_size = 50
+    logo = maliang.Image(cv, (icon_x, icon_y),
                               image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
 
-    greeting_text = maliang.Text(cv, (58, icon_y + icon_size + 7),
+    greeting_text = maliang.Text(cv, (58, 115),
                                  family=FONT_FAMILY_BOLD,
                                  fontsize=24)
-
+    
     greeting_text.set(getTimeBasedGreeting())
 
     content_start_y = 165
@@ -467,7 +472,8 @@ def mainPage(x, y):
 
 def settingsPage(x, y):
     root, cv = createWindow(x, y)
-
+    
+    
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
