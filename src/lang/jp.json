@@ -3,7 +3,7 @@
     "prodname": "ArkLauncher",
     "welcome": "ArkLauncherへようこそ",
     "desc": "Minecraftゲームを簡単にアクセスして管理できます。",
-    "license": "MITライセンスに同意します。",
+    "license": "Apacheライセンスに同意します。",
     "collect": "匿名データを送信し、Artistic NetworkがArkLauncherアプリを\n改善するのを支援します。",
     "button": "スタート",
     "language": "言語",

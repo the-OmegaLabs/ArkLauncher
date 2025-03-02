@@ -557,7 +557,7 @@ def settingsCustomizePage(x, y):
 
     def updateWidget(*_):
         nonlocal colorLabel, styleLabel
-        refreshImage()
+        
         colorLabelText = maliang.Text(colorLabel, position=(5, -30), family=FONT_FAMILY, fontsize=15)
 
         HEIGHT = 5
@@ -640,6 +640,7 @@ def settingsCustomizePage(x, y):
         
         first = True
     
+    maliang.theme.manager.register_event(refreshImage)
     maliang.theme.manager.register_event(updateWidget)
     #maliang.theme.manager.register_event(changeTheme, (darkdetect.theme(), _STYLE))
 

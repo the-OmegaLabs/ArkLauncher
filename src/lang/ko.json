@@ -3,7 +3,7 @@
     "prodname": "ArkLauncher",
     "welcome": "ArkLauncher를 使用해 주셔서 感謝합니다",
     "desc": "Minecraft 遊戲 라이브러리를 쉽게 接續하고 管理하세요.",
-    "license": "本 프로젝트를 MIT License에 따라 使用하고 寄與하는 데 同意합니다.",
+    "license": "本 프로젝트를 Apache License에 따라 使用하고 寄與하는 데 同意합니다.",
     "collect": "匿名 使用 데이터 傳送을 통해 Artistic Network가\nArkLauncher 앱 改善에 助力할 수 있습니다.",
     "button": "始作하기",
     "language": "言語",

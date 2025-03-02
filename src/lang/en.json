@@ -3,7 +3,7 @@
     "prodname": "ArkLauncher",
     "welcome": "Welcome to ArkLauncher",
     "desc": "Easily access and manage your Minecraft games.",
-    "license": "I agree to using this project with the MIT License.",
+    "license": "I agree to using this project with the Apache License.",
     "collect": "Send anonymous data to help Artistic Network\nimprove ArkLauncher App.",
     "button": "Start",
     "language": "Language",
