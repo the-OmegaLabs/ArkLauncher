@@ -6,12 +6,13 @@ startLoadTime = time.time()
 
 # base
 from io import BytesIO
+from datetime import datetime
+from PIL import Image
 import json
 import os
 import platform
 import threading
 import traceback
-from datetime import datetime
 import colorama
 import darkdetect
 import maliang
@@ -21,7 +22,6 @@ import maliang.color
 import maliang.standard
 import maliang.theme
 import maliang.toolbox
-from PIL import Image
 import ctypes
 import socket
 import requests
@@ -670,6 +670,7 @@ def settingsLanguagePage(x, y):
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
+    Label = maliang.Button(cv, position=(50, 165), size=(400, 10 + len(images['country']) * 56), family=FONT_FAMILY, fontsize=15)
     def setLanguage(language, root: maliang.Tk):
         global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT, locale
         log(f'Change locale to \"{language}\".')
@@ -682,7 +683,7 @@ def settingsLanguagePage(x, y):
         configLib.setConfig('language', locale)
         configLib.sync()
 
-        HEIGHT = 165
+        HEIGHT = 5
         lang_changebutton = []
 
         if 'country' in images:
@@ -690,16 +691,16 @@ def settingsLanguagePage(x, y):
                 if i in images['country']:
                     lang_changebutton.append(
                         maliang.IconButton(
-                            cv,
-                            position=(50, HEIGHT),
-                            size=(400, 55),
+                            Label,
+                            position=(5, HEIGHT),
+                            size=(390, 55),
                             command=lambda lang=i: setLanguage(lang, root),
                             image=maliang.PhotoImage(images['country'][i].resize((40, 40), 1)),
                             family=FONT_FAMILY_BOLD,
                             fontsize=18
                         )
                     )
-                    HEIGHT += 65
+                    HEIGHT += 56
 
         text_logo1.set(translate('settings'))
         text_logo2.set(translate('locale'))
