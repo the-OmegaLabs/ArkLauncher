@@ -268,6 +268,9 @@ def welcomePage():
         text_button_chinese.set(translate('lang_chinese'))
         button.set(translate('button'))
 
+        configLib.setConfig('language', locale)
+        configLib.sync()
+
     def changeToEnglish(_):
         changeLanguage('en')
 
