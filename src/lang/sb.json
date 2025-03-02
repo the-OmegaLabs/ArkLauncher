@@ -1,4 +1,6 @@
 {
+    "self": "梗体中文",
+    "writingSystemStartAt": "left",
     "parent": "提及网络系统™",
     "prodname": "阿珂发射®",
     "welcome": "坐和放宽™《解压文件》发射器®",
@@ -22,11 +24,6 @@
     "specialthanks": "暗杀名单",
     "maliang_desc": "把牛逼公测痰卡进入者干掉的牛逼东西",
     "dev_maliang": "痰卡进入者五十万年老玩家已经超神了，谁快来阻止ta！",
-    "setlang_cn": "中文 (华为手机, 增智慧)",
-    "setlang_en": "English (iPhone, 自适应)",
-    "setlang_sb": "点我有惊喜",
-    "setlang_jp": "日本語 (かおにまで, 孙笑川国)",
-    "setlang_ug": "阿达西 我嘛你的后面雄鹰豹子一样进去呢",  
     "omegalab_desc": "构建下一代水影并 skid 欣欣内部圈钱（大粉丝有神器）",
     "return": "直行",
     "quick": "Dream大玉",

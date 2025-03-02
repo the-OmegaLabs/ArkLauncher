@@ -144,6 +144,10 @@ def updateFont():
         FONT_FAMILY       = f'Segoe UI'
         FONT_FAMILY_BOLD  = f'Segoe UI Semibold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'"""
+    
+    
+    log(f'Changed font to {FONT_FAMILY} (Bold: {FONT_FAMILY_BOLD}, Light: {FONT_FAMILY_LIGHT}).')
+    
 
 def refreshImage(*args):
     global images
@@ -696,51 +700,44 @@ def settingsLanguagePage(x, y):
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
+    text_logo1.set(translate('settings'))
+    text_logo2.set(translate('locale'))
+
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
 
+    HEIGHT = 5
+    lang_changebutton = []
+
     Label = maliang.Button(cv, position=(50, 165), size=(400, 10 + len(images['country']) * 56), family=FONT_FAMILY, fontsize=15)
-    def setLanguage(language, root: maliang.Tk):
-        global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT, locale
-        log(f'Change locale to \"{language}\".')
+
+    def setLanguage(lang):
+        global locale
+
+        locale = lang
+
+        log(f'Change language to \"{locale}\".')
 
         updateFont()
-
-        log(f'Change font to \"{FONT_FAMILY}\".', type=olog.Type.DEBUG)
-
-        locale = language
-        configLib.setConfig('language', locale)
-        configLib.sync()
-
-        HEIGHT = 5
-        lang_changebutton = []
-
-        if 'country' in images:
-            for i in lang_dict:
-                if i in images['country']:
-                    lang_changebutton.append(
-                        maliang.IconButton(
-                            Label,
-                            position=(5, HEIGHT),
-                            size=(390, 55),
-                            command=lambda lang=i: setLanguage(lang, root),
-                            image=maliang.PhotoImage(images['country'][i].resize((40, 40), 1)),
-                            family=FONT_FAMILY_BOLD,
-                            fontsize=18
-                        )
-                    )
-                    HEIGHT += 56
-
         text_logo1.set(translate('settings'))
         text_logo2.set(translate('locale'))
 
-        tmp = [f'setlang_{i}' for i in lang_dict]
-        for i in range(len(lang_changebutton)):
-            lang_changebutton[i].set(translate(tmp[i]))
 
-        root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
-
-    setLanguage(locale, root)
+    for i in lang_dict:
+        lang_changebutton.append(
+            maliang.IconButton(
+                Label,
+                position=(5, HEIGHT),
+                size=(390, 55),
+                command=lambda lang=i: setLanguage(lang),
+                image=maliang.PhotoImage(images['country'][i].resize((40, 40), 1)),
+                family=FONT_FAMILY_BOLD,
+                fontsize=18,
+                text=lang_dict[i]['self'],
+            )
+        )
+        HEIGHT += 56
+    
     root.mainloop()
 
 
@@ -784,7 +781,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        mainPage(710, 200)
+        settingsLanguagePage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
