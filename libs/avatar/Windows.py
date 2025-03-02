@@ -14,7 +14,6 @@
 
 
 import getpass
-import os
 
 username = getpass.getuser()
 
