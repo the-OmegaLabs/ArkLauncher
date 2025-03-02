@@ -81,6 +81,10 @@ log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
 
+def testDragAndDrop(*args):
+    log(f'dnd: {args}')
+
+
 def loadFont(fontPath):
     global _FONTS
     if not fontPath in _FONTS:
@@ -246,6 +250,8 @@ def createWindow(x=None, y=None):
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
+
+    maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
     return root, cv
 
@@ -311,7 +317,6 @@ def welcomePage():
     changeLanguage('cn')
 
     root.mainloop()
-
 
 def aboutPage(x, y):
     root, cv = createWindow(x, y)
@@ -781,7 +786,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        settingsLanguagePage(710, 200)
+        mainPage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
