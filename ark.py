@@ -123,6 +123,14 @@ def updateFont():
         FONT_FAMILY = 'Segoe UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    elif locale == 'ug':
+        FONT_FAMILY = 'Segoe UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    elif locale == 'tw':
+        FONT_FAMILY = 'Microsoft Jhenghei'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'    
     else:
         FONT_FAMILY = 'Microsoft YaHei UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
@@ -201,7 +209,9 @@ def refreshImage(*args):
             'ko':             f'src/icon/both/country_ko.png',
             'en':             f'src/icon/both/country_us.png',
             'sb':             f'src/icon/both/transgender.png',
-            'ug':             f'src/icon/both/country_cn.png'
+            'ug':             f'src/icon/both/country_unknown.png',
+            'tw':             f'src/icon/both/country_unknown.png',
+            'cnol':           f'src/icon/both/country_ching.png'
         },
         None: {  # Regular images without category
             'icon_quick':     f'src/icon/both/quick.png',
