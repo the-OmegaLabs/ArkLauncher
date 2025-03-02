@@ -588,7 +588,7 @@ def settingsCustomizePage(x, y):
                                          image=maliang.PhotoImage(images['icon_round'].resize((40, 40), 1)),
                                          fontsize=18)
         HEIGHT += 56
-        maliang.configs.Env.system = _STYLE
+        maliang.Env.system = _STYLE
         buttonSystem2 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
                                           command=lambda: changeTheme(theme=_THEME, style=maliang.configs.Env.get_default_system()), family=FONT_FAMILY_BOLD,
                                           image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
@@ -606,7 +606,7 @@ def settingsCustomizePage(x, y):
         buttonSystem2.set(translate('auto'))
 
     def changeTheme(theme, style):
-        global _THEME
+        global _THEME, _STYLE
         nonlocal first, root, colorLabel, styleLabel
         
         if first:
@@ -617,13 +617,15 @@ def settingsCustomizePage(x, y):
 
         _THEME = theme
         _STYLE = style
+        
+        maliang.theme.manager.set_color_mode(_THEME)
+        maliang.Env.system = style
 
         configLib.setConfig('theme', _THEME)
         configLib.setConfig('style', _STYLE)
         configLib.sync()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
-        maliang.theme.manager.set_color_mode(_THEME)
         refreshImage()
         maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage, root),
                         image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
@@ -755,7 +757,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        settingsLanguagePage(710, 200)
+        settingsCustomizePage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
