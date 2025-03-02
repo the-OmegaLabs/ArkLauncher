@@ -196,7 +196,6 @@ def refreshImage(*args):
             'ug':             f'src/icon/both/country_cn.png'
         },
         None: {  # Regular images without category
-            'avatar': avatar.getAvatar(),
             'icon_quick':     f'src/icon/both/quick.png',
             'icon_logo':      f'src/icon/main.png',
             'icon_return':    f'src/icon/{theme}/return.png',
@@ -480,7 +479,7 @@ def settingsPage(x, y):
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
-                       image=maliang.PhotoImage(images['avatar'].resize((45, 45), 1)))
+                       image=maliang.PhotoImage(images['icon_account'].resize((45, 45), 1)))
 
     Label = maliang.Button(cv, position=(50, 165), size=(400, 290), family=FONT_FAMILY, fontsize=15)
     HEIGHT = 5
