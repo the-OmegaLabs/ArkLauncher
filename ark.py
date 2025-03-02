@@ -526,8 +526,9 @@ def settingsNetworkPage(x, y):
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage, root),
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
     
-    noticeLabel = maliang.Label(cv, position=(50, 165), size=(400, 95), family=FONT_FAMILY, fontsize=15)
-    noticeLabel.set('When you launch your Minecraft instance using ArkLa\nuncher, We will automatically take over Minecraft\'s ne\ntwork and attempt to accelerate it.')
+
+    #noticeLabel = maliang.Label(cv, position=(50, 165), size=(400, 80), family=FONT_FAMILY, fontsize=15)
+    #noticeLabel.set('When you launch your Minecraft instance using ArkLa\nuncher, We will automatically take over Minecraft\'s ne\ntwork and attempt to accelerate it.')
 
 
     #label = maliang.Label(cv, position=(50, 500), size=(400, 100))
@@ -757,7 +758,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        settingsCustomizePage(710, 200)
+        settingsNetworkPage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
