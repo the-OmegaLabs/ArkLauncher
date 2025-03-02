@@ -263,6 +263,8 @@ def welcomePage():
     global locale
     root, cv = createWindow()
 
+    FONT_FAMILY_BOLD = 'Microsoft YaHei UI Bold'
+
     maliang.Image(cv, (50, 75), image=maliang.PhotoImage(images['icon_logo'].resize((150, 150), 1)))
     text_welcome = maliang.Text(cv, (50, 250), family=FONT_FAMILY_BOLD, fontsize=30)
     text_desc = maliang.Text(cv, (50, 300), family=FONT_FAMILY_BOLD, fontsize=17)
