@@ -173,6 +173,7 @@ def refreshImage(*args):
             'ko':             f'src/icon/both/country_ko.png',
             'en':             f'src/icon/both/country_us.png',
             'sb':             f'src/icon/both/transgender.png',
+            'ug':             f'src/icon/both/country_cn.png'
         },
         None: {  # Regular images without category
             'avatar': avatar.getAvatar(),
@@ -753,7 +754,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        settingsCustomizePage(710, 200)
+        settingsLanguagePage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
