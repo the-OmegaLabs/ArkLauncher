@@ -758,7 +758,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        settingsNetworkPage(710, 200)
+        mainPage(710, 200)
 
 except Exception as f:
     tracebackWindow(f)
