@@ -52,10 +52,8 @@ _SYSTEM = platform.system()
 #_STYLE = maliang.configs.Env.get_default_system()
 _STYLE = config['style']
 maliang.configs.Env.system = _STYLE
-
 maliang.theme.manager.set_color_mode(_THEME)
-if _THEME in ('system', 'auto'):
-    _THEME = darkdetect.theme().lower()
+
 
 if _SYSTEM == 'Windows':
     import libs.avatar.Windows as avatar
@@ -127,7 +125,7 @@ def updateFont():
         FONT_FAMILY_BOLD  = f'Segoe UI Semibold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'"""
 
-def refreshImage():
+def refreshImage(*args):
     global images
 
     del images
@@ -552,30 +550,9 @@ def settingsCustomizePage(x, y):
     colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 177), family=FONT_FAMILY, fontsize=15)
     styleLabel = maliang.Button(cv, position=(50, 392), size=(400, 177), family=FONT_FAMILY, fontsize=15)
 
-    def changeTheme(theme, style):
-        global _THEME
-        nonlocal first, root, colorLabel, styleLabel
-        
-        if first:
-            colorLabel.destroy()
-            styleLabel.destroy()
-            colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 177), family=FONT_FAMILY, fontsize=15)
-            styleLabel = maliang.Button(cv, position=(50, 392), size=(400, 177), family=FONT_FAMILY, fontsize=15)
-
-        _THEME = theme
-        _STYLE = style
-
-        configLib.setConfig('theme', _THEME)
-        configLib.setConfig('style', _STYLE)
-        configLib.sync()
-
-        log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
+    def updateWidget(*_):
+        nonlocal colorLabel, styleLabel
         refreshImage()
-        maliang.theme.manager.set_color_mode(_THEME)
-
-        maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage, root),
-                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
-
         colorLabelText = maliang.Text(colorLabel, position=(5, -30), family=FONT_FAMILY, fontsize=15)
 
         HEIGHT = 5
@@ -589,7 +566,7 @@ def settingsCustomizePage(x, y):
                                         fontsize=18)
         HEIGHT += 56
         buttonSystem = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
-                                        command=lambda: changeTheme(darkdetect.theme().lower(), _STYLE), family=FONT_FAMILY_BOLD,
+                                        command=lambda: changeTheme('system', _STYLE), family=FONT_FAMILY_BOLD,
                                         image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
                                         fontsize=18)
 
@@ -615,12 +592,7 @@ def settingsCustomizePage(x, y):
                                           command=lambda: changeTheme(theme=_THEME, style=maliang.configs.Env.get_default_system()), family=FONT_FAMILY_BOLD,
                                           image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
                                           fontsize=18)
-
-
-        log(f"Instant change widget to {_THEME} style.", type=olog.Type.DEBUG)
         
-        first = True
-
         colorLabelText.set(translate('color'))
         styleLabelText.set(translate('style'))
 
@@ -632,7 +604,40 @@ def settingsCustomizePage(x, y):
         button11.set(translate('round'))
         buttonSystem2.set(translate('auto'))
 
+    def changeTheme(theme, style):
+        global _THEME
+        nonlocal first, root, colorLabel, styleLabel
+        
+        if first:
+            colorLabel.destroy()
+            styleLabel.destroy()
+            colorLabel = maliang.Button(cv, position=(50, 150), size=(400, 177), family=FONT_FAMILY, fontsize=15)
+            styleLabel = maliang.Button(cv, position=(50, 392), size=(400, 177), family=FONT_FAMILY, fontsize=15)
+
+        _THEME = theme
+        _STYLE = style
+
+        configLib.setConfig('theme', _THEME)
+        configLib.setConfig('style', _STYLE)
+        configLib.sync()
+
+        log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
+        maliang.theme.manager.set_color_mode(_THEME)
+        refreshImage()
+        maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage, root),
+                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+
+        updateWidget()
+
+        log(f"Instant change widget to {_THEME} style.", type=olog.Type.DEBUG)
+        
+        first = True
+    
+    maliang.theme.manager.register_event(updateWidget)
+    #maliang.theme.manager.register_event(changeTheme, (darkdetect.theme(), _STYLE))
+
     changeTheme(_THEME, _STYLE)
+
 
     root.mainloop()
 
