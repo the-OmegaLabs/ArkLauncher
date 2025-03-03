@@ -14,7 +14,7 @@
 
 
 _VERSION = 'dev'
-_SUBVERSION = '25w10a'
+_SUBVERSION = '25w10b'
 
 import time
 startLoadTime = time.time()
