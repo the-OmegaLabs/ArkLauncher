@@ -209,8 +209,8 @@ def refreshImage(*args):
             'ko':             f'src/icon/both/country_ko.png',
             'en':             f'src/icon/both/country_us.png',
             'sb':             f'src/icon/both/transgender.png',
-            'ug':             f'src/icon/both/country_unknown.png',
-            'tw':             f'src/icon/both/country_unknown.png',
+            'ug':             f'src/icon/both/country_cn.png',
+            'tw':             f'src/icon/both/country_cn.png',
             'cnol':           f'src/icon/both/country_ching.png'
         },
         None: {  # Regular images without category

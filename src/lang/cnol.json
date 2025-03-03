@@ -1,6 +1,6 @@
 {
     "self": "文言",
-    "writingSystemStartAt": "書寫始於左",
+    "writingSystemStartAt": "left",
     "parent": "藝網",
     "prodname": "Ark啟動器",
     "welcome": "歡迎使用 Ark啟動器",
