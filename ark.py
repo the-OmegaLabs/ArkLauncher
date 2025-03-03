@@ -246,41 +246,37 @@ def refreshImage(*args):
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
 
+def createRoot(x = 710, y = 200):
+    global root
+    
+    log(f'Creating new page at ({x}, {y}).')
+    root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
+                        title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+    root.minsize(WIDTH, HEIGHT)
+    root.maxsize(WIDTH, HEIGHT)
+    maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
+    maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
 
-def createWindow(x=None, y=None):
-    log(f'Creating new page at ({x}, {y}).', type=olog.Type.DEBUG)
-    if x and y:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
-                            title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
-    else:
-        root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+def createPage(x=None, y=None):
+    global root
 
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
-    root.minsize(WIDTH, HEIGHT)
-    root.maxsize(WIDTH, HEIGHT)
-    maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
 
-    maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
     root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
-    return root, cv
+    return cv
 
 
-def changeWindow(window, root: maliang.Tk):
-    log(f'Perform change window to "{window.__name__}"...', type=olog.Type.INFO)
-    x, y = root.winfo_x(), root.winfo_y()
-    if platform.system() == 'Linux':
-        x -= 5
-        y -= 31
-    root.__exit__()
-    del root
+def changeWindow(window, cv: maliang.Canvas):
+    log(f'Perform change canvas to "{window.__name__}"...', type=olog.Type.INFO)
+    #cv.destroy()
     gc.collect()
-    window(x, y)
+    window()
 
 
 def welcomePage():
     global locale
-    root, cv = createWindow()
+    root, cv = createPage()
 
     FONT_FAMILY_BOLD = 'Microsoft YaHei UI Bold'
 
@@ -328,8 +324,8 @@ def welcomePage():
 
     root.mainloop()
 
-def aboutPage(x, y):
-    root, cv = createWindow(x, y)
+def aboutPage():
+    cv = createPage()
 
     maliang.IconButton(
         cv,
@@ -407,8 +403,8 @@ def aboutPage(x, y):
     root.mainloop()
 
 
-def mainPage(x, y):
-    root, cv = createWindow(x, y)
+def mainPage():
+    cv = createPage()
 
     def getTimeBasedGreeting():
         current_hour = datetime.now().hour
@@ -490,8 +486,8 @@ def mainPage(x, y):
     root.mainloop()
 
 
-def settingsPage(x, y):
-    root, cv = createWindow(x, y)
+def settingsPage():
+    cv = createPage()
     
     
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
@@ -543,8 +539,8 @@ def settingsPage(x, y):
     root.mainloop()
 
 
-def settingsAccountPage(x, y):
-    root, cv = createWindow(x, y)
+def settingsAccountPage():
+    cv = createPage()
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -558,8 +554,8 @@ def settingsAccountPage(x, y):
     root.mainloop()
 
 
-def settingsNetworkPage(x, y):
-    root, cv = createWindow(x, y)
+def settingsNetworkPage():
+    cv = createPage()
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -581,9 +577,9 @@ def settingsNetworkPage(x, y):
 
 
 
-def settingsCustomizePage(x, y):
+def settingsCustomizePage():
     global _THEME
-    root, cv = createWindow(x, y)
+    cv = createPage()
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -651,8 +647,8 @@ def settingsCustomizePage(x, y):
         buttonSystem2.set(translate('auto'))
 
     def changeTheme(theme, style):
-        global _THEME, _STYLE
-        nonlocal first, root, colorLabel, styleLabel
+        global _THEME, _STYLE, root
+        nonlocal first, colorLabel, styleLabel
         
         if first:
             colorLabel.destroy()
@@ -708,9 +704,9 @@ def translate(target):
     return lang_dict.get(locale, {}).get(target, lang_dict['en'].get(target, target))
 
 
-def settingsLanguagePage(x, y):
+def settingsLanguagePage():
     global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
-    root, cv = createWindow(x, y)
+    cv = createPage()
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -793,10 +789,13 @@ try:
     endLoadTime = time.time() - startLoadTime
 
     log(f'Loaded ArkLauncher in {int(endLoadTime * 1000)}ms.')
+
+    createRoot()
+
     if configLib.first:
         welcomePage()
     else:
-        mainPage(710, 200)
+        mainPage()
 
 except Exception as f:
     tracebackWindow(f)
