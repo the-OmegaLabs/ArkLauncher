@@ -130,7 +130,11 @@ def updateFont():
     elif locale == 'tw':
         FONT_FAMILY = 'Microsoft Jhenghei'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'    
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'   
+    elif locale == 'cnol':
+        FONT_FAMILY = 'Meiryo UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'  
     else:
         FONT_FAMILY = 'Microsoft YaHei UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
