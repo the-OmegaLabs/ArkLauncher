@@ -1,14 +1,6 @@
 {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    "self": "文言",
-    "writingSystemStartAt": "left",
-=======
-=======
->>>>>>> Stashed changes
     "self": "文言(大清帝國)",
-    "writingSystemStartAt": "書寫始於左",
->>>>>>> Stashed changes
+    "writingSystemStartAt": "left",
     "parent": "藝網",
     "prodname": "Ark啟動器",
     "welcome": "歡迎使用 Ark啟動器",

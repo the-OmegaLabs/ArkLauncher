@@ -434,7 +434,7 @@ def mainPage():
 
     def playToastAnimation():
         nonlocal animation
-        animation.start(delay=150)
+        animation.start(delay=100)
 
     def stopAniAndChangeWindow(window: object):
         nonlocal animation
