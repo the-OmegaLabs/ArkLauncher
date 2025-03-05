@@ -11,12 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from PIL import Image, ImageGrab
+from PIL import Image
 
 _VERSION = 'dev'
 _SUBVERSION = '25w10b'
-screen = ImageGrab.grab()
-_SCREEN_WIDTH,_SCREEN_HEIGHT = screen.size
 import time
 
 startLoadTime = time.time()
@@ -54,8 +52,14 @@ user32 = ctypes.windll.user32
 user32.SetWindowTextW(hwnd, f'ArkLauncher Console Interface - {_VERSION}, {_SUBVERSION}.')
 
 # config
-WIDTH = _SCREEN_WIDTH
-HEIGHT = _SCREEN_HEIGHT
+temp = maliang.Tk()
+temp.withdraw()
+WIDTH = temp.winfo_screenwidth()
+HEIGHT = temp.winfo_screenheight()
+temp.destroy()
+
+_SCREEN_WIDTH = WIDTH
+_SCREEN_HEIGHT = HEIGHT
 
 configLib.loadConfig()
 config = configLib.config
@@ -259,9 +263,7 @@ def createRoot(x=710, y=200):
     log(f'Creating new page at ({x}, {y}).')
     root = maliang.Tk(size=(_SCREEN_WIDTH, _SCREEN_HEIGHT), position=(x, y),
                       title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
-    root.minsize(_SCREEN_WIDTH, _SCREEN_HEIGHT)
-    root.maxsize(_SCREEN_WIDTH, _SCREEN_HEIGHT)
-    root.attributes("-fullscreen",not root.attributes("-fullscreen"))
+    root.fullscreen()
     root.bind("<Escape>",
                      lambda event: exit(0))
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
