@@ -14,7 +14,7 @@
 
 
 _VERSION = 'dev'
-_SUBVERSION = '25w10b'
+_SUBVERSION = '25w10d'
 
 import time
 startLoadTime = time.time()
@@ -468,10 +468,10 @@ def mainPage():
     
     # Add search box with proper spacing and alignment
     # Using the same left margin as other elements (50px)
-    search_box = maliang.InputBox(cv, (50, 140), (350, 35), placeholder=translate('search'))
+    search_box = maliang.InputBox(cv, (50, 165), (350, 40), placeholder=translate('search'), family=FONT_FAMILY, fontsize=15)
     
     # Add search button aligned with the search box
-    search_button = maliang.IconButton(cv, position=(410, 140), size=(30, 35),
+    search_button = maliang.IconButton(cv, position=(410, 165), size=(40, 43),
                                      command=performSearch,
                                      image=maliang.PhotoImage(images.get('icon_search', 
                                                                         images['icon_quick']).resize((20, 20), 1)))
@@ -486,7 +486,7 @@ def mainPage():
         pass  # Skip if binding is not supported
 
     # Adjust content_start_y to maintain proper spacing
-    content_start_y = 190
+    content_start_y = 230
 
     button_new = maliang.Button(cv, position=(50, content_start_y), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
