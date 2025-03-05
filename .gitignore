@@ -1,6 +1,6 @@
 .idea
 *.pyc
-test.py
+test.*
 config.json
 
 __pycache__
