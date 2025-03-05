@@ -256,6 +256,7 @@ def createRoot(x = 710, y = 200):
     log(f'Creating new page at ({x}, {y}).')
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
                         title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+    root.bind("<Escape>", lambda event: exit(0))
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
