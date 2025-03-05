@@ -444,8 +444,15 @@ def mainPage():
                                             end=lambda: (animation.stop(), changeWindow(window)))
         animation.start()
 
-        #changeWindow(window)
-        
+    def performSearch(event=None):
+        search_text = search_box.get()
+        if search_text:
+            # Implement search functionality here
+            # For example, show a notice with the search text
+            search_notice, _ = createNotice(translate('searching'), search_text, cv, False)
+            search_animation = maliang.animation.MoveWidget(search_notice, offset=(0, -100), duration=500,
+                                                controller=maliang.animation.ease_out, fps=1000)
+            search_animation.start(delay=100)
 
     icon_x = 50
     icon_y = 50
@@ -458,8 +465,28 @@ def mainPage():
                                  fontsize=24)
     
     greeting_text.set(getTimeBasedGreeting())
+    
+    # Add search box with proper spacing and alignment
+    # Using the same left margin as other elements (50px)
+    search_box = maliang.InputBox(cv, (50, 140), (350, 35), placeholder=translate('search'))
+    
+    # Add search button aligned with the search box
+    search_button = maliang.IconButton(cv, position=(410, 140), size=(30, 35),
+                                     command=performSearch,
+                                     image=maliang.PhotoImage(images.get('icon_search', 
+                                                                        images['icon_quick']).resize((20, 20), 1)))
+    
+    # Add tooltip to search button
+    maliang.Tooltip(search_button, text=translate('search'), family=FONT_FAMILY, fontsize=13)
 
-    content_start_y = 165
+    # Bind Enter key to search function if the InputBox supports it
+    try:
+        search_box.bind("<Return>", performSearch)
+    except:
+        pass  # Skip if binding is not supported
+
+    # Adjust content_start_y to maintain proper spacing
+    content_start_y = 190
 
     button_new = maliang.Button(cv, position=(50, content_start_y), size=(400, 100))
     maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
@@ -488,6 +515,7 @@ def mainPage():
 
     playToastAnimation()
     root.mainloop()
+
 
 
 def settingsPage():
