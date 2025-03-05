@@ -233,6 +233,7 @@ def refreshImage(*args):
             'icon_info':      f'src/icon/{theme}/info.png',
             'icon_round':     f'src/icon/{theme}/round.png',
             'icon_square':    f'src/icon/{theme}/square.png',
+            'icon_search':    f'src/icon/{theme}/search.png'
         }
     }
 
@@ -474,11 +475,8 @@ def mainPage():
     # Add search button aligned with the search box
     search_button = maliang.IconButton(cv, position=(410, 165), size=(40, 43),
                                      command=performSearch,
-                                     image=maliang.PhotoImage(images.get('icon_search', 
-                                                                        images['icon_quick']).resize((20, 20), 1)))
+                                     image=maliang.PhotoImage(images['icon_search'].resize((35, 35), 1)))
     
-    # Add tooltip to search button
-    maliang.Tooltip(search_button, text=translate('search'), family=FONT_FAMILY, fontsize=13)
 
     # Bind Enter key to search function if the InputBox supports it
     try:
