@@ -685,7 +685,7 @@ def settingsCustomizePage():
     maliang.theme.manager.register_event(updateWidget)
     #maliang.theme.manager.register_event(changeTheme, (darkdetect.theme(), _STYLE))
 
-    changeTheme(_THEME, _STYLE)
+    updateWidget(_THEME, _STYLE)
 
 
     root.mainloop()
