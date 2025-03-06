@@ -219,6 +219,7 @@ def refreshImage(*args):
         },
         None: {  # Regular images without category
             'icon_quick':     f'src/icon/both/quick.png',
+            'icon_unknown':   f'src/icon/both/unknown.png',
             'icon_logo':      f'src/icon/main.png',
             'icon_return':    f'src/icon/{theme}/return.png',
             'icon_settings':  f'src/icon/{theme}/settings.png',
@@ -248,6 +249,18 @@ def refreshImage(*args):
     log(f'Loaded {len(image_paths['contributors']) + len(image_paths["country"]) + len(image_paths[None])} images.')
 
 
+def getImage(target, category = None):
+    if category:
+        img = images.get(category, {}).get(target)
+    else:
+        img = images.get(target, None)
+    if img:
+        log(f'Got image \"{target}\" from category \"{category}\".')
+        return img
+    else:
+        log(f'Image \"{target}\" is missing.', type=olog.Type.WARN)
+        return images.get('icon_unknown')
+
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
 
@@ -269,7 +282,7 @@ def createPage():
     cv = maliang.Canvas(root)
     cv.place(width=WIDTH, height=HEIGHT)
 
-    root.icon(maliang.PhotoImage(images['icon_logo'].resize((32, 32), 1)))
+    root.icon(maliang.PhotoImage(getImage('icon_logo').resize((32, 32), 1)))
     return cv
 
 
@@ -280,13 +293,34 @@ def changeWindow(window):
     window()
 
 
+def loadLocale():
+    global lang_dict
+
+    lang_dict = {}
+
+    for i in os.listdir('./src/lang'):
+        if i.endswith('.json'):
+            with open(f'./src/lang/{i}', encoding='utf-8') as f:
+                lang_dict[i[:-5]] = json.loads(f.read())
+                
+            log(f'Loaded locale file "{i}"...')
+
+def translate(target):
+    Text = lang_dict.get(locale, {}).get(target)
+    if Text:
+        log(f'Translated text ({target} -> {Text}).')
+        return Text
+    else:
+        log(f'String \"{target}\" missing in language \"{locale}\".', type=olog.Type.WARN)
+        return target
+
 def welcomePage():
     global locale
     cv = createPage()
 
     FONT_FAMILY_BOLD = 'Microsoft YaHei UI Bold'
 
-    maliang.Image(cv, (50, 75), image=maliang.PhotoImage(images['icon_logo'].resize((150, 150), 1)))
+    maliang.Image(cv, (50, 75), image=maliang.PhotoImage(getImage('icon_logo').resize((150, 150), 1)))
     text_welcome = maliang.Text(cv, (50, 250), family=FONT_FAMILY_BOLD, fontsize=30)
     text_desc = maliang.Text(cv, (50, 300), family=FONT_FAMILY_BOLD, fontsize=17)
     text_license = maliang.Text(cv, (85, 605), family=FONT_FAMILY_BOLD, fontsize=15)
@@ -338,7 +372,7 @@ def aboutPage():
         position=(50, 50),
         size=(50, 50),
         command=lambda: changeWindow(settingsPage),
-        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1))
+        image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1))
     )
 
     maliang.Text(cv, (110, 50), text=translate("settings"), family=FONT_FAMILY_LIGHT, fontsize=15)
@@ -350,7 +384,7 @@ def aboutPage():
         cv,
         position=(icon_x, 120),
         size=(120, 120),
-        image=maliang.PhotoImage(images['icon_logo'].resize((120, 120), 1)),
+        image=maliang.PhotoImage(getImage('icon_logo').resize((120, 120), 1)),
         command=lambda: openGithub('the-OmegaLabs/ArkLauncher')
     )
 
@@ -403,7 +437,7 @@ def aboutPage():
                 position=(x_pos, 430),
                 size=(avatar_size, avatar_size),
                 command=lambda c=contributor: openGithub(c),
-                image=maliang.PhotoImage(images['contributors'][contributor].resize((47, 47), 1))
+                image=maliang.PhotoImage(getImage('contributors', category=contributor).resize((47, 47), 1))
                 )
 
     root.mainloop()
@@ -457,7 +491,7 @@ def mainPage():
     icon_y = 50
     icon_size = 50
     logo = maliang.Image(cv, (icon_x, icon_y),
-                              image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
+                              image=maliang.PhotoImage(getImage('icon_logo').resize((icon_size, icon_size), 1)))
 
     greeting_text = maliang.Text(cv, (58, 115),
                                  family=FONT_FAMILY_BOLD,
@@ -471,9 +505,9 @@ def mainPage():
     search_box.bind("<Return>", performSearch)
     
     # Add search button aligned with the search box
-    search_button = maliang.IconButton(cv, position=(410, 165), size=(40, 43),
+    search_button = maliang.IconButton(cv, position=(410, 165), size=(41, 41),
                                      command=performSearch,
-                                     image=maliang.PhotoImage(images['icon_search'].resize((35, 35), 1)))
+                                     image=maliang.PhotoImage(getImage('icon_search').resize((35, 35), 1)))
 
     # Adjust content_start_y to maintain proper spacing
     content_start_y = 230
@@ -484,7 +518,7 @@ def mainPage():
     maliang.Tooltip(
         maliang.IconButton(cv, position=(400, 50), size=(50, 50),
                            command=lambda: stopAniAndChangeWindow(settingsPage),
-                           image=maliang.PhotoImage(images['icon_settings'].resize((55, 55), 1))),
+                           image=maliang.PhotoImage(getImage('icon_settings').resize((55, 55), 1))),
         text=translate('settings'), 
         family=FONT_FAMILY, 
         fontsize=13)
@@ -492,7 +526,7 @@ def mainPage():
     maliang.Tooltip(
         maliang.IconButton(cv, position=(340, 50), size=(50, 50),
                            command=lambda: stopAniAndChangeWindow(mainPage),
-                           image=maliang.PhotoImage(images['icon_quick'].resize((40, 40), 1))),
+                           image=maliang.PhotoImage(getImage('icon_quick').resize((40, 40), 1))),
         text=translate('quick'),
         family=FONT_FAMILY,
         fontsize=13)
@@ -516,34 +550,34 @@ def settingsPage():
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
-                       image=maliang.PhotoImage(images['icon_account'].resize((45, 45), 1)))
+                       image=maliang.PhotoImage(getImage('icon_account').resize((45, 45), 1)))
 
     Label = maliang.Button(cv, position=(50, 165), size=(400, 290), family=FONT_FAMILY, fontsize=15)
     HEIGHT = 5
     button_account = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                         command=lambda: changeWindow(settingsAccountPage),
-                                        image=maliang.PhotoImage(images['icon_account'].resize((40, 40), 1)),
+                                        image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
     HEIGHT += 56
     button_language = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                          command=lambda: changeWindow(settingsLanguagePage),
-                                         image=maliang.PhotoImage(images['icon_language'].resize((40, 40), 1)),
+                                         image=maliang.PhotoImage(getImage('icon_language').resize((40, 40), 1)),
                                          family=FONT_FAMILY_BOLD, fontsize=18)
     HEIGHT += 56
     button_network = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                         command=lambda: changeWindow(settingsNetworkPage),
-                                        image=maliang.PhotoImage(images['icon_network'].resize((40, 40), 1)),
+                                        image=maliang.PhotoImage(getImage('icon_network').resize((40, 40), 1)),
                                         family=FONT_FAMILY_BOLD, fontsize=18)
     HEIGHT += 56
     button_customize = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                           command=lambda: changeWindow(settingsCustomizePage),
-                                          image=maliang.PhotoImage(images['icon_customize'].resize((40, 40), 1)),
+                                          image=maliang.PhotoImage(getImage('icon_customize').resize((40, 40), 1)),
                                           family=FONT_FAMILY_BOLD,
                                           fontsize=18)
     HEIGHT += 56
     button_about = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
                                       command=lambda: changeWindow(aboutPage),
-                                      image=maliang.PhotoImage(images['icon_about'].resize((40, 40), 1)),
+                                      image=maliang.PhotoImage(getImage('icon_about').resize((40, 40), 1)),
                                       family=FONT_FAMILY_BOLD,
                                       fontsize=18)
 
@@ -556,7 +590,7 @@ def settingsPage():
     button_customize.set(f" {translate('customize')}")
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage),
-                       image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+                       image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
 
     root.mainloop()
 
@@ -571,7 +605,7 @@ def settingsAccountPage():
     text_logo2.set(translate('account'))
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
-                       image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+                       image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
     
     needLogin_text1 = maliang.Text(cv, position=(250, 345), anchor='center', family=FONT_FAMILY, fontsize=26)
     needLogin_text2 = maliang.Text(cv, position=(250, 390), anchor='center', family=FONT_FAMILY_BOLD, fontsize=30)
@@ -580,10 +614,10 @@ def settingsAccountPage():
     loginButton = maliang.Button(cv, position=(250, 460), size=(80, 40), anchor='center')
     
 
-    needLogin_text1.set('在使用此功能之前')
-    needLogin_text2.set('需要登录')
-    needLogin_text3.set('登录后，您将可以享受由 Artistic Network 提供的 Ark 的各项在线服务。')
-    loginButton.set('登录')
+    needLogin_text1.set(translate('needLogin1'))
+    needLogin_text2.set(translate('needLogin2'))
+    needLogin_text3.set(translate('needLogin3'))
+    loginButton.set(translate('login'))
 
     root.mainloop()
 
@@ -598,7 +632,7 @@ def settingsNetworkPage():
     text_logo2.set(translate('network'))
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
-                       image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+                       image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
     
 
     #noticeLabel = maliang.Label(cv, position=(50, 165), size=(400, 80), family=FONT_FAMILY, fontsize=15)
@@ -634,20 +668,20 @@ def settingsCustomizePage():
         HEIGHT = 5
         buttonDark = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme('dark', _STYLE),
                                         family=FONT_FAMILY_BOLD,
-                                        image=maliang.PhotoImage(images['icon_dark'].resize((40, 40), 1)), fontsize=18)
+                                        image=maliang.PhotoImage(getImage('icon_dark').resize((40, 40), 1)), fontsize=18)
         HEIGHT += 56
         buttonLight = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
                                         command=lambda: changeTheme('light', _STYLE), family=FONT_FAMILY_BOLD,
-                                        image=maliang.PhotoImage(images['icon_light'].resize((40, 40), 1)),
+                                        image=maliang.PhotoImage(getImage('icon_light').resize((40, 40), 1)),
                                         fontsize=18)
         HEIGHT += 56
         buttonSystem = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
                                         command=lambda: changeTheme('system', _STYLE), family=FONT_FAMILY_BOLD,
-                                        image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
+                                        image=maliang.PhotoImage(getImage('icon_auto').resize((40, 40), 1)),
                                         fontsize=18)
 
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
-                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+                        image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
 
         styleLabelText = maliang.Text(styleLabel, position=(5, -30), family=FONT_FAMILY, fontsize=15)
 
@@ -655,18 +689,18 @@ def settingsCustomizePage():
         maliang.Env.system = 'Windows10'
         button10 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme(theme=_THEME, style='Windows10'),
                                         family=FONT_FAMILY_BOLD,
-                                        image=maliang.PhotoImage(images['icon_square'].resize((40, 40), 1)), fontsize=18)
+                                        image=maliang.PhotoImage(getImage('icon_square').resize((40, 40), 1)), fontsize=18)
         HEIGHT += 56
         maliang.Env.system = 'Windows11'
         button11 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
                                          command=lambda: changeTheme(theme=_THEME, style='Windows11'), family=FONT_FAMILY_BOLD,
-                                         image=maliang.PhotoImage(images['icon_round'].resize((40, 40), 1)),
+                                         image=maliang.PhotoImage(getImage('icon_round').resize((40, 40), 1)),
                                          fontsize=18)
         HEIGHT += 56
         maliang.Env.system = _STYLE
         buttonSystem2 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
                                           command=lambda: changeTheme(theme=_THEME, style=maliang.configs.Env.get_default_system()), family=FONT_FAMILY_BOLD,
-                                          image=maliang.PhotoImage(images['icon_auto'].resize((40, 40), 1)),
+                                          image=maliang.PhotoImage(getImage('icon_auto').resize((40, 40), 1)),
                                           fontsize=18)
         
         colorLabelText.set(translate('color'))
@@ -703,7 +737,7 @@ def settingsCustomizePage():
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
         refreshImage()
         maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage),
-                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+                        image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
 
         updateWidget()
 
@@ -721,26 +755,6 @@ def settingsCustomizePage():
     root.mainloop()
 
 
-def loadLocale():
-    global lang_dict
-
-    lang_dict = {}
-
-    for i in os.listdir('./src/lang'):
-        if i.endswith('.json'):
-            with open(f'./src/lang/{i}', encoding='utf-8') as f:
-                lang_dict[i[:-5]] = json.loads(f.read())
-                
-            log(f'Loaded locale file "{i}"...')
-
-
-def translate(target):
-    if lang_dict.get(locale, {}).get(target):
-        return lang_dict.get(locale, {}).get(target)
-    else:
-        return lang_dict.get(locale, {}).get("missing")
-
-
 def settingsLanguagePage():
     global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
     cv = createPage()
@@ -752,12 +766,12 @@ def settingsLanguagePage():
     text_logo2.set(translate('locale'))
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
-                       image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+                       image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
 
     HEIGHT = 5
     lang_changebutton = []
 
-    Label = maliang.Button(cv, position=(50, 165), size=(400, 10 + len(images['country']) * 56), family=FONT_FAMILY, fontsize=15)
+    Label = maliang.Button(cv, position=(50, 165), size=(400, 10 + len(getImage('country')) * 56), family=FONT_FAMILY, fontsize=15)
 
     def setLanguage(lang):
         global locale
@@ -778,7 +792,7 @@ def settingsLanguagePage():
                 position=(5, HEIGHT),
                 size=(390, 55),
                 command=lambda lang=i: setLanguage(lang),
-                image=maliang.PhotoImage(images['country'][i].resize((40, 40), 1)),
+                image=maliang.PhotoImage(getImage(i, category='country').resize((40, 40), 1)),
                 family=FONT_FAMILY_BOLD,
                 fontsize=18,
                 text=lang_dict[i]['self'],
@@ -799,7 +813,7 @@ def tracebackWindow(exception: Exception):
 
     width = 1000
     height = len(tracelist[:-1]) * 20 + 200
-    root = maliang.Tk(size=(width, height), title=f'ArkLauncher {_VERSION}')
+    root = maliang.Tk(size=(width, height), title=f'ArkLauncher traceback window | {_VERSION}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=width, height=height)
@@ -832,7 +846,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        settingsAccountPage()
+        mainPage()
 
 except Exception as f:
     tracebackWindow(f)

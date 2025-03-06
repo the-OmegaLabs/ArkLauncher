@@ -1,5 +1,5 @@
 {
-    "self": "English",
+    "self": "English (United States)",
     "writingSystemStartAt": "left",
     "parent": "Artistic Network",
     "prodname": "ArkLauncher",
@@ -45,5 +45,9 @@
     "color": "Color",
     "style": "Style",
     "search": "Click to search...",
-    "searching": "Searching..."
+    "searching": "Searching...",
+    "needLogin1": "Before using this feature",
+    "needLogin2": "Need Login",
+    "needLogin3": "After logging in, you will enjoy various online services provided by Artistic Network's Ark.",
+    "login": "Log in"
 }
