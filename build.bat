@@ -10,7 +10,7 @@ set /p choice=������ѡ�����֣�1/2����
 if "%choice%"=="1" (
     echo ����ʹ�� PyInstaller ����...
     ::pyinstaller-build
-    pyinstaller --onefile --optimize 2 --hide-console minimize-early -i ark.ico --upx-dir ./upx --uac-admin ark.py
+    pyinstaller --onefile --optimize 2 --hide-console minimize-early -i ark.ico --uac-admin ark.py
 ) else if "%choice%"=="2" (
     echo ����ʹ�� Nuitka ����...
     ::nuitka-build
