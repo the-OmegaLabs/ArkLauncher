@@ -14,7 +14,7 @@
 
 
 _VERSION = 'dev'
-_SUBVERSION = '25w10e'
+_SUBVERSION = '25w10d'
 
 import time
 startLoadTime = time.time()
@@ -412,6 +412,8 @@ def aboutPage():
 def mainPage():
     cv = createPage()
 
+    animations = []
+
     def getTimeBasedGreeting():
         current_hour = datetime.now().hour
         if 5 <= current_hour < 12:
@@ -449,12 +451,7 @@ def mainPage():
     def performSearch(event=None):
         search_text = search_box.get()
         if search_text:
-            # Implement search functionality here
-            # For example, show a notice with the search text
-            search_notice, _ = createNotice(translate('searching'), search_text, cv, False)
-            search_animation = maliang.animation.MoveWidget(search_notice, offset=(0, -100), duration=500,
-                                                controller=maliang.animation.ease_out, fps=1000)
-            search_animation.start(delay=100)
+            pass
 
     icon_x = 50
     icon_y = 50
@@ -471,18 +468,12 @@ def mainPage():
     # Add search box with proper spacing and alignment
     # Using the same left margin as other elements (50px)
     search_box = maliang.InputBox(cv, (50, 165), (350, 40), placeholder=translate('search'), family=FONT_FAMILY, fontsize=15)
+    search_box.bind("<Return>", performSearch)
     
     # Add search button aligned with the search box
     search_button = maliang.IconButton(cv, position=(410, 165), size=(40, 43),
                                      command=performSearch,
                                      image=maliang.PhotoImage(images['icon_search'].resize((35, 35), 1)))
-    
-
-    # Bind Enter key to search function if the InputBox supports it
-    try:
-        search_box.bind("<Return>", performSearch)
-    except:
-        pass  # Skip if binding is not supported
 
     # Adjust content_start_y to maintain proper spacing
     content_start_y = 230
@@ -581,6 +572,18 @@ def settingsAccountPage():
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
                        image=maliang.PhotoImage(images['icon_return'].resize((55, 55), 1)))
+    
+    needLogin_text1 = maliang.Text(cv, position=(250, 345), anchor='center', family=FONT_FAMILY, fontsize=26)
+    needLogin_text2 = maliang.Text(cv, position=(250, 390), anchor='center', family=FONT_FAMILY_BOLD, fontsize=30)
+    needLogin_text3 = maliang.Text(cv, position=(250, 423), anchor='center', family=FONT_FAMILY_LIGHT, fontsize=12)
+
+    loginButton = maliang.Button(cv, position=(250, 460), size=(80, 40), anchor='center')
+    
+
+    needLogin_text1.set('在使用此功能之前')
+    needLogin_text2.set('需要登录')
+    needLogin_text3.set('登录后，您将可以享受由 Artistic Network 提供的 Ark 的各项在线服务。')
+    loginButton.set('登录')
 
     root.mainloop()
 
@@ -829,7 +832,7 @@ try:
     if configLib.first:
         welcomePage()
     else:
-        mainPage()
+        settingsAccountPage()
 
 except Exception as f:
     tracebackWindow(f)
