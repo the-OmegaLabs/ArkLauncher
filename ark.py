@@ -30,6 +30,10 @@ import threading
 import traceback
 import colorama
 import darkdetect
+import ctypes
+import socket
+import requests
+import pystray
 import maliang
 import maliang.animation
 import maliang.core
@@ -37,10 +41,6 @@ import maliang.color
 import maliang.standard
 import maliang.theme
 import maliang.toolbox
-import ctypes
-import socket
-import requests
-import gc
 
 # customed
 import libs.config as configLib
@@ -241,10 +241,7 @@ def refreshImage(*args):
     # Load all images with their respective categories
     for category, items in image_paths.items():
         for key, path in items.items():
-            threading.Thread(
-                target=threadedImageOpen,
-                args=(path, key, category)
-            ).start()
+            threadedImageOpen(path, key, category)
     
     log(f'Loaded {len(image_paths['contributors']) + len(image_paths["country"]) + len(image_paths[None])} images.')
 
@@ -270,7 +267,8 @@ def createRoot(x = 710, y = 200):
     log(f'Creating new page at ({x}, {y}).')
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
                         title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
-    root.bind("<Escape>", lambda event: exit(0))
+    root.bind("<Escape>", lambda event: exit())
+    root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
@@ -289,9 +287,10 @@ def createPage():
 def changeWindow(window):
     log(f'Perform change canvas to "{window.__name__}"...', type=olog.Type.INFO)
     #cv.destroy()
-    gc.collect()
-    window()
-
+    try:
+        window()
+    except RuntimeError:
+        log('Calling Tcl from sub-thread.', type=olog.Type.WARN)
 
 def loadLocale():
     global lang_dict
@@ -609,9 +608,9 @@ def settingsAccountPage():
     
     needLogin_text1 = maliang.Text(cv, position=(250, 345), anchor='center', family=FONT_FAMILY, fontsize=26)
     needLogin_text2 = maliang.Text(cv, position=(250, 390), anchor='center', family=FONT_FAMILY_BOLD, fontsize=30)
-    needLogin_text3 = maliang.Text(cv, position=(250, 423), anchor='center', family=FONT_FAMILY_LIGHT, fontsize=12)
+    needLogin_text3 = maliang.Text(cv, position=(250, 423), anchor='center', family=FONT_FAMILY, fontsize=12)
 
-    loginButton = maliang.Button(cv, position=(250, 460), size=(80, 40), anchor='center')
+    loginButton = maliang.Button(cv, position=(250, 460), size=(80, 40), anchor='center', family=FONT_FAMILY, fontsize=17)
     
 
     needLogin_text1.set(translate('needLogin1'))
@@ -834,6 +833,14 @@ def tracebackWindow(exception: Exception):
 
 try:
     refreshImage()
+    menu = pystray.Menu(
+        pystray.MenuItem('Exit', lambda: (icon.stop(), root.destroy())),
+        pystray.MenuItem('About', lambda: (changeWindow(aboutPage)))
+    )
+    icon = pystray.Icon("name", getImage('icon_logo'), "鼠标移动到\n托盘图标上\n展示内容", menu, daemon=True)
+    threading.Thread(target=icon.run, daemon=True).start()
+
+
     loadLocale()
     updateFont() # auto select font
 

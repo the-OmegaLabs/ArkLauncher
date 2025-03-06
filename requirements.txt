@@ -11,3 +11,5 @@ requests
 typing_extensions
 urllib3
 win32material
+pystray
+six
