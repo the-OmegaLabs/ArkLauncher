@@ -1,7 +1,6 @@
 import os
 import pwd
 import subprocess
-from pathlib import Path
 
 import libs.olog as olog
 
@@ -30,28 +29,29 @@ def detect_desktop_environment():
 
 def get_user_avatar_path(de):
     user = pwd.getpwuid(os.getuid()).pw_name
+    home_dir = os.path.expanduser('~')
     common_paths = [
-        Path.home() / ".face",
-        Path.home() / ".face.icon",
-        Path(f"/var/lib/AccountsService/icons/{user}"),
-        Path.home() / ".config/accountsservice/icons" / user
+        os.path.join(home_dir, ".face"),
+        os.path.join(home_dir, ".face.icon"),
+        os.path.join("/var/lib/AccountsService/icons", user),
+        os.path.join(home_dir, ".config/accountsservice/icons", user)
     ]
     if de == "gnome":
-        common_paths += [
-            Path.home() / ".config/gnome/accountsservice/users/" / user
-        ]
+        common_paths.append(os.path.join(home_dir, ".config/gnome/accountsservice/users", user))
     elif de == "kde":
-        common_paths += [
-            Path.home() / ".config/kdeglobals"
-        ]
+        common_paths.append(os.path.join(home_dir, ".config/kdeglobals"))
+
     for path in common_paths:
-        if path.exists():
-            if path.is_file() and path.stat().st_size > 0:
-                return str(path)
-            elif path.is_dir():
-                possible_images = list(path.glob("*.[pj][np]g"))
+        if os.path.exists(path):
+            if os.path.isfile(path) and os.path.getsize(path) > 0:
+                return path
+            elif os.path.isdir(path):
+                possible_images = []
+                for f in os.listdir(path):
+                    if f.lower().endswith(('.png', '.jpg')):
+                        possible_images.append(os.path.join(path, f))
                 if possible_images:
-                    return str(possible_images[0])
+                    return possible_images[0]
     return None
 
 
