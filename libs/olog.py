@@ -43,5 +43,5 @@ def output(value: str, end: str = "\n", type: str = Type.INFO):
     sys.stdout.flush()
 
 
-def outputa(value: str, end: str = "\n", type: str = Type.INFO):
-    threading.Thread(target=_, args=(value, end, type)).start()
+#def outputa(value: str, end: str = "\n", type: str = Type.INFO):
+#    threading.Thread(target=_, args=(value, end, type)).start()

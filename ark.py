@@ -169,7 +169,6 @@ def refreshImage(*args):
     global images
 
     del images
-    gc.collect()
 
     def loadImage(path):
         try:
