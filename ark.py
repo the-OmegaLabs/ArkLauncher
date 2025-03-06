@@ -282,7 +282,7 @@ def changeWindow(window):
 
 def welcomePage():
     global locale
-    root, cv = createPage()
+    cv = createPage()
 
     FONT_FAMILY_BOLD = 'Microsoft YaHei UI Bold'
 
