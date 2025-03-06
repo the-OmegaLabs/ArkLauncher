@@ -833,10 +833,10 @@ def tracebackWindow(exception: Exception):
 try:
     refreshImage()
     menu = pystray.Menu(
-        pystray.MenuItem('Exit', lambda: (icon.stop(), root.destroy())),
-        pystray.MenuItem('About', lambda: (changeWindow(aboutPage)))
+        pystray.MenuItem('About', lambda: (changeWindow(aboutPage))),
+        pystray.MenuItem('Exit', lambda: (icon.stop(), root.destroy()))
     )
-    icon = pystray.Icon("name", getImage('icon_logo'), "鼠标移动到\n托盘图标上\n展示内容", menu, daemon=True)
+    icon = pystray.Icon("name", getImage('icon_logo'), "ArkLauncher's Tray", menu, daemon=True)
     threading.Thread(target=icon.run, daemon=True).start()
 
 
