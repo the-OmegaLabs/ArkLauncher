@@ -732,7 +732,10 @@ def loadLocale():
 
 
 def translate(target):
-    return lang_dict.get(locale, {}).get(target, lang_dict['en'].get(target, target))
+    if lang_dict.get(locale, {}).get(target):
+        return lang_dict.get(locale, {}).get(target)
+    else:
+        return lang_dict.get(locale, {}).get("missing")
 
 
 def settingsLanguagePage():
