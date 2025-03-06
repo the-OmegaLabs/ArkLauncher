@@ -43,5 +43,7 @@
     "square": "Square",
     "round": "Round",
     "color": "Color",
-    "style": "Style"
+    "style": "Style",
+    "search": "Click to search...",
+    "searching": "Searching..."
 }

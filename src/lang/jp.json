@@ -43,5 +43,7 @@
     "square": "スクエア",
     "round": "ラウンド",
     "color": "カラー",
-    "style": "スタイル"
+    "style": "スタイル",
+    "search": "検索...",
+    "searching": "検索中..."
 }

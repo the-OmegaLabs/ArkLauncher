@@ -43,5 +43,7 @@
     "square": "直角",
     "round": "圆角",
     "color": "颜色",
-    "style": "样式"
+    "style": "样式",
+    "search": "点击搜索...",
+    "searching": "搜索中..."
 }

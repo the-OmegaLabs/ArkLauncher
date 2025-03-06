@@ -39,5 +39,11 @@
     "good_morning": "安寧하세요!",
     "good_afternoon": "安寧하세요!",
     "good_evening": "安寧하세요!",
-    "good_night": "安寧하세요!"
+    "good_night": "安寧하세요!",
+    "square": "直角",
+    "round": "圓角",
+    "color": "色彩",
+    "style": "風格",
+    "search": "點擊搜尋...",
+    "searching": "搜尋中..."
 }
