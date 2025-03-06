@@ -14,7 +14,7 @@ if "%choice%"=="1" (
 ) else if "%choice%"=="2" (
     echo 正在使用 Nuitka 构建...
     ::nuitka-build
-    nuitka ark.py --onefile --standalone --include -data-dir=libs=libs --include-data-dir=src=src --windows-icon-from-ico=ark.ico --show-progress --windows-disable-console --windows-uac-admin
+    nuitka ark.py --onefile --standalone --include -data-dir=libs=libs --include-data-dir=src=src --windows-icon-from-ico=ark.ico --show-progress --windows-disable-console --windows-uac-admin --enable-plugin=tk-inter
 ) else (
     echo 无效选项，请重新输入
     timeout /t 2 >nul
