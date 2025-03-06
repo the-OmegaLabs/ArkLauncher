@@ -598,7 +598,7 @@ def settingsPage():
 def settingsAccountPage():
     cv = createPage()
 
-    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     text_logo1.set(translate('settings'))
@@ -625,7 +625,7 @@ def settingsAccountPage():
 def settingsNetworkPage():
     cv = createPage()
 
-    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     text_logo1.set(translate('settings'))
@@ -649,7 +649,7 @@ def settingsCustomizePage():
     global _THEME
     cv = createPage()
 
-    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     text_logo1.set(translate('settings'))
@@ -759,7 +759,7 @@ def settingsLanguagePage():
     global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
     cv = createPage()
 
-    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY, fontsize=15)
+    text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
 
     text_logo1.set(translate('settings'))
