@@ -255,7 +255,7 @@ def getImage(target, category = None):
     else:
         img = images.get(target, None)
     if img:
-        log(f'Got image \"{target}\" from category \"{category}\".')
+        #log(f'Got image \"{target}\" from category \"{category}\".')
         return img
     else:
         log(f'Image \"{target}\" is missing.', type=olog.Type.WARN)
@@ -308,7 +308,7 @@ def loadLocale():
 def translate(target):
     Text = lang_dict.get(locale, {}).get(target)
     if Text:
-        log(f'Translated text ({target} -> {Text}).')
+        #log(f'Translated text ({target} -> {Text}).')
         return Text
     else:
         log(f'String \"{target}\" missing in language \"{locale}\".', type=olog.Type.WARN)
