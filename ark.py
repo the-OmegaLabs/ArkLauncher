@@ -258,7 +258,7 @@ def getImage(target, category = None):
         #log(f'Got image \"{target}\" from category \"{category}\".')
         return img
     else:
-        log(f'Image \"{target}\" is missing.', type=olog.Type.WARN)
+        log(f'Image \"{target}\" is missing from category \"{category}\".', type=olog.Type.WARN)
         return images.get('icon_unknown')
 
 def openGithub(name):
@@ -437,7 +437,7 @@ def aboutPage():
                 position=(x_pos, 430),
                 size=(avatar_size, avatar_size),
                 command=lambda c=contributor: openGithub(c),
-                image=maliang.PhotoImage(getImage('contributors', category=contributor).resize((47, 47), 1))
+                image=maliang.PhotoImage(getImage(contributor, category='contributors').resize((47, 47), 1))
                 )
 
     root.mainloop()
