@@ -135,6 +135,10 @@ def updateFont():
         FONT_FAMILY = 'Meiryo UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'  
+    elif locale == 'jp':
+        FONT_FAMILY = 'Yu Gothic UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Semilight'  
     else:
         FONT_FAMILY = 'Microsoft YaHei UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
@@ -453,20 +457,20 @@ def mainPage():
         if search_text:
             pass
 
-    icon_x = 50
+    icon_x = 43
     icon_y = 50
     icon_size = 50
     logo = maliang.Image(cv, (icon_x, icon_y),
                               image=maliang.PhotoImage(images['icon_logo'].resize((icon_size, icon_size), 1)))
 
-    greeting_text = maliang.Text(cv, (58, 115),
+    # Changed position from (58, 115) to (50, 115) to align with logo and search box
+    greeting_text = maliang.Text(cv, (50, 115),
                                  family=FONT_FAMILY_BOLD,
                                  fontsize=24)
     
     greeting_text.set(getTimeBasedGreeting())
     
-    # Add search box with proper spacing and alignment
-    # Using the same left margin as other elements (50px)
+    # Search box already aligned at x=50
     search_box = maliang.InputBox(cv, (50, 165), (350, 40), placeholder=translate('search'), family=FONT_FAMILY, fontsize=15)
     search_box.bind("<Return>", performSearch)
     
@@ -505,7 +509,6 @@ def mainPage():
 
     playToastAnimation()
     root.mainloop()
-
 
 
 def settingsPage():
