@@ -45,5 +45,9 @@
     "color": "顏色",
     "style": "樣式",
     "search": "點擊搜索...",
-    "searching": "搜索中..."
+    "searching": "搜索中...",
+    "needLogin1": "在使用此功能之前",
+    "needLogin2": "需要登錄",
+    "needLogin3": "登錄後，您將享受由 Artistic Network 提供的 Ark 各項線上服務。",
+    "login": "登錄"
 }
