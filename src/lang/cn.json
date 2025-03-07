@@ -1,5 +1,5 @@
 {
-    "self": "中文(中国)",
+    "self": "中文 (中国)",
     "writingSystemStartAt": "left",
     "parent": "Artistic Network",
     "prodname": "ArkLauncher",
@@ -45,5 +45,9 @@
     "color": "颜色",
     "style": "样式",
     "search": "点击搜索...",
-    "searching": "搜索中..."
+    "searching": "搜索中...",
+    "needLogin1": "在使用此功能之前",
+    "needLogin2": "需要登录",
+    "needLogin3": "登录后，您将享受由 Artistic Network 提供的 Ark 各项在线服务。",
+    "login": "登录"
 }
