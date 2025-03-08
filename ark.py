@@ -23,6 +23,8 @@ startLoadTime = time.time()
 from io import BytesIO
 from datetime import datetime
 from PIL import Image
+from PIL import ImageFilter
+from PIL import ImageDraw2 as ImageDraw
 import json
 import os
 import platform
@@ -84,6 +86,21 @@ colorama.init()
 def testDragAndDrop(*args):
     log(f'dnd: {args}')
 
+def addImageRadius(img, radius = 5):
+    img = img.convert("RGBA")
+
+    mask = Image.new("L", img.size, 0)
+    draw = ImageDraw.Draw(mask)
+    
+    draw.rounded_rectangle((0, 0, img.size[0], img.size[1]), radius=radius, fill=255)
+    
+    img.putalpha(mask)
+    
+    return img
+
+def addImageBlur(img, radius = 5):
+    img = img.filter(ImageFilter.GaussianBlur(radius=radius))
+    
 
 def loadFont(fontPath):
     global _FONTS
