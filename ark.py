@@ -96,7 +96,7 @@ def _focus():
     root.topmost(False)
 
 def focusWindow():
-    maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, fps=1000).start()
+    maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
     
 def minimizeWin():
     maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
