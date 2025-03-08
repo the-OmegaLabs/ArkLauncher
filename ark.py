@@ -16,6 +16,7 @@
 _VERSION = 'dev'
 _SUBVERSION = '25w10f'
 
+import math
 import sys
 import time
 startLoadTime = time.time()
@@ -82,11 +83,23 @@ olog.logLevel = 5
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
+    
+def smooth_forward(t: float):
+    return (1 - math.cos(t * math.pi)) / 2
 
-def focusWindow():
+def smooth_reverse(t: float):
+    return (math.cos(t * math.pi) + 1) / 2
+
+def _focus():
     root.deiconify()
     root.topmost(True)
     root.topmost(False)
+
+def focusWindow():
+    maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, fps=1000).start()
+    
+def minimizeWin():
+    maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
 
 def testDragAndDrop(*args):
     log(f'dnd: {args}')
@@ -520,8 +533,8 @@ def mainPage():
     bottomLaunchMask = maliang.Image(bottomMask, position=(0, 70), image=maliang.PhotoImage(makeImageMask((WIDTH, 130), color=(0, 0, 0, 64))))
 
     logo             = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
-    searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY, fontsize=18)
-    minimize         = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=root.withdraw)
+    searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
+    minimize         = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWin)
     exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=root.destroy)
 
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
