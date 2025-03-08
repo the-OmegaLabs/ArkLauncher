@@ -250,16 +250,16 @@ def refreshImage(*args):
 
 
 def getImage(target, category = None):
-    if category:
-        img = images.get(category, {}).get(target)
-    else:
-        img = images.get(target, None)
-    if img:
-        #log(f'Got image \"{target}\" from category \"{category}\".')
+    try:
+        if category:
+            img = images[category][target]  
+        else:
+            img = images[target]  
+
         return img
-    else:
+    except:
         log(f'Image \"{target}\" is missing from category \"{category}\".', type=olog.Type.WARN)
-        return images.get('icon_unknown')
+        return images['icon_unknown']
 
 def openGithub(name):
     os.system(f'start https://github.com/{name}')
@@ -280,7 +280,7 @@ def createRoot(x = 710, y = 200):
 def createPage():
     global root
 
-    cv = maliang.Canvas(root)
+    cv = maliang.Canvas(root, auto_zoom=True)
     cv.place(width=WIDTH, height=HEIGHT)
 
     root.icon(maliang.PhotoImage(getImage('icon_logo').resize((32, 32), 1)))
@@ -308,11 +308,10 @@ def loadLocale():
             log(f'Loaded locale file "{i}"...')
 
 def translate(target):
-    Text = lang_dict.get(locale, {}).get(target)
-    if Text:
-        #log(f'Translated text ({target} -> {Text}).')
-        return Text
-    else:
+    try:
+        text = lang_dict[locale][target]  
+        return text
+    except:
         log(f'String \"{target}\" missing in language \"{locale}\".', type=olog.Type.WARN)
         return target
 
