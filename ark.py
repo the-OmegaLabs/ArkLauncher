@@ -63,6 +63,7 @@ config = configLib.config
 locale = config['language']
 
 images = {}
+_EMPTY = ('', '', '')
 _FONTS = []
 _THEME = config['theme']
 _BORDER = config['border']
@@ -83,6 +84,10 @@ olog.logLevel = 5
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 
 colorama.init()
+
+def focusWindow():
+    root.topmost(True)
+    root.topmost(False)
 
 def testDragAndDrop(*args):
     log(f'dnd: {args}')
@@ -248,12 +253,14 @@ def refreshImage(*args, threaded: bool):
             'cnol':           f'src/icon/both/country_ching.png'
         },
         'background': {
-            'ChiesaBianca':   f'src/icon/background/ChiesaBianca.png'
+            'ChiesaBianca':   f'src/icon/background/ChiesaBianca.png',
+            'g':   f'src/icon/background/g.png'
         },
         None: {  # Regular images without category
             'icon_quick':     f'src/icon/both/quick.png',
             'icon_unknown':   f'src/icon/both/unknown.png',
             'icon_logo':      f'src/icon/main.png',
+            'icon_exit':      f'src/icon/{theme}/exit.png',
             'icon_return':    f'src/icon/{theme}/return.png',
             'icon_settings':  f'src/icon/{theme}/settings.png',
             'icon_about':     f'src/icon/{theme}/about.png',
@@ -301,13 +308,15 @@ def createRoot(x = 710, y = 200):
     global root
     
     log(f'Creating new page at ({x}, {y}).')
-    root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
-                        title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
-    #root.overrideredirect(True)
+    root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+    root.overrideredirect(True)
+    root.geometry(position=root.winfo_pointerxy())
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
-    maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
+    root.iconphoto(True, maliang.PhotoImage(getImage('icon_logo')))
     maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
+    maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
+    
 
 def createPage():
     global root
@@ -502,84 +511,37 @@ def mainPage():
         else:
             return [noticeBar, noticeText]
 
-    def playToastAnimation():
-        nonlocal animation
-        animation.start(delay=100)
+    backgroundImage = getImage('ChiesaBianca', 'background')
 
-    def stopAniAndChangeWindow(window: object):
-        nonlocal animation
-        animation.stop()
-        animation = maliang.animation.MoveWidget(noticeBar, offset=(0, 100), duration=200,
-                                            controller=maliang.animation.ease_in, fps=1000,
-                                            end=lambda: (animation.stop(), changeWindow(window)))
-        animation.start()
+    background = maliang.Image(cv, position=(0, 0), size=(WIDTH, HEIGHT), image=maliang.PhotoImage(backgroundImage))
 
-    def performSearch(event=None):
-        search_text = search_box.get()
-        if search_text:
-            pass
+    upHEIGHT = 65
 
-    background = maliang.Image(cv, position=(0, 0), size=(WIDTH, HEIGHT), image=maliang.PhotoImage(getImage('ChiesaBianca', 'background')))
-    asd = makeImageMask((WIDTH, 200))
+    topImage         = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
+    topMask          = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
+    topIconMask      = maliang.Image(topMask, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 32))))
+    topSearchMask    = maliang.Image(topMask, position=(upHEIGHT, 0), image=maliang.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
+    topMinMask       = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 80))))
+    topExitMask      = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 1)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(120, 0, 0, 128))))
 
-    cropped_image = makeImageBlur(getImage('ChiesaBianca', 'background').crop((0, 600, WIDTH, HEIGHT)), radius=10)
+    bottomHEIGHT     = 200
+    bottomImage      = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, HEIGHT - bottomHEIGHT, WIDTH, HEIGHT)), radius=10)))
+    bottomMask       = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageMask(size=(HEIGHT, bottomHEIGHT))))
+    bottomLaunchMask = maliang.Image(bottomMask, position=(0, 70), image=maliang.PhotoImage(makeImageMask((WIDTH, 130), color=(0, 0, 0, 64))))
 
-    asd = mergeImage(cropped_image, makeImageMask((500, 200)))
-    
-    mask = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(asd))
+    logo             = maliang.Image(topIconMask, (upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
+    searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY, fontsize=18)
+    exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=root.destroy)
 
-    icon_x = 43
-    icon_y = 50
-    icon_size = 50
-    logo = maliang.Image(cv, (icon_x, icon_y),
-                              image=maliang.PhotoImage(getImage('icon_logo').resize((icon_size, icon_size), 1)))
+    exit.style.set(bg=('', '#990000', ''), ol=_EMPTY)
+    searchBox.style.set(bg=(_EMPTY), ol=_EMPTY)
 
-    # Changed position from (58, 115) to (50, 115) to align with logo and search box
-    greeting_text = maliang.Text(cv, (50, 115),
-                                 family=FONT_FAMILY_BOLD,
-                                 fontsize=24)
-    
-    greeting_text.set(getTimeBasedGreeting())
-    
-    # Search box already aligned at x=50
-    search_box = maliang.InputBox(cv, (50, 165), (350, 40), placeholder=translate('search'), family=FONT_FAMILY, fontsize=15)
-
-    search_box.bind("<Return>", performSearch)
-    
-    # Add search button aligned with the search box
-    search_button = maliang.IconButton(cv, position=(410, 165), size=(41, 41),
-                                     command=performSearch,
-                                     image=maliang.PhotoImage(getImage('icon_search').resize((35, 35), 1)))
-
-    # Adjust content_start_y to maintain proper spacing
     content_start_y = 230
 
-    button_new = maliang.Button(cv, position=(50, content_start_y), size=(400, 100))
-    maliang.Text(button_new, (200, 50), text='+', family=FONT_FAMILY_BOLD, fontsize=50, anchor='center')
-
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(400, 50), size=(50, 50),
-                           command=lambda: stopAniAndChangeWindow(settingsPage),
-                           image=maliang.PhotoImage(getImage('icon_settings').resize((55, 55), 1))),
-        text=translate('settings'), 
-        family=FONT_FAMILY, 
-        fontsize=13)
-
-    maliang.Tooltip(
-        maliang.IconButton(cv, position=(340, 50), size=(50, 50),
-                           command=lambda: stopAniAndChangeWindow(mainPage),
-                           image=maliang.PhotoImage(getImage('icon_quick').resize((40, 40), 1))),
-        text=translate('quick'),
-        family=FONT_FAMILY,
-        fontsize=13)
-
-    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...",
-                                   translate('wait'), cv, 1)
+    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", translate('wait'), cv, 1)
         
-    animation = maliang.animation.MoveWidget(noticeBar, offset=(0, -100), duration=500,
-                                            controller=maliang.animation.ease_out, fps=1000)
+    animation = maliang.animation.MoveWidget(noticeBar, offset=(0, 0), duration=0, controller=maliang.animation.ease_out, fps=1000)
 
-    playToastAnimation()
     root.mainloop()
 
 
@@ -882,12 +844,13 @@ try:
 
     menu = pystray.Menu(
         pystray.MenuItem('About', lambda: (changeWindow(aboutPage))),
+        pystray.Menu.SEPARATOR,
+        pystray.MenuItem('Focus', lambda: (focusWindow())),
         pystray.MenuItem('Exit', lambda: (icon.stop(), root.destroy()))
     )
     icon = pystray.Icon("name", getImage('icon_logo'), "ArkLauncher Tray", menu)
+    
     threading.Thread(target=icon.run, daemon=True).start()
-
-
 
     loadLocale()
     updateFont() # auto select font
