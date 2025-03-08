@@ -64,6 +64,7 @@ config = configLib.config
 locale = config['language']
 
 images = {}
+focus = False
 _EMPTY = ('', '', '')
 _FONTS = []
 _THEME = config['theme']
@@ -90,16 +91,24 @@ def smooth_forward(t: float):
 def smooth_reverse(t: float):
     return (math.cos(t * math.pi) + 1) / 2
 
-def _focus():
-    root.deiconify()
-    root.topmost(True)
-    root.topmost(False)
 
 def focusWindow():
-    maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
-    
-def minimizeWin():
-    maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
+    global focus
+    if not focus:
+        focus = True
+        maliang.animation.MoveWindow(root, offset=(-500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=lambda: root.topmost(True), fps=1000).start()
+    #maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
+
+def minimizeWindow():    
+    global focus
+    if focus:
+        focus = False
+        maliang.animation.MoveWindow(root, offset=(500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=lambda: root.topmost(False), fps=1000).start()
+    #maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
+
+def minimizeAndExit():
+    icon.stop()
+    maliang.animation.MoveWindow(root, offset=(500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=root.destroy, fps=1000).start()
 
 def testDragAndDrop(*args):
     log(f'dnd: {args}')
@@ -321,12 +330,16 @@ def createRoot(x = 710, y = 200):
     global root
     
     log(f'Creating new page at ({x}, {y}).')
-    root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+    root = maliang.Tk(size=(WIDTH, HEIGHT), position=(100000, 100000))
+    root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth(), root.winfo_screenheight() - 850))
+    root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
+
+    focusWindow()
     
 
 def createPage():
@@ -533,8 +546,8 @@ def mainPage():
 
     logo             = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
     searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
-    minimize         = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWin)
-    exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=root.destroy)
+    minimize         = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWindow)
+    exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=minimizeAndExit)
 
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
     exit.style.set(bg=('', '#990000', ''), ol=_EMPTY)
@@ -848,7 +861,7 @@ try:
         pystray.MenuItem('About', lambda: (changeWindow(aboutPage))),
         pystray.Menu.SEPARATOR,
         pystray.MenuItem('Focus', lambda: (focusWindow())),
-        pystray.MenuItem('Exit', lambda: (icon.stop(), root.destroy()))
+        pystray.MenuItem('Exit', lambda: (minimizeAndExit()))
     )
     icon = pystray.Icon("name", getImage('icon_logo'), "ArkLauncher Tray", menu)
     
