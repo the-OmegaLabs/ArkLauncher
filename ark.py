@@ -271,7 +271,7 @@ def createRoot(x = 710, y = 200):
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
                         title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.bind("<Escape>", lambda event: exit())
-    root.overrideredirect(True)
+    #root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
@@ -293,7 +293,7 @@ def changeWindow(window):
     try:
         window()
     except RuntimeError:
-        log('Calling Tcl from sub-thread.', type=olog.Type.WARN)
+        log('Calling Tcl from tray thread.', type=olog.Type.WARN)
 
 def loadLocale():
     global lang_dict
@@ -835,12 +835,14 @@ def tracebackWindow(exception: Exception):
 
 try:
     refreshImage()
+
     menu = pystray.Menu(
         pystray.MenuItem('About', lambda: (changeWindow(aboutPage))),
         pystray.MenuItem('Exit', lambda: (icon.stop(), root.destroy()))
     )
-    icon = pystray.Icon("name", getImage('icon_logo'), "ArkLauncher's Tray", menu, daemon=True)
+    icon = pystray.Icon("name", getImage('icon_logo'), "ArkLauncher Tray", menu)
     threading.Thread(target=icon.run, daemon=True).start()
+
 
 
     loadLocale()
