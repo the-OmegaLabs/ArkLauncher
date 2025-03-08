@@ -555,7 +555,7 @@ def mainPage():
     searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
     root.bind("<ButtonPress-1>", on_drag_start)
-    logo.bind("<B1-Motion>", on_drag_motion)  
+    #logo.bind("<B1-Motion>", on_drag_motion)  
 
     root.mainloop()
 
