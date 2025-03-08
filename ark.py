@@ -515,12 +515,12 @@ def mainPage():
 
     _DRAG = [0, 0]
 
-    def on_drag_start(event):
+    def Drag(event):
         nonlocal _DRAG
         _DRAG[0] = event.x
         _DRAG[1] = event.y
 
-    def on_drag_motion(event):
+    def ChangeWindow(event):
         dx = event.x - _DRAG[0]
         dy = event.y - _DRAG[1]
         
@@ -554,7 +554,7 @@ def mainPage():
     minimize.style.set(bg=('', '#024477', ''), ol=_EMPTY)
     searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
-    root.bind("<ButtonPress-1>", on_drag_start)
+    root.bind("<ButtonPress-1>", Drag)
     #logo.bind("<B1-Motion>", on_drag_motion)  
 
     root.mainloop()
