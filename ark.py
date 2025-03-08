@@ -102,7 +102,8 @@ def focusWindow():
     global focus
     if not focus:
         focus = True
-        maliang.animation.MoveWindow(root, offset=(-500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=lambda: root.topmost(True), fps=1000).start()
+        root.topmost(True)
+        maliang.animation.MoveWindow(root, offset=(-500, 0), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000).start()
     #maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
 def minimizeWindow():    
@@ -346,7 +347,6 @@ def createRoot(x = 710, y = 200):
     maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
 
-    focusWindow()
     
 
 def createPage():
@@ -897,6 +897,8 @@ try:
     log(f'Loaded ArkLauncher in {int(endLoadTime * 1000)}ms.')
 
     createRoot()
+    
+    focusWindow()
 
     if configLib.first:
         welcomePage()
