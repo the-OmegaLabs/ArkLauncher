@@ -310,7 +310,6 @@ def createRoot(x = 710, y = 200):
     log(f'Creating new page at ({x}, {y}).')
     root = maliang.Tk(size=(WIDTH, HEIGHT), title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.overrideredirect(True)
-    root.geometry(position=root.winfo_pointerxy())
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
     root.iconphoto(True, maliang.PhotoImage(getImage('icon_logo')))
@@ -489,27 +488,18 @@ def mainPage():
     cv = createPage()
     cv.bind("<Escape>", lambda event: exit())
 
-    def getTimeBasedGreeting():
-        current_hour = datetime.now().hour
-        if 5 <= current_hour < 12:
-            return translate('good_morning')
-        elif 12 <= current_hour < 18:
-            return translate('good_afternoon')
-        elif 18 <= current_hour < 22:
-            return translate('good_evening')
-        else:
-            return translate('good_night')
+    _DRAG = [0, 0]
 
-    def createNotice(str, sub, cv, spin):
-        noticeBar = maliang.Label(master=cv, size=(320, 70), position=(90, 800))
-        noticeText = maliang.Text(noticeBar, (65, 15), text=str, family=FONT_FAMILY_BOLD, fontsize=14)
-        maliang.Text(noticeBar, (65, 36), text=sub, family=FONT_FAMILY, fontsize=14)
+    def on_drag_start(event):
+        nonlocal _DRAG
+        _DRAG[0] = event.x
+        _DRAG[1] = event.y
 
-        if spin == True:
-            noticeSpinner = maliang.Spinner(noticeBar, (35, 35), mode="indeterminate", anchor='center')
-            return [noticeBar, noticeText, noticeSpinner]
-        else:
-            return [noticeBar, noticeText]
+    def on_drag_motion(event):
+        dx = event.x - _DRAG[0]
+        dy = event.y - _DRAG[1]
+        
+        root.geometry(position=(root.winfo_x() + dx, root.winfo_y() + dy))
 
     backgroundImage = getImage('ChiesaBianca', 'background')
 
@@ -529,18 +519,16 @@ def mainPage():
     bottomMask       = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageMask(size=(HEIGHT, bottomHEIGHT))))
     bottomLaunchMask = maliang.Image(bottomMask, position=(0, 70), image=maliang.PhotoImage(makeImageMask((WIDTH, 130), color=(0, 0, 0, 64))))
 
-    logo             = maliang.Image(topIconMask, (upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
+    logo             = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
     searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY, fontsize=18)
     exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=root.destroy)
 
+    logo.style.set(bg=_EMPTY, ol=_EMPTY)
     exit.style.set(bg=('', '#990000', ''), ol=_EMPTY)
     searchBox.style.set(bg=(_EMPTY), ol=_EMPTY)
 
-    content_start_y = 230
-
-    noticeBar, _, _ = createNotice(f"{translate('logging_in')} {translate('parent')}...", translate('wait'), cv, 1)
-        
-    animation = maliang.animation.MoveWidget(noticeBar, offset=(0, 0), duration=0, controller=maliang.animation.ease_out, fps=1000)
+    root.bind("<ButtonPress-1>", on_drag_start)
+    logo.bind("<B1-Motion>", on_drag_motion)  
 
     root.mainloop()
 
