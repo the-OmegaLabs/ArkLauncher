@@ -68,9 +68,7 @@ _FONTS = []
 _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
-#_STYLE = maliang.configs.Env.get_default_system()
-_STYLE = config['style']
-maliang.configs.Env.system = _STYLE
+maliang.configs.Env.system = 'Windows10'
 maliang.theme.manager.set_color_mode(_THEME)
 
 
@@ -528,7 +526,7 @@ def mainPage():
 
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
     exit.style.set(bg=('', '#990000', ''), ol=_EMPTY)
-    minimize.style.set(bg=_EMPTY, ol=_EMPTY)
+    minimize.style.set(bg=('', '#024477', ''), ol=_EMPTY)
     searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
     root.bind("<ButtonPress-1>", on_drag_start)
