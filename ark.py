@@ -26,7 +26,8 @@ from io import BytesIO
 from datetime import datetime
 from PIL import Image
 from PIL import ImageFilter
-from PIL import ImageDraw2 as ImageDraw
+from PIL import ImageGrab
+from PIL import ImageDraw
 import json
 import os
 import platform
@@ -91,6 +92,11 @@ def smooth_forward(t: float):
 def smooth_reverse(t: float):
     return (math.cos(t * math.pi) + 1) / 2
 
+def takeShot(*args):
+    x, y = root.winfo_x(), root.winfo_y()
+    img = ImageGrab.grab((x, y, x + WIDTH, y + HEIGHT))
+    return img
+    
 
 def focusWindow():
     global focus
@@ -113,17 +119,18 @@ def minimizeAndExit():
 def testDragAndDrop(*args):
     log(f'dnd: {args}')
 
-def makeImageRadius(img, radius = 5):
+def makeImageRadius(img, radius = 30, alpha = 0.5):
     img = img.convert("RGBA")
 
     mask = Image.new("L", img.size, 0)
     draw = ImageDraw.Draw(mask)
-    
-    draw.rounded_rectangle((0, 0, img.size[0], img.size[1]), radius=radius, fill=255)
-    
+
+    draw.rounded_rectangle((0, 0, img.size[0], img.size[1]), radius, fill=int(256 * alpha))
+
     img.putalpha(mask)
-    
+
     return img
+
 
 def makeImageBlur(img, radius = 5):
     return img.filter(ImageFilter.GaussianBlur(radius=radius))
@@ -296,7 +303,8 @@ def refreshImage(*args, threaded: bool):
             'icon_info':      f'src/icon/{theme}/info.png',
             'icon_round':     f'src/icon/{theme}/round.png',
             'icon_square':    f'src/icon/{theme}/square.png',
-            'icon_search':    f'src/icon/{theme}/search.png'
+            'icon_search':    f'src/icon/{theme}/search.png',
+            'icon_launch':    f'src/icon/{theme}/launch.png'
         }
     }
 
@@ -329,9 +337,8 @@ def openGithub(name):
 def createRoot(x = 710, y = 200):
     global root
     
-    log(f'Creating new page at ({x}, {y}).')
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(100000, 100000))
-    root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth(), root.winfo_screenheight() - 850))
+    root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth(), root.winfo_screenheight() - 880))
     root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
@@ -520,7 +527,7 @@ def mainPage():
         _DRAG[0] = event.x
         _DRAG[1] = event.y
 
-    def ChangeWindow(event):
+    def moveWindow(event):
         dx = event.x - _DRAG[0]
         dy = event.y - _DRAG[1]
         
@@ -530,32 +537,47 @@ def mainPage():
 
     background = maliang.Image(cv, position=(0, 0), size=(WIDTH, HEIGHT), image=maliang.PhotoImage(backgroundImage))
 
-    upHEIGHT = 65
+    upHEIGHT           = 65
+    topImage           = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
+    topMask            = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
+    topIconMask        = maliang.Image(topMask, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 16))))
+    topSearchMask      = maliang.Image(topMask, position=(upHEIGHT, 0), image=maliang.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
+    topMinimizeMask    = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 80))))
+    topExitMask        = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 1)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(120, 0, 0, 128))))
 
-    topImage         = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
-    topMask          = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
-    topIconMask      = maliang.Image(topMask, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 32))))
-    topSearchMask    = maliang.Image(topMask, position=(upHEIGHT, 0), image=maliang.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
-    topMinimizeMask  = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 80))))
-    topExitMask      = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 1)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(120, 0, 0, 128))))
+    bottomHEIGHT       = 200
+    bottomMaskHEIGHT   = 70
+    bottomLMaskHEIGHT  = 130
+    bottomImage        = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, HEIGHT - bottomHEIGHT, WIDTH, HEIGHT)), radius=10)))
+    bottomMask         = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageMask(size=(HEIGHT, bottomHEIGHT))))
+    bottomSettingsMask = maliang.Image(bottomMask, position=(bottomMaskHEIGHT // 2, bottomMaskHEIGHT // 2), image=maliang.PhotoImage(makeImageRadius(makeImageMask(size=(bottomMaskHEIGHT, bottomMaskHEIGHT), color=(0, 0, 0, 128)), bottomMaskHEIGHT, alpha=0.1).resize((50, 50), 1)), anchor='center')
+    bottomAccountMask  = maliang.Image(bottomMask, position=(500 - bottomMaskHEIGHT // 2, bottomMaskHEIGHT // 2), image=maliang.PhotoImage(makeImageRadius(makeImageMask(size=(bottomMaskHEIGHT, bottomMaskHEIGHT), color=(0, 0, 0, 128)), bottomMaskHEIGHT, alpha=0.1).resize((50, 50), 1)), anchor='center')
+    bottomSubMask      = maliang.Image(bottomMask, position=(0, bottomMaskHEIGHT), image=maliang.PhotoImage(makeImageMask((WIDTH, bottomLMaskHEIGHT), color=(0, 0, 0, 64))))
+    bottomLaunchMask   = maliang.Image(bottomSubMask, position=(10, 7), image=maliang.PhotoImage(makeImageMask((480, 116), color=(0, 0, 0, 64))))
 
-    bottomHEIGHT     = 200
-    bottomImage      = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, HEIGHT - bottomHEIGHT, WIDTH, HEIGHT)), radius=10)))
-    bottomMask       = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(makeImageMask(size=(HEIGHT, bottomHEIGHT))))
-    bottomLaunchMask = maliang.Image(bottomMask, position=(0, 70), image=maliang.PhotoImage(makeImageMask((WIDTH, 130), color=(0, 0, 0, 64))))
+    logo               = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
+    searchBox          = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
+    minimize           = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWindow)
+    exit               = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=minimizeAndExit)
+  
+    settings           = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage), anchor='center')
+    account            = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsAccountPage), anchor='center')
 
-    logo             = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
-    searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
-    minimize         = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWindow)
-    exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=minimizeAndExit)
+    launch             = maliang.Label(bottomLaunchMask, (0, 0), size=(480, 116))
+    launchIcon         = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7), image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
+    launchDesc         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='启动游戏', family=FONT_FAMILY, fontsize=17)
+    launchTitle        = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
 
+    launch.style.set(fg=('', ''), bg=('', ''), ol=('#4C4849', '#BBBBBB'))
+    account.style.set(bg=_EMPTY, ol=_EMPTY)
+    settings.style.set(bg=_EMPTY, ol=_EMPTY)
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
-    exit.style.set(bg=('', '#990000', ''), ol=_EMPTY)
-    minimize.style.set(bg=('', '#024477', ''), ol=_EMPTY)
+    exit.style.set(bg=('', '#990000'), ol=('', '#EEEEEE'))
+    minimize.style.set(bg=('', '#024477', ''), ol=('', '#EEEEEE'))
     searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
-    root.bind("<ButtonPress-1>", Drag)
-    #logo.bind("<B1-Motion>", on_drag_motion)  
+    # root.bind("<ButtonPress-1>", takeShot)
+    # logo.bind("<B1-Motion>", on_drag_motion)  
 
     root.mainloop()
 

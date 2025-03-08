@@ -13,3 +13,4 @@ urllib3
 win32material
 pystray
 six
+maliang-three
