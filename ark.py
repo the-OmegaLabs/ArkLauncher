@@ -16,6 +16,7 @@
 _VERSION = 'dev'
 _SUBVERSION = '25w10d'
 
+import sys
 import time
 startLoadTime = time.time()
 
@@ -86,7 +87,7 @@ colorama.init()
 def testDragAndDrop(*args):
     log(f'dnd: {args}')
 
-def addImageRadius(img, radius = 5):
+def makeImageRadius(img, radius = 5):
     img = img.convert("RGBA")
 
     mask = Image.new("L", img.size, 0)
@@ -98,9 +99,18 @@ def addImageRadius(img, radius = 5):
     
     return img
 
-def addImageBlur(img, radius = 5):
-    img = img.filter(ImageFilter.GaussianBlur(radius=radius))
+def makeImageBlur(img, radius = 5):
+    return img.filter(ImageFilter.GaussianBlur(radius=radius))
     
+def makeImageMask(size, color = (0, 0, 0, 128)):
+    return Image.new("RGBA", size=size, color=color)
+
+    
+def mergeImage(a: Image, b: Image):
+    try:
+        return Image.alpha_composite(a, b)
+    except ValueError:
+        log(f'Can\'t merge image {a} and {b}.', type=olog.Type.ERROR)
 
 def loadFont(fontPath):
     global _FONTS
@@ -186,7 +196,7 @@ def updateFont():
     log(f'Changed font to {FONT_FAMILY} (Bold: {FONT_FAMILY_BOLD}, Light: {FONT_FAMILY_LIGHT}).')
     
 
-def refreshImage(*args):
+def refreshImage(*args, threaded: bool):
     global images
 
     del images
@@ -208,7 +218,7 @@ def refreshImage(*args):
                 images[category][dict_key] = img
             else:
                 images[dict_key] = img
-            log(f"Loaded image: {path}")
+            #log(f"Loaded image: {path}")
 
     theme = darkdetect.theme().lower() if _THEME == 'system' else _THEME
 
@@ -237,6 +247,9 @@ def refreshImage(*args):
             'tw':             f'src/icon/both/country_cn.png',
             'cnol':           f'src/icon/both/country_ching.png'
         },
+        'background': {
+            'ChiesaBianca':   f'src/icon/background/ChiesaBianca.png'
+        },
         None: {  # Regular images without category
             'icon_quick':     f'src/icon/both/quick.png',
             'icon_unknown':   f'src/icon/both/unknown.png',
@@ -261,7 +274,10 @@ def refreshImage(*args):
     # Load all images with their respective categories
     for category, items in image_paths.items():
         for key, path in items.items():
-            threadedImageOpen(path, key, category)
+            if threaded:
+                threading.Thread(target=threadedImageOpen, args=(path, key, category)).start()
+            else:
+                threadedImageOpen(path, key, category)
     
     log(f'Loaded {len(image_paths['contributors']) + len(image_paths["country"]) + len(image_paths[None])} images.')
 
@@ -287,7 +303,6 @@ def createRoot(x = 710, y = 200):
     log(f'Creating new page at ({x}, {y}).')
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(x, y),
                         title=f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
-    root.bind("<Escape>", lambda event: exit())
     #root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
@@ -463,8 +478,7 @@ def aboutPage():
 
 def mainPage():
     cv = createPage()
-
-    animations = []
+    cv.bind("<Escape>", lambda event: exit())
 
     def getTimeBasedGreeting():
         current_hour = datetime.now().hour
@@ -505,6 +519,15 @@ def mainPage():
         if search_text:
             pass
 
+    background = maliang.Image(cv, position=(0, 0), size=(WIDTH, HEIGHT), image=maliang.PhotoImage(getImage('ChiesaBianca', 'background')))
+    asd = makeImageMask((WIDTH, 200))
+
+    cropped_image = makeImageBlur(getImage('ChiesaBianca', 'background').crop((0, 600, WIDTH, HEIGHT)), radius=10)
+
+    asd = mergeImage(cropped_image, makeImageMask((500, 200)))
+    
+    mask = maliang.Image(cv, position=(0, 600), image=maliang.PhotoImage(asd))
+
     icon_x = 43
     icon_y = 50
     icon_size = 50
@@ -520,6 +543,7 @@ def mainPage():
     
     # Search box already aligned at x=50
     search_box = maliang.InputBox(cv, (50, 165), (350, 40), placeholder=translate('search'), family=FONT_FAMILY, fontsize=15)
+
     search_box.bind("<Return>", performSearch)
     
     # Add search button aligned with the search box
@@ -561,6 +585,7 @@ def mainPage():
 
 def settingsPage():
     cv = createPage()
+    cv.bind("<Escape>", lambda event: changeWindow(mainPage))
     
     
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
@@ -614,6 +639,7 @@ def settingsPage():
 
 def settingsAccountPage():
     cv = createPage()
+    cv.bind("<Escape>", lambda event: changeWindow(settingsPage))
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -641,6 +667,7 @@ def settingsAccountPage():
 
 def settingsNetworkPage():
     cv = createPage()
+    cv.bind("<Escape>", lambda event: changeWindow(settingsPage))
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -665,6 +692,7 @@ def settingsNetworkPage():
 def settingsCustomizePage():
     global _THEME
     cv = createPage()
+    cv.bind("<Escape>", lambda event: changeWindow(settingsPage))
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -752,7 +780,7 @@ def settingsCustomizePage():
         configLib.sync()
 
         log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
-        refreshImage()
+        refreshImage(threaded=True)
         maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage),
                         image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
 
@@ -762,7 +790,6 @@ def settingsCustomizePage():
         
         first = True
     
-    maliang.theme.manager.register_event(refreshImage)
     maliang.theme.manager.register_event(updateWidget)
     #maliang.theme.manager.register_event(changeTheme, (darkdetect.theme(), _STYLE))
 
@@ -775,6 +802,7 @@ def settingsCustomizePage():
 def settingsLanguagePage():
     global locale, FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
     cv = createPage()
+    cv.bind("<Escape>", lambda event: changeWindow(settingsPage))
 
     text_logo1 = maliang.Text(cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
     text_logo2 = maliang.Text(cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
@@ -850,7 +878,7 @@ def tracebackWindow(exception: Exception):
 
 
 try:
-    refreshImage()
+    refreshImage(threaded=False)
 
     menu = pystray.Menu(
         pystray.MenuItem('About', lambda: (changeWindow(aboutPage))),
