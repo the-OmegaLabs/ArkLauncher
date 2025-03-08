@@ -86,6 +86,7 @@ log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 colorama.init()
 
 def focusWindow():
+    root.deiconify()
     root.topmost(True)
     root.topmost(False)
 
@@ -261,6 +262,7 @@ def refreshImage(*args, threaded: bool):
             'icon_unknown':   f'src/icon/both/unknown.png',
             'icon_logo':      f'src/icon/main.png',
             'icon_exit':      f'src/icon/{theme}/exit.png',
+            'icon_minimize':  f'src/icon/{theme}/minimize.png',
             'icon_return':    f'src/icon/{theme}/return.png',
             'icon_settings':  f'src/icon/{theme}/settings.png',
             'icon_about':     f'src/icon/{theme}/about.png',
@@ -511,7 +513,7 @@ def mainPage():
     topMask          = maliang.Image(cv, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
     topIconMask      = maliang.Image(topMask, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 32))))
     topSearchMask    = maliang.Image(topMask, position=(upHEIGHT, 0), image=maliang.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
-    topMinMask       = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 80))))
+    topMinimizeMask  = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 80))))
     topExitMask      = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 1)), 0), image=maliang.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(120, 0, 0, 128))))
 
     bottomHEIGHT     = 200
@@ -521,11 +523,13 @@ def mainPage():
 
     logo             = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
     searchBox        = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY, fontsize=18)
+    minimize         = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=root.withdraw)
     exit             = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_exit').resize((40, 40), 1)), command=root.destroy)
 
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
     exit.style.set(bg=('', '#990000', ''), ol=_EMPTY)
-    searchBox.style.set(bg=(_EMPTY), ol=_EMPTY)
+    minimize.style.set(bg=_EMPTY, ol=_EMPTY)
+    searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
     root.bind("<ButtonPress-1>", on_drag_start)
     logo.bind("<B1-Motion>", on_drag_motion)  
