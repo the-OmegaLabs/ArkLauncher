@@ -14,7 +14,7 @@
 
 
 _VERSION = 'dev'
-_SUBVERSION = '25w10d'
+_SUBVERSION = '25w10f'
 
 import sys
 import time
