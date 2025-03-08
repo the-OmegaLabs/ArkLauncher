@@ -3,18 +3,21 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
+
 class OpenGLWindow(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
         self.width, self.height = 800, 600
         # 创建Canvas并绑定OpenGL上下文
-        self.canvas = tk.Canvas(self.master, width=self.width, height=self.height)
+        self.canvas = tk.Canvas(
+            self.master, width=self.width, height=self.height)
         self.canvas.pack()
         # 初始化OpenGL
         self.init_opengl()
         # 加载着色器
-        self.shader_program = self.load_shaders("vertex_shader.vert", "fragment_shader.frag")
+        self.shader_program = self.load_shaders(
+            "vertex_shader.vert", "fragment_shader.frag")
         # 设置顶点数据
         self.setup_vertex_data()
         # 启动渲染循环
@@ -22,7 +25,8 @@ class OpenGLWindow(tk.Frame):
 
     def init_opengl(self):
         # 初始化OpenGL上下文
-        self.canvas.bind("<Expose>", lambda e: self.on_resize(e.width, e.height))
+        self.canvas.bind(
+            "<Expose>", lambda e: self.on_resize(e.width, e.height))
         glutInit()  # GLUT初始化
 
     def on_resize(self, width, height):
@@ -49,7 +53,8 @@ class OpenGLWindow(tk.Frame):
 
         # 加载顶点和片段着色器
         vertex_shader = compile_shader(GL_VERTEX_SHADER, read_file(vert_path))
-        fragment_shader = compile_shader(GL_FRAGMENT_SHADER, read_file(frag_path))
+        fragment_shader = compile_shader(
+            GL_FRAGMENT_SHADER, read_file(frag_path))
 
         # 创建着色器程序并链接
         program = glCreateProgram()
@@ -74,7 +79,8 @@ class OpenGLWindow(tk.Frame):
         self.vbo = glGenBuffers(1)
         glBindVertexArray(self.vao)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
-        glBufferData(GL_ARRAY_BUFFER, (GLfloat * len(vertices))(*vertices), GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, (GLfloat * len(vertices))
+                     (*vertices), GL_STATIC_DRAW)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, None)
         glEnableVertexAttribArray(0)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
@@ -95,6 +101,7 @@ class OpenGLWindow(tk.Frame):
         glBindVertexArray(self.vao)
         glDrawArrays(GL_TRIANGLES, 0, 3)
         glFlush()  # 确保绘制完成
+
 
 if __name__ == "__main__":
     root = tk.Tk()

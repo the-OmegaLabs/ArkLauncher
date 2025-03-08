@@ -92,7 +92,8 @@ class IPOptimizer:
         self.progress['value'] = 0
 
         max_threads = 50
-        ip_chunks = [ip_list[i:i + max_threads] for i in range(0, len(ip_list), max_threads)]
+        ip_chunks = [ip_list[i:i + max_threads]
+                     for i in range(0, len(ip_list), max_threads)]
 
         for chunk in ip_chunks:
             threads = []
@@ -156,7 +157,8 @@ class IPOptimizer:
         })
 
         self.test_queue.put(('update', f"{host}:{port}"))
-        self.test_queue.put(('log', f"{host} 测试完成: {avg_latency:.1f}ms 丢包 {loss_rate:.1f}%"))
+        self.test_queue.put(
+            ('log', f"{host} 测试完成: {avg_latency:.1f}ms 丢包 {loss_rate:.1f}%"))
 
     def update_progress(self):
         while not self.test_queue.empty():
@@ -233,8 +235,10 @@ class ResultsWindow:
         self.tree = ttk.Treeview(master, columns=('ip', 'latency', 'loss'),
                                  show='headings', selectmode='browse')
         self.tree.heading('ip', text='IP地址', command=lambda: self.sort('ip'))
-        self.tree.heading('latency', text='延迟(ms)', command=lambda: self.sort('latency'))
-        self.tree.heading('loss', text='丢包率(%)', command=lambda: self.sort('loss'))
+        self.tree.heading('latency', text='延迟(ms)',
+                          command=lambda: self.sort('latency'))
+        self.tree.heading('loss', text='丢包率(%)',
+                          command=lambda: self.sort('loss'))
 
         self.tree.column('ip', width=300)
         self.tree.column('latency', width=150)
@@ -276,7 +280,8 @@ class ResultsWindow:
 
         for col in ['ip', 'latency', 'loss']:
             self.tree.heading(col, text=col.capitalize())
-        self.tree.heading(column, text=f"{column.capitalize()} {'↓' if reverse else '↑'}")
+        self.tree.heading(
+            column, text=f"{column.capitalize()} {'↓' if reverse else '↑'}")
         self.tree.delete(*self.tree.get_children())
         for result in self.results:
             self.tree.insert('', tk.END, values=(

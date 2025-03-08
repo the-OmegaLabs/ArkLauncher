@@ -49,7 +49,8 @@ is_vt = re.search(r"vt(\d+)", term)
 enable_screen_buffer = not (is_vt or term == "linux")
 
 # color support is after VT241
-enable_color = not is_vt or int(re.search(r"\d+", is_vt.group()).group()) >= 241
+enable_color = not is_vt or int(
+    re.search(r"\d+", is_vt.group()).group()) >= 241
 
 enable_sound = '--no-sound' not in sys.argv
 
@@ -72,12 +73,15 @@ if term_columns < 80 or term_lines < 24:
 
 is_draw_end = False
 
+
 def sigint_handler(sig, frame):
     end_draw()
     print('Interrupt by user')
     sys.exit(0)
 
+
 signal.signal(signal.SIGINT, sigint_handler)
+
 
 def begin_draw():
     if enable_screen_buffer:
@@ -103,17 +107,18 @@ def end_draw():
         move(1, 1, False, False)
     print_lock.release()
 
+
 def move(x, y, update_cursor=True, mutex=True):
     global cursor_x, cursor_y
     global print_lock
-    if(mutex):
+    if (mutex):
         print_lock.acquire()
     print("\033[%d;%dH" % (y, x), end='')
     sys.stdout.flush()
-    if(update_cursor):
+    if (update_cursor):
         cursor_x = x
         cursor_y = y
-    if(mutex):
+    if (mutex):
         print_lock.release()
 
 
@@ -135,7 +140,7 @@ def _print(str, newline=True):
     global cursor_x, cursor_y
     global print_lock
     print_lock.acquire()
-    if(newline):
+    if (newline):
         print(str)
         cursor_x = 1
         cursor_y = cursor_y + 1
@@ -397,7 +402,7 @@ lyrics = [
     ##########  Page 1  ##########
     lyric("Forms FORM-29827281-12:",            0,      -1,   0),
     lyric("Test Assessment Report",             200,    -1,   0),
-    lyric("\00\00\00\00\00\00\00",              400,    - \
+    lyric("\00\00\00\00\00\00\00",              400,    -
           1,   0),  # Keep flushing the buffer
     lyric("",                                   710,    0,    4),  # Music start
     lyric("This was a triumph.",                730,    2,    0),
@@ -596,10 +601,13 @@ def drawAA(x, y, ch):
 
 def drawFrame():
     move(1, 1)
-    _print(' ' + '-' * lyric_width + '  ' + '-' * credits_width + ' ', not is_vt)
+    _print(' ' + '-' * lyric_width + '  ' +
+           '-' * credits_width + ' ', not is_vt)
     for _ in range(credits_height):
-        _print('|' + ' ' * lyric_width + '||' + ' ' * credits_width + '|', not is_vt)
-    _print('|' + ' ' * lyric_width + '| ' + '-' * credits_width + ' ', not is_vt)
+        _print('|' + ' ' * lyric_width + '||' +
+               ' ' * credits_width + '|', not is_vt)
+    _print('|' + ' ' * lyric_width + '| ' +
+           '-' * credits_width + ' ', not is_vt)
     for _ in range(lyric_height - 1 - credits_height):
         _print('|' + ' ' * lyric_width + '|')
     _print(' ' + '-' * lyric_width + ' ', False)
@@ -622,7 +630,7 @@ def drawLyrics(str, x, y, interval, newline):
         sys.stdout.flush()
         time.sleep(interval)
         x = x + 1
-    if(newline):
+    if (newline):
         x = 0
         y = y + 1
         move(x + 2, y + 2)
@@ -689,44 +697,44 @@ currentCredit = 0
 x = 0
 y = 0
 
-while(lyrics[currentLyric].mode != 9):
+while (lyrics[currentLyric].mode != 9):
     currentTime = time.time() * 100 - startTime
 
-    if(currentTime > lyrics[currentLyric].time):
+    if (currentTime > lyrics[currentLyric].time):
 
-        if(lyrics[currentLyric].mode <= 1 or lyrics[currentLyric].mode >= 5):
+        if (lyrics[currentLyric].mode <= 1 or lyrics[currentLyric].mode >= 5):
             wordCount = len(lyrics[currentLyric].words)
-        if(wordCount == 0):
+        if (wordCount == 0):
             wordCount = 1
 
-        if(lyrics[currentLyric].interval < 0):
+        if (lyrics[currentLyric].interval < 0):
             interval = (lyrics[currentLyric + 1].time -
                         lyrics[currentLyric].time) / 100.0 / wordCount
         else:
             interval = lyrics[currentLyric].interval / wordCount
 
-        if(lyrics[currentLyric].mode == 0):
+        if (lyrics[currentLyric].mode == 0):
             x = drawLyrics(lyrics[currentLyric].words,
                            x, y,
                            interval,
                            True)
             y = y + 1
-        elif(lyrics[currentLyric].mode == 1):
+        elif (lyrics[currentLyric].mode == 1):
             x = drawLyrics(lyrics[currentLyric].words,
                            x, y,
                            interval,
                            False)
-        elif(lyrics[currentLyric].mode == 2):
+        elif (lyrics[currentLyric].mode == 2):
             drawAA(ascii_art_x, ascii_art_y, lyrics[currentLyric].words)
             move(x + 2, y + 2)
-        elif(lyrics[currentLyric].mode == 3):
+        elif (lyrics[currentLyric].mode == 3):
             clearLyrics()
             x = 0
             y = 0
-        elif(lyrics[currentLyric].mode == 4):
+        elif (lyrics[currentLyric].mode == 4):
             if enable_sound:
                 playsound.playsound(str(Path.cwd() / 'sa1.mp3'), False)
-        elif(lyrics[currentLyric].mode == 5):
+        elif (lyrics[currentLyric].mode == 5):
             th_credit = thread_credits()
             th_credit.daemon = True
             th_credit.start()
@@ -739,4 +747,3 @@ end_draw()
 if enable_sound:
     while True:
         time.sleep(600)
-

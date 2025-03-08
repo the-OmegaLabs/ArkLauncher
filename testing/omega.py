@@ -19,7 +19,8 @@ y_sphere = r * np.sin(phi) * np.sin(theta)
 z_sphere = r * np.cos(phi)
 
 # 绘制空心球体（线框模式）
-ax.plot_wireframe(x_sphere, y_sphere, z_sphere, color='white', linewidth=0.5, alpha=0.3)
+ax.plot_wireframe(x_sphere, y_sphere, z_sphere,
+                  color='white', linewidth=0.5, alpha=0.3)
 
 # 初始化环绕曲线
 curve, = ax.plot([], [], [], color='white', linewidth=1)

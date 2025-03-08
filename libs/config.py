@@ -20,8 +20,9 @@ import os
 config = {}
 first = False
 
+
 def _getConfigPath():
-    #return os.path.join(os.path.expanduser(f'~/.config/arklauncher/'))
+    # return os.path.join(os.path.expanduser(f'~/.config/arklauncher/'))
     return '.'
 
 
@@ -47,8 +48,10 @@ def loadConfig():
     with open(f'{_getConfigPath()}/config.json', encoding='utf-8') as f:
         config.update(json.loads(f.read()))
 
+
 def setConfig(key: str, value: object):
     config[key] = value
+
 
 def sync():
     with open(f'{_getConfigPath()}/config.json', 'w', encoding='utf-8') as f:

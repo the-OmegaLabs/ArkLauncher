@@ -37,7 +37,8 @@ def get_user_avatar_path(de):
         os.path.join(home_dir, ".config/accountsservice/icons", user)
     ]
     if de == "gnome":
-        common_paths.append(os.path.join(home_dir, ".config/gnome/accountsservice/users", user))
+        common_paths.append(os.path.join(
+            home_dir, ".config/gnome/accountsservice/users", user))
     elif de == "kde":
         common_paths.append(os.path.join(home_dir, ".config/kdeglobals"))
 
