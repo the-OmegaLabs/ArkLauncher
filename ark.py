@@ -472,7 +472,6 @@ def welcomePage():
 
     root.mainloop()
 
-
 def aboutPage():
     cv = createPage()
 
@@ -489,68 +488,138 @@ def aboutPage():
     maliang.Text(cv, (110, 70), text=translate("about"),
                  family=FONT_FAMILY_BOLD, fontsize=26)
 
-    icon_x = 250 - (120 // 2)
+    # 居中放置logo
+    logo_size = 120
+    icon_x = 250 - (logo_size // 2)
+    icon_y = 150
 
     maliang.IconButton(
         cv,
-        position=(icon_x, 120),
-        size=(120, 120),
-        image=maliang.PhotoImage(getImage('icon_logo').resize((120, 120), 1)),
+        position=(icon_x, icon_y),
+        size=(logo_size, logo_size),
+        image=maliang.PhotoImage(getImage('icon_logo').resize((logo_size, logo_size), 1)),
         command=lambda: openGithub('the-OmegaLabs/ArkLauncher')
     )
 
+    # 调整文本位置以匹配图片
     maliang.Text(
         cv,
-        (250, 270),
+        (250, 300),
         text="Artistic Network",
         family=FONT_FAMILY_LIGHT,
         fontsize=20,
         anchor='center'
     )
+    
     maliang.Text(
         cv,
-        (250, 300),
+        (250, 340),
         text="ArkLauncher",
         family=FONT_FAMILY_BOLD,
-        fontsize=32,
+        fontsize=36,
         anchor='center'
     )
+    
+    # 修改版本格式为 "Developing Version 25w33a"
     maliang.Text(
         cv,
-        (250, 330),
-        text=f"Version: {translate(_VERSION)}-{_SUBVERSION}",
+        (250, 380),
+        text=f"Version {_VERSION}{_SUBVERSION}",
         family=FONT_FAMILY,
         fontsize=15,
         anchor='center'
     )
 
+    # 添加版权文本
     maliang.Text(
         cv,
-        (250, 400),
+        (250, 420),
+        text=translate("open_source_notice"),
+        family=FONT_FAMILY,
+        fontsize=12,
+        anchor='center'
+    )
+    
+    maliang.Text(
+        cv,
+        (250, 440),
+        text="©2025 Artistic Network™",
+        family=FONT_FAMILY,
+        fontsize=12,
+        anchor='center'
+    )
+
+    # 贡献者部分标题
+    maliang.Text(
+        cv,
+        (250, 480),
         text=translate("contributors"),
         family=FONT_FAMILY_BOLD,
         fontsize=26,
         anchor='center'
     )
 
+    # 贡献者信息
+    contributors = [
+        {
+            'name': 'Stevesuk0',
+            'contribution': translate('leaddev'),
+            'github': 'Stevesuk0'
+        },
+        {
+            'name': 'bzym2',
+            'contribution': translate('deve'),
+            'github': 'bzym2'
+        },
+        {
+            'name': 'HRGC-Sonrai',
+            'contribution': translate('ud+dev'),
+            'github': 'HRGC-Sonrai'
+        }
+    ]
+    
+    # 增加间距以容纳名称和贡献
     avatar_size = 50
-    avatar_spacing = 60
-    contributors = ['Stevesuk0', 'bzym2', 'HRGC-Sonrai']
+    avatar_spacing = 120  # 增加间距以容纳文本
     total_width = (len(contributors) - 1) * avatar_spacing + avatar_size
 
     start_x = 250 - (total_width // 2)
+    avatar_y = 520
 
     for i, contributor in enumerate(contributors):
         x_pos = start_x + (i * avatar_spacing)
-        if contributor in images['contributors']:
+        x_center = x_pos + (avatar_size // 2)
+        
+        # 头像
+        if contributor['github'] in images['contributors']:
             maliang.IconButton(
                 cv,
-                position=(x_pos, 430),
+                position=(x_pos, avatar_y),
                 size=(avatar_size, avatar_size),
-                command=lambda c=contributor: openGithub(c),
+                command=lambda c=contributor['github']: openGithub(c),
                 image=maliang.PhotoImage(
-                    getImage(contributor, category='contributors').resize((47, 47), 1))
+                    getImage(contributor['github'], category='contributors').resize((47, 47), 1))
             )
+        
+        # 名称
+        maliang.Text(
+            cv,
+            (x_center, avatar_y + avatar_size + 15),
+            text=contributor['name'],
+            family=FONT_FAMILY_BOLD,
+            fontsize=14,
+            anchor='center'
+        )
+        
+        # 贡献
+        maliang.Text(
+            cv,
+            (x_center, avatar_y + avatar_size + 35),
+            text=contributor['contribution'],
+            family=FONT_FAMILY_LIGHT,
+            fontsize=12,
+            anchor='center'
+        )
 
     root.mainloop()
 

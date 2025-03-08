@@ -49,5 +49,9 @@
     "needLogin1": "在使用此功能之前",
     "needLogin2": "需要登錄",
     "needLogin3": "登錄後，您將享受由 Artistic Network 提供的 Ark 各項線上服務。",
-    "login": "登錄"
+    "login": "登錄",
+    "open_source_notice": "本程式已根據 Apache 協定開源。",
+    "leaddev": "主開發者",
+    "deve": "開發者",
+    "ud+dev": "美術與開發" 
 }
