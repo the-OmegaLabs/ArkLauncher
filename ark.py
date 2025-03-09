@@ -102,7 +102,7 @@ def takeShot(*args):
     return img
 
 
-def focusWindow():
+def focusWindow(*args):
     global focus
     if not focus:
         root.topmost(True)
@@ -701,73 +701,6 @@ def settingsPage():
     background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
 
 
-    text_logo1 = maliang.Text(
-        cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
-    text_logo2 = maliang.Text(
-        cv, (110, 70), family=FONT_FAMILY_BOLD, fontsize=26)
-
-    maliang.IconButton(cv, position=(400, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
-                       image=maliang.PhotoImage(getImage('icon_account').resize((45, 45), 1)))
-
-    Label = maliang.Button(cv, position=(50, 165), size=(
-        400, 290), family=FONT_FAMILY, fontsize=15)
-    HEIGHT = 5
-    button_account = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
-                                        command=lambda: changeWindow(
-                                            settingsAccountPage),
-                                        image=maliang.PhotoImage(
-                                            getImage('icon_account').resize((40, 40), 1)),
-                                        family=FONT_FAMILY_BOLD, fontsize=18)
-    HEIGHT += 56
-    button_language = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
-                                         command=lambda: changeWindow(
-                                             settingsLanguagePage),
-                                         image=maliang.PhotoImage(
-                                             getImage('icon_language').resize((40, 40), 1)),
-                                         family=FONT_FAMILY_BOLD, fontsize=18)
-    HEIGHT += 56
-    button_network = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
-                                        command=lambda: changeWindow(
-                                            settingsNetworkPage),
-                                        image=maliang.PhotoImage(
-                                            getImage('icon_network').resize((40, 40), 1)),
-                                        family=FONT_FAMILY_BOLD, fontsize=18)
-    HEIGHT += 56
-    button_customize = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
-                                          command=lambda: changeWindow(
-                                              settingsCustomizePage),
-                                          image=maliang.PhotoImage(
-                                              getImage('icon_customize').resize((40, 40), 1)),
-                                          family=FONT_FAMILY_BOLD,
-                                          fontsize=18)
-    HEIGHT += 56
-    button_about = maliang.IconButton(Label, position=(5, HEIGHT), size=(390, 55),
-                                      command=lambda: changeWindow(aboutPage),
-                                      image=maliang.PhotoImage(
-                                          getImage('icon_about').resize((40, 40), 1)),
-                                      family=FONT_FAMILY_BOLD,
-                                      fontsize=18)
-
-    text_logo1.set(translate('homepage'))
-    text_logo2.set(translate('settings'))
-    button_account.set(f" {translate('account')}")
-    button_language.set(f" {translate('locale')}")
-    button_network.set(f" {translate('network')}")
-    button_about.set(f" {translate('about')}")
-    button_customize.set(f" {translate('customize')}")
-
-    
-    button_account.style.set(  bg=('', ''), ol=('', ''))
-    button_language.style.set( bg=('', ''), ol=('', ''))
-    button_network.style.set(  bg=('', ''), ol=('', ''))
-    button_about.style.set(    bg=('', ''), ol=('', ''))
-    button_customize.style.set(bg=('', ''), ol=('', ''))
-    button_about.style.set(    bg=('', ''), ol=('', ''))
-
-
-    maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage),
-                       image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
-
     root.mainloop()
 
 
@@ -998,11 +931,13 @@ try:
     refreshImage(threaded=False)
 
 
-    def on_left_action(icon, item):
-        focusWindow()
 
     hidden_menu = (
-        pystray.MenuItem('', on_left_action, default=True, visible=False),
+        pystray.MenuItem('', focusWindow, default=True, visible=False),
+
+        pystray.Menu.SEPARATOR,
+
+        pystray.MenuItem('Exit', minimizeAndExit)
     )
 
     icon = pystray.Icon("name", getImage('icon_logo'),
