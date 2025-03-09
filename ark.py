@@ -1019,14 +1019,18 @@ def tracebackWindow(exception: Exception):
 try:
     refreshImage(threaded=False)
 
-    menu = pystray.Menu(
-        pystray.MenuItem('About', lambda: (changeWindow(aboutPage))),
-        pystray.Menu.SEPARATOR,
-        pystray.MenuItem('Focus', lambda: (focusWindow())),
-        pystray.MenuItem('Exit', lambda: (minimizeAndExit()))
+
+    def on_left_action(icon, item):
+        focusWindow()
+
+
+    # 创建隐藏的默认菜单项
+    hidden_menu = (
+        pystray.MenuItem('', on_left_action, default=True, visible=False),
     )
+
     icon = pystray.Icon("name", getImage('icon_logo'),
-                        "ArkLauncher Tray", menu)
+                        "ArkLauncher Tray", menu=hidden_menu)
 
     threading.Thread(target=icon.run, daemon=True).start()
 
