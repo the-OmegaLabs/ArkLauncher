@@ -105,8 +105,8 @@ def takeShot(*args):
 def focusWindow():
     global focus
     if not focus:
-        focus = True
         root.topmost(True)
+        focus = True
         maliang.animation.MoveWindow(root, offset=(-500, 0), duration=500,
                                      controller=maliang.animation.controllers.ease_out, fps=1000).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
@@ -149,7 +149,7 @@ def makeImageBlur(img, radius=5):
     return img.filter(ImageFilter.GaussianBlur(radius=radius))
 
 
-def makeImageMask(size, color=(0, 0, 0, 128)):
+def makeImageMask(size, color=(0, 0, 0, 128),):
     return Image.new("RGBA", size=size, color=color)
 
 
@@ -672,16 +672,16 @@ def mainPage():
     settings           = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage), anchor='center')
     account            = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsAccountPage), anchor='center')
 
-    launch             = maliang.Label(bottomLaunchMask, (0, 0), size=(480, 116))
+    launch             = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116))
     launchIcon         = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
     launchDesc         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='启动游戏', family=FONT_FAMILY, fontsize=17)
     launchTitle        = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
 
-    launch.style.set(fg=('', ''), bg=('', ''), ol=('#4C4849', '#BBBBBB'))
+    launch.style.set(fg=('', '', ''), bg=('', '', ''), ol=('#4C4849', '#BBBBBB'))
     account.style.set(bg=_EMPTY, ol=_EMPTY)
     settings.style.set(bg=_EMPTY, ol=_EMPTY)
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
-    exit.style.set(bg=('', '#990000'), ol=('', '#EEEEEE'))
+    exit.style.set(bg=('', '#990000', ''), ol=('', '#EEEEEE'))
     minimize.style.set(bg=('', '#024477', ''), ol=('', '#EEEEEE'))
     searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
@@ -694,6 +694,12 @@ def mainPage():
 def settingsPage():
     cv = createPage()
     cv.bind("<Escape>", lambda event: changeWindow(mainPage))
+
+
+    backgroundImage = mergeImage(makeImageBlur(getImage('ChiesaBianca', 'background'), radius=25), makeImageMask((500, 800), (0, 0, 0, 96)))
+
+    background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
+
 
     text_logo1 = maliang.Text(
         cv, (110, 50), family=FONT_FAMILY_LIGHT, fontsize=15)
@@ -749,6 +755,15 @@ def settingsPage():
     button_network.set(f" {translate('network')}")
     button_about.set(f" {translate('about')}")
     button_customize.set(f" {translate('customize')}")
+
+    
+    button_account.style.set(  bg=('', ''), ol=('', ''))
+    button_language.style.set( bg=('', ''), ol=('', ''))
+    button_network.style.set(  bg=('', ''), ol=('', ''))
+    button_about.style.set(    bg=('', ''), ol=('', ''))
+    button_customize.style.set(bg=('', ''), ol=('', ''))
+    button_about.style.set(    bg=('', ''), ol=('', ''))
+
 
     maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(mainPage),
                        image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
@@ -829,11 +844,9 @@ def settingsCustomizePage():
 
     colorLabel = maliang.Button(cv, position=(50, 150), size=(
         400, 177), family=FONT_FAMILY, fontsize=15)
-    styleLabel = maliang.Button(cv, position=(50, 392), size=(
-        400, 177), family=FONT_FAMILY, fontsize=15)
 
     def updateWidget(*_):
-        nonlocal colorLabel, styleLabel
+        nonlocal colorLabel
 
         colorLabelText = maliang.Text(colorLabel, position=(
             5, -30), family=FONT_FAMILY, fontsize=15)
@@ -858,63 +871,28 @@ def settingsCustomizePage():
         maliang.IconButton(cv, position=(50, 50), size=(50, 50), command=lambda: changeWindow(settingsPage),
                            image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
 
-        styleLabelText = maliang.Text(styleLabel, position=(
-            5, -30), family=FONT_FAMILY, fontsize=15)
-
-        HEIGHT = 5
-        maliang.Env.system = 'Windows10'
-        button10 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme(theme=_THEME, style='Windows10'),
-                                      family=FONT_FAMILY_BOLD,
-                                      image=maliang.PhotoImage(getImage('icon_square').resize((40, 40), 1)), fontsize=18)
-        HEIGHT += 56
-        maliang.Env.system = 'Windows11'
-        button11 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
-                                      command=lambda: changeTheme(theme=_THEME, style='Windows11'), family=FONT_FAMILY_BOLD,
-                                      image=maliang.PhotoImage(
-                                          getImage('icon_round').resize((40, 40), 1)),
-                                      fontsize=18)
-        HEIGHT += 56
-        maliang.Env.system = _STYLE
-        buttonSystem2 = maliang.IconButton(styleLabel, position=(5, HEIGHT), size=(390, 55),
-                                           command=lambda: changeTheme(theme=_THEME, style=maliang.configs.Env.get_default_system()), family=FONT_FAMILY_BOLD,
-                                           image=maliang.PhotoImage(
-                                               getImage('icon_auto').resize((40, 40), 1)),
-                                           fontsize=18)
-
         colorLabelText.set(translate('color'))
-        styleLabelText.set(translate('style'))
 
         buttonDark.set(translate('dark'))
         buttonLight.set(translate('light'))
         buttonSystem.set(translate('auto'))
 
-        button10.set(translate('square'))
-        button11.set(translate('round'))
-        buttonSystem2.set(translate('auto'))
-
     def changeTheme(theme, style):
-        global _THEME, _STYLE, root
-        nonlocal first, colorLabel, styleLabel
+        global _THEME, root
+        nonlocal first, colorLabel
 
         if first:
             colorLabel.destroy()
-            styleLabel.destroy()
             colorLabel = maliang.Button(cv, position=(50, 150), size=(
-                400, 177), family=FONT_FAMILY, fontsize=15)
-            styleLabel = maliang.Button(cv, position=(50, 392), size=(
                 400, 177), family=FONT_FAMILY, fontsize=15)
 
         _THEME = theme
-        _STYLE = style
 
         maliang.theme.manager.set_color_mode(_THEME)
-        maliang.Env.system = style
 
         configLib.setConfig('theme', _THEME)
-        configLib.setConfig('style', _STYLE)
         configLib.sync()
 
-        log(f"Changing window to {_THEME} style.", type=olog.Type.INFO)
         refreshImage(threaded=True)
         maliang.IconButton(cv, position=(50, 50), size=(50, 40), command=lambda: changeWindow(settingsPage),
                            image=maliang.PhotoImage(getImage('icon_return').resize((55, 55), 1)))
@@ -928,7 +906,7 @@ def settingsCustomizePage():
     maliang.theme.manager.register_event(updateWidget)
     # maliang.theme.manager.register_event(changeTheme, (darkdetect.theme(), _STYLE))
 
-    updateWidget(_THEME, _STYLE)
+    updateWidget(_THEME)
 
     root.mainloop()
 
