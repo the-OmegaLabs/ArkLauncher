@@ -48,8 +48,6 @@ _SUBVERSION = '25w10f'
 
 startLoadTime = time.time()
 
-# base
-
 # customed
 
 hwnd = ctypes.windll.user32.GetForegroundWindow()
@@ -123,8 +121,10 @@ def minimizeWindow():
 
 def minimizeAndExit():
     icon.stop()
-    maliang.animation.MoveWindow(root, offset=(
-        500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=root.destroy, fps=1000).start()
+    animation = maliang.animation.MoveWindow(root, offset=(
+        500, 0), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000)
+    animation.end = lambda: (animation.stop(), root.destroy())
+    animation.start()
 
 
 def testDragAndDrop(*args):
