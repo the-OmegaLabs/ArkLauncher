@@ -852,18 +852,18 @@ def settingsCustomizePage():
             5, -30), family=FONT_FAMILY, fontsize=15)
 
         HEIGHT = 5
-        buttonDark = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme('dark', _STYLE),
+        buttonDark = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55), command=lambda: changeTheme('dark'),
                                         family=FONT_FAMILY_BOLD,
                                         image=maliang.PhotoImage(getImage('icon_dark').resize((40, 40), 1)), fontsize=18)
         HEIGHT += 56
         buttonLight = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
-                                         command=lambda: changeTheme('light', _STYLE), family=FONT_FAMILY_BOLD,
+                                         command=lambda: changeTheme('light'), family=FONT_FAMILY_BOLD,
                                          image=maliang.PhotoImage(
                                              getImage('icon_light').resize((40, 40), 1)),
                                          fontsize=18)
         HEIGHT += 56
         buttonSystem = maliang.IconButton(colorLabel, position=(5, HEIGHT), size=(390, 55),
-                                          command=lambda: changeTheme('system', _STYLE), family=FONT_FAMILY_BOLD,
+                                          command=lambda: changeTheme('system'), family=FONT_FAMILY_BOLD,
                                           image=maliang.PhotoImage(
                                               getImage('icon_auto').resize((40, 40), 1)),
                                           fontsize=18)
@@ -1001,8 +1001,6 @@ try:
     def on_left_action(icon, item):
         focusWindow()
 
-
-    # 创建隐藏的默认菜单项
     hidden_menu = (
         pystray.MenuItem('', on_left_action, default=True, visible=False),
     )
