@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+############################
+import time
+startLoadTime = time.time()
+############################
 
 import ctypes
 import json
@@ -20,7 +24,6 @@ import os
 import platform
 import socket
 import threading
-import time
 import traceback
 from io import BytesIO
 
@@ -47,9 +50,6 @@ from libs.utils.logger import output as log
 
 _VERSION = 'dev'
 _SUBVERSION = '25w10f'
-
-startLoadTime = time.time()
-
 
 # customed
 
