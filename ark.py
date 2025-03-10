@@ -969,10 +969,8 @@ try:
     refreshImage(threaded=False)
 
     hidden_menu = (
-        pystray.MenuItem('', focusWindow, default=True, visible=False),
-
+        pystray.MenuItem('Focus', focusWindow, default=True),
         pystray.Menu.SEPARATOR,
-
         pystray.MenuItem('Exit', minimizeAndExit)
     )
 
