@@ -17,7 +17,6 @@ import os
 import platform
 import re
 import subprocess
-import sys
 
 
 def get_linux_version():
@@ -72,53 +71,7 @@ def get_linux_version():
 
 
 def get_windows_version():
-    win_version = 0
-    verbose = "Unknown Windows Version"
-
-    try:
-        import winreg
-        key = winreg.OpenKey(
-            winreg.HKEY_LOCAL_MACHINE,
-            r"SOFTWARE\Microsoft\Windows NT\CurrentVersion"
-        )
-
-        product_name = winreg.QueryValueEx(key, "ProductName")[0]
-        current_build = winreg.QueryValueEx(key, "CurrentBuild")[0]
-        release_id = winreg.QueryValueEx(key, "ReleaseId")[0] if "ReleaseId" in \
-                                                                 winreg.QueryValueEx(key, "ReleaseId") else ""
-        winreg.CloseKey(key)
-
-        if int(current_build) >= 22000:
-            win_version = 11
-            verbose = product_name
-        else:
-            version_map = {
-                "10": 10,
-                "8.1": 8,
-                "8": 8,
-                "7": 7,
-                "Vista": 6,
-                "XP": 5
-            }
-            for key in version_map:
-                if key in product_name:
-                    win_version = version_map[key]
-                    break
-            verbose = product_name
-
-    except Exception as e:
-        win_ver = sys.getwindowsversion()
-        build_number = win_ver.build
-        if build_number >= 22000:
-            win_version = 11
-            verbose = f"Windows 11 (Build {build_number})"
-        elif win_ver.major == 10:
-            win_version = 10
-            verbose = f"Windows 10 (Build {build_number})"
-        elif win_ver.major == 6:
-            win_version = {1: 7, 2: 8, 3: 8}.get(win_ver.minor, 0)
-
-    return (win_version, verbose)
+    platform.version()
 
 
 def get_macos_version():

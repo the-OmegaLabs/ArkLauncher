@@ -17,6 +17,7 @@ import ctypes
 import json
 import math
 import os
+import platform
 import socket
 import threading
 import time
@@ -41,13 +42,14 @@ from PIL import ImageGrab
 
 import libs.configuration.config as configLib
 from libs.utils import logger as olog
-from libs.utils import systemDetector as sd
 from libs.utils.logger import output as log
+# from libs.utils import systemDetector as sd
 
 _VERSION = 'dev'
 _SUBVERSION = '25w10f'
 
 startLoadTime = time.time()
+
 
 # customed
 
@@ -70,7 +72,8 @@ _EMPTY = ('', '', '')
 _FONTS = []
 _THEME = config['theme']
 _BORDER = config['border']
-_SYSTEM = sd.detect_system()[0]
+_SYSTEM = platform.system()
+_SYSVER = platform.version()
 maliang.configs.Env.system = 'Windows10'
 maliang.theme.manager.set_color_mode(_THEME)
 
@@ -83,7 +86,7 @@ olog.logLevel = 5
 
 log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
 log(f'Welcome to Ark!')
-log(f'System: {_SYSTEM}, Version: {sd.detect_system()[1]}, Verbose_Version: {sd.detect_system()[2]}.')
+log(f'System: {_SYSTEM}, Version: {_SYSVER}.')
 
 colorama.init()
 
