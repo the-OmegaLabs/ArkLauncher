@@ -90,7 +90,7 @@ def get_windows_version():
 
         if int(current_build) >= 22000:
             win_version = 11
-            verbose = product_name.replace("Microsoft ", "")
+            verbose = product_name
         else:
             version_map = {
                 "10": 10,
@@ -104,7 +104,7 @@ def get_windows_version():
                 if key in product_name:
                     win_version = version_map[key]
                     break
-            verbose = product_name.replace("Microsoft ", "")
+            verbose = product_name
 
     except Exception as e:
         win_ver = sys.getwindowsversion()
