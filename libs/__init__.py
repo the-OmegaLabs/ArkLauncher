@@ -14,6 +14,6 @@
 
 
 import libs.avatar
-import libs.config
-import libs.imgCacher
-import libs.olog
+import libs.configuration.config
+import libs.utils.imageLoader
+import libs.utils.logger

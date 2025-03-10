@@ -13,9 +13,9 @@
 # limitations under the License.
 
 
-import platform
 import json
 import os
+import platform
 
 config = {}
 first = False

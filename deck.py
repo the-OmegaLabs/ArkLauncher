@@ -11,31 +11,33 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from libs.olog import output as log
-from libs import olog as olog
-import libs.config as configLib
-import gc
-import requests
-import socket
 import ctypes
-import maliang.toolbox
-import maliang.theme
-import maliang.standard
-import maliang.color
-import maliang.core
-import maliang.animation
-import maliang
-import darkdetect
-import colorama
-import traceback
-import threading
-import platform
-import os
+import gc
 import json
+import os
+import platform
+import socket
+import threading
+import time
+import traceback
 from datetime import datetime
 from io import BytesIO
-import time
+
+import colorama
+import darkdetect
+import maliang
+import maliang.animation
+import maliang.color
+import maliang.core
+import maliang.standard
+import maliang.theme
+import maliang.toolbox
+import requests
 from PIL import Image
+
+import libs.configuration.config as configLib
+from libs.utils import logger as olog
+from libs.utils.logger import output as log
 
 _VERSION = 'dev'
 _SUBVERSION = '25w10b'
@@ -77,9 +79,9 @@ maliang.configs.Env.system = _STYLE
 maliang.theme.manager.set_color_mode(_THEME)
 
 if _SYSTEM == 'Windows':
-    import libs.avatar.Windows as avatar
+    pass
 elif _SYSTEM == 'Linux':
-    import libs.avatar.Linux as avatar
+    pass
 
 olog.logLevel = 5
 
