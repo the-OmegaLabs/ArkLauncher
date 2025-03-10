@@ -23,7 +23,7 @@ class NotificationIcon:
     def __init__(self, type):
         self.type = type
 
-    def __getImagePath(self):
+    def getImagePath(self):
         if self.type == "info":
             return "src/icon/notification/info.png"
         elif self.type == "warning":
@@ -33,28 +33,28 @@ class NotificationIcon:
         else:
             return "src/icon/notification/info.png"
 
-    def __getImageBytes(self):
-        return open(self.__getImagePath(), "rb").read()
+    def _getImageBytes(self):
+        return open(self.getImagePath(), "rb").read()
 
-    def __getPhotoImage(self, method: str = "bytes"):
+    def _getPhotoImage(self, method: str = "bytes"):
         if method == "bytes":
-            return ImageTk.PhotoImage(data=self.__getImageBytes())
+            return ImageTk.PhotoImage(data=self._getImageBytes())
         elif method == "path":
-            return ImageTk.PhotoImage(file=self.__getImagePath())
+            return ImageTk.PhotoImage(file=self.getImagePath())
 
-    def __getImageSize(self):
-        return self.__getPhotoImage().width(), self.__getPhotoImage().height()
+    def _getImageSize(self):
+        return self._getPhotoImage().width(), self._getPhotoImage().height()
 
-    def __getResizedImage(self, size: tuple):
-        with PIL.Image.open(self.__getImagePath()) as img:
+    def _getResizedImage(self, size: tuple):
+        with PIL.Image.open(self.getImagePath()) as img:
             img = img.resize((size[0], size[1]))
             return img
 
-    def __getResizedImageTk(self, size: tuple):
-        return ImageTk.PhotoImage(self.__getResizedImage(size))
+    def _getResizedImageTk(self, size: tuple):
+        return ImageTk.PhotoImage(self._getResizedImage(size))
 
-    def __getPILImage(self):
-        return PIL.Image.open(self.__getImagePath())
+    def _getPILImage(self):
+        return PIL.Image.open(self.getImagePath())
 
-    def __getB64Image(self):
-        return base64.b64encode(self.__getImageBytes())
+    def _getB64Image(self):
+        return base64.b64encode(self._getImageBytes())
