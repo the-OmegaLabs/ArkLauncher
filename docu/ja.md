@@ -1,5 +1,5 @@
 # ArkLauncher
-![ArkLauncher ロゴ](src/icon/main.png)
+![ArkLauncher ロゴ](./src/icon/main.png)
 <br>
 <h2>シンプル、高速、パワフル。</h2>
 
