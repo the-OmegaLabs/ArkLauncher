@@ -1,5 +1,3 @@
-# ArkLauncher 
-
 <img align="left" width="150" height="150" align="left" style="float: left; margin: 0 10px 0 0;" src="src/icon/main.png"> <h1><b>ArkLauncher</b></h1>
 <img align="left" src="https://img.shields.io/badge/Made%20with-Python-white?style=for-the-badge&logo=python&logoColor=white"> 
 <br>
