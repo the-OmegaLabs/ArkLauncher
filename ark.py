@@ -262,7 +262,7 @@ def refreshImage(*args, threaded: bool):
             img = Image.open(path)
             return img
         except Exception as e:
-            print(f"Error loading image {path}: {e}")
+            tracebackWindow(e)
             return None
 
     def threadedImageOpen(path, dict_key, category=None):
@@ -366,7 +366,7 @@ def createRoot(x=710, y=200):
 
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(100000, 100000))
     root.geometry(size=(WIDTH, HEIGHT), position=(
-        root.winfo_screenwidth(), root.winfo_screenheight() - 880))
+        root.winfo_screenwidth() - 15, root.winfo_screenheight() - 880))
     root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
     root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
@@ -723,7 +723,7 @@ def mainPage():
     minimize.style.set(bg=('', '#024477', ''), ol=('', '#EEEEEE'))
     searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
-    # root.bind("<ButtonPress-1>", takeShot)
+    root.bind("<ButtonPress-1>", focusWindow)
     # logo.bind("<B1-Motion>", on_drag_motion)
 
     root.mainloop()

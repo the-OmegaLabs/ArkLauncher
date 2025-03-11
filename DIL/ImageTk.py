@@ -186,6 +186,8 @@ class PhotoImage:
 
         _pyimagingtkcall("PyImagingPhoto", self.__photo, ptr)
 
+
+    # compatiable with maliang.
     def scale(self, x: float, y: float) -> PhotoImage:
         """Scale the PhotoImage.
 
