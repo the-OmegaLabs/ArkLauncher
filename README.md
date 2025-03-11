@@ -1,11 +1,6 @@
 # ArkLauncher 
 
-<img align="left" width="150" height="150" align="left" style="float: left; margin: 0 10px 0 0;" src="src/icon/main.png"> <h1><b>ArkLauncher</b></h1>
-<img align="left" src="https://img.shields.io/badge/Made%20with-Python-white?style=for-the-badge&logo=python&logoColor=white"> 
-<br>
-<h2>简单，快速，强大。</h2>
-
-ArkLauncher 重新定义了 Minecraft 启动方式。更快的加载速度，更智能的整合包管理，和更流畅的网络加速。无需等待，随时畅玩。
+![ArkLauncher Logo](src/icon/main.png)
 
 ## 项目简介
 ArkLauncher 是一款为 Minecraft¹ 玩家设计的现代化的、跨平台启动器。专注于提供快速游戏启动、便捷整合包管理和智能网络加速功能。
