@@ -1,3 +1,4 @@
+[日本語](docu/ja.md)
 # ArkLauncher
 ![ArkLauncher Logo](src/icon/main.png)
 <br>
