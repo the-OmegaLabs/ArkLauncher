@@ -36,6 +36,13 @@ pip install -r requirements.txt
 # 首次运行
 python ark.py
 ```
+## 特别鸣谢 🧡
+- ### [🎨 maliang Tkinter改版](https://github.com/Xiaokang2022/maliang)
+- ### [🗛 源流黑体 字体](https://github.com/the-OmegaLabs/Genryu-Gothic-PCJK)
+- ### [🧊 Artistic Network](https://playat.cn/)
+- ### [🔧 Modrinth 整合包服务](https://modrinth.com)
+- ### [⚙️ Curseforge 整合包服务](https://curseforge.com)
+- 
 ## 🤝 一起打造更好的 ArkLauncher
 你的每一份贡献，都将让 ArkLauncher 更强大。
 
@@ -57,6 +64,8 @@ graph TD
 ```
 ## 许可证 📜
 本项目基于 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html) 开源
+
+
 
 Copyright 2025 Omega Labs, ArkLauncher Contributors.
 ## 联系我们 📮
