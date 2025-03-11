@@ -1,6 +1,6 @@
 
 # ArkLauncher
-![ArkLauncher لوگوسى](src/icon/main.png)
+![ArkLauncher لوگوسى](../src/icon/main.png)
 <br>
 <h2>ئاددىي، تېز، كۈچلۈك.</h2>
 
@@ -78,4 +78,4 @@ Copyright 2025 Omega Labs, ArkLauncher Contributors.
 
 ---
 ## يېتەكچى نەشرىدىن ئېكران كۆرۈنۈشى
-![كۆرۈنۈش سۈرەت](preview/preview-cn-dark.png)
+![كۆرۈنۈش سۈرەت](preview/preview-cn-dark.png../)
