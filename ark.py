@@ -38,11 +38,11 @@ import maliang.theme
 import maliang.toolbox
 import pystray
 import requests
-from DIL import Image
-from DIL import ImageDraw
-from DIL import ImageFilter
-from DIL import ImageGrab
-from DIL import ImageTk
+from libs.DIL import Image
+from libs.DIL import ImageDraw
+from libs.DIL import ImageFilter
+from libs.DIL import ImageGrab
+from libs.DIL import ImageTk
 
 import libs.configuration.config as configLib
 from libs.utils import logger as olog
