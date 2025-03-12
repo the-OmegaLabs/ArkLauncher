@@ -81,6 +81,7 @@ This project is open-source under the [Apache License 2.0](https://www.apache.or
 
 ## 🧡 Special Thanks  
 ![banner](https://github.com/user-attachments/assets/d0535112-f12a-4b38-944d-3a0c12c9f123)  
+<a href="https://github.com/the-OmegaLabs/Genryu-Gothic-PCJK">Genryu Gothic</a>
 
 **A heartfelt thanks to these open-source projects for their contributions.**  
 
