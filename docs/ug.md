@@ -1,3 +1,4 @@
+[日本語](/docs/ja.md) | [中文](/docs/cn.md) | [ئۇيغۇرچە](/docs/ug.md) |  [English](/README.md)
 
 # ArkLauncher
 ![ArkLauncher لوگوسى](../src/icon/main.png)
