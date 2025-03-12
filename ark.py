@@ -112,7 +112,8 @@ def focusWindow(*args):
         root.topmost(True)
         focus = True
         maliang.animation.MoveWindow(root, offset=(-500, 0), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, fps=1000).start()
+                                     controller=maliang.animation.controllers.ease_out, end=lambda: root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth() - 515, root.winfo_screenheight() - 880)), fps=1000).start()
+
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
 
@@ -120,9 +121,9 @@ def minimizeWindow():
     global focus
     if focus:
         focus = False
+        root.topmost(False)
         maliang.animation.MoveWindow(root, offset=(
-            500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=lambda: root.topmost(False),
-                                     fps=1000).start()
+            500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=lambda: root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth() - 15, root.winfo_screenheight() - 880)), fps=1000).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
 
 
