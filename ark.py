@@ -130,7 +130,7 @@ def minimizeWindow():
 def minimizeAndExit():
     icon.stop()
     animation = maliang.animation.MoveWindow(root, offset=(
-        500, 0), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000)
+        600, 0), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000)
     animation.end = lambda: (animation.stop(), root.destroy())
     animation.start()
 
@@ -635,7 +635,7 @@ def aboutPage():
 
 def mainPage():
     cv = createPage()
-    cv.bind("<Escape>", lambda event: exit())
+    cv.bind("<Escape>", lambda event: minimizeAndExit())
 
     _DRAG = [0, 0]
 
