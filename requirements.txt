@@ -1,16 +1,10 @@
-certifi
-charset-normalizer
 colorama
 darkdetect
 hPyT
-idna
 maliang
-pillow
 pywinstyles
 requests
 typing_extensions
-urllib3
 win32material
 pystray
-six
-tkShadow
+pillow

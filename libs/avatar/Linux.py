@@ -17,7 +17,7 @@ import os
 import pwd
 import subprocess
 
-import libs.utils.logger as olog
+import libs.logger as olog
 
 
 def detect_desktop_environment():

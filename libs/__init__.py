@@ -15,5 +15,4 @@
 
 import libs.avatar
 import libs.configuration.config
-import libs.utils.imageLoader
-import libs.utils.logger
+import libs.logger
