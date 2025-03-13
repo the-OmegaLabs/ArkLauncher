@@ -50,7 +50,7 @@ from libs.utils.logger import output as log
 # from libs.utils import systemDetector as sd
 
 _VERSION = 'dev'
-_SUBVERSION = '25w10f'
+_SUBVERSION = '25w11d'
 
 # customed
 
