@@ -22,7 +22,7 @@ import subprocess
 import AppKit
 import Foundation
 import objc
-import PIL
+import Frameworks.DashImaging
 import  PyObjCTools.MachSignals
 
 from . import _base

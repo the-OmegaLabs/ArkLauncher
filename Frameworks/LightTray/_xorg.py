@@ -22,7 +22,7 @@ import sys
 import threading
 import types
 
-import PIL
+import Frameworks.DashImaging
 import Xlib.display
 import Xlib.threaded
 import Xlib.XK

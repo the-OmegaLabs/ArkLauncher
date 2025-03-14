@@ -26,7 +26,6 @@ import socket
 import threading
 import traceback
 
-import pystray
 import colorama
 import darkdetect
 
@@ -46,10 +45,12 @@ from Frameworks.DashImaging import (
     ImageTk,
 )
 
-import Frameworks.Configuration.config as configLib
-
 from Frameworks import Logger as olog
 from Frameworks.Logger import output as log
+
+import Frameworks.Configuration.config as configLib
+import Frameworks.LightTray as LightTray
+
 # from libs.utils import systemDetector as sd
 
 
@@ -940,12 +941,12 @@ try:
     refreshImage(threaded=False)
 
     hidden_menu = (
-        pystray.MenuItem('Focus', focusWindow, default=True),
-        pystray.Menu.SEPARATOR,
-        pystray.MenuItem('Exit', minimizeAndExit)
+        LightTray.MenuItem('Focus', focusWindow, default=True),
+        LightTray.Menu.SEPARATOR,
+        LightTray.MenuItem('Exit', minimizeAndExit)
     )
 
-    icon = pystray.Icon("name", getImage('icon_logo'),
+    icon = LightTray.Icon("name", getImage('icon_logo'),
                         "ArkLauncher Tray", menu=hidden_menu)
 
     threading.Thread(target=icon.run, daemon=True).start()

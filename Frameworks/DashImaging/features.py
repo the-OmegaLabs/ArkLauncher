@@ -6,7 +6,7 @@ import sys
 import warnings
 from typing import IO
 
-import PIL
+import Frameworks.DashImaging
 
 from . import Image
 from ._deprecate import deprecate
@@ -260,7 +260,7 @@ def pilinfo(out: IO[str] | None = None, supported_formats: bool = True) -> None:
     Image.init()
 
     print("-" * 68, file=out)
-    print(f"Pillow {PIL.__version__}", file=out)
+    print(f"Pillow {Frameworks.DashImaging.__version__}", file=out)
     py_version_lines = sys.version.splitlines()
     print(f"Python {py_version_lines[0].strip()}", file=out)
     for py_version in py_version_lines[1:]:
