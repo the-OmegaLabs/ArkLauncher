@@ -51,9 +51,6 @@ from Frameworks.Logger import output as log
 import Frameworks.Configuration.config as configLib
 import Frameworks.LightTray as LightTray
 
-# from libs.utils import systemDetector as sd
-
-
 _VERSION = 'dev'
 _SUBVERSION = '25w11f'
 
