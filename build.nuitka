@@ -1,0 +1,1 @@
+nuitka ark.py --mingw64 --clang --onefile --standalone --include-data-dir=libs=libs --include-data-dir=src=src --windows-icon-from-ico=ark.ico --show-progress --windows-disable-console --windows-uac-admin --enable-plugin=tk-inter

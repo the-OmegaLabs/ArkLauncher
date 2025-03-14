@@ -54,12 +54,14 @@ from libs.logger import output as log
 _VERSION = 'dev'
 _SUBVERSION = '25w11d'
 
-# customed
-
-hwnd = ctypes.windll.user32.GetForegroundWindow()
-user32 = ctypes.windll.user32
-user32.SetWindowTextW(
-    hwnd, f'ArkLauncher Console Interface - {_VERSION}, {_SUBVERSION}.')
+# customized
+try:
+    hwnd = ctypes.windll.user32.GetForegroundWindow()
+    user32 = ctypes.windll.user32
+    user32.SetWindowTextW(
+        hwnd, f'ArkLauncher Console Interface - {_VERSION}, {_SUBVERSION}.')
+except:
+    pass
 
 # config
 WIDTH = 500
@@ -77,7 +79,7 @@ _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
 _SYSVER = platform.version()
-maliang.configs.Env.system = 'Windows10'
+maliang.configs.Env.system = 'Windows11'
 maliang.theme.manager.set_color_mode(_THEME)
 
 if _SYSTEM == 'Windows':
@@ -697,8 +699,10 @@ def mainPage():
 
     logo = maliang.IconButton(topIconMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2),
                               image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
+    maliang.configs.Env.system = 'Windows10'
     searchBox = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4),
                                  placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
+    maliang.configs.Env.system = 'Windows11'
     minimize = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4),
                                   image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)),
                                   command=minimizeWindow)
