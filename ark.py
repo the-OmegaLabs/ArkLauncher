@@ -25,10 +25,8 @@ import platform
 import socket
 import threading
 import traceback
-from io import BytesIO
 
 import pystray
-import requests
 import colorama
 import darkdetect
 
@@ -40,20 +38,23 @@ import maliang.standard
 import maliang.theme
 import maliang.toolbox
 
-from libs.DIL import Image
-from libs.DIL import ImageDraw
-from libs.DIL import ImageFilter
-from libs.DIL import ImageGrab
-from libs.DIL import ImageTk
+from Frameworks.DashImaging import (
+    Image, 
+    ImageDraw,
+    ImageFilter,
+    ImageGrab,
+    ImageTk,
+)
 
-import libs.configuration.config as configLib
-from libs import logger as olog
-from libs.logger import output as log
+import Frameworks.Configuration.config as configLib
+
+from Frameworks import Logger as olog
+from Frameworks.Logger import output as log
 # from libs.utils import systemDetector as sd
 
 
 _VERSION = 'dev'
-_SUBVERSION = '25w11d'
+_SUBVERSION = '25w11f'
 
 # customized
 try:
@@ -75,6 +76,7 @@ locale = config['language']
 
 images = {}
 focus = False
+ResPath = 'Resources'
 _EMPTY = ('', '', '')
 _FONTS = []
 _THEME = config['theme']
@@ -193,25 +195,13 @@ def testConnection():
         return False
 
 
-def getSourceContent(url):
-    olog.output(f'Sending requests to {url}/metadata.json...')
-    response = requests.get(f'{url}/metadata.json')
-    metadata = response.json()
-    log(f'Response from remote: {metadata}', type=olog.Type.DEBUG)
-
-    log(f'Sending requests to: {url}/{metadata['icon']}', type=olog.Type.DEBUG)
-    image = requests.get(f'{url}{metadata['icon']}')
-    metadata['icon'] = Image.open(BytesIO(image.content))
-    return (True, metadata)
-
-
 def updateFont():
     global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
 
-    for i in os.listdir('src/font'):
-        loadFont(f'src/font/{i}')
+    for i in os.listdir(f'{ResPath}/font'):
+        loadFont(f'{ResPath}/font/{i}')
 
-    log(f'Loaded {len(os.listdir('src/font'))} fonts.')
+    log(f'Loaded {len(os.listdir(f'{ResPath}/font'))} fonts.')
 
     if locale == 'en':
         FONT_FAMILY = 'Segoe UI'
@@ -297,47 +287,47 @@ def refreshImage(*args, threaded: bool):
     # Define image paths with categories
     image_paths = {
         'contributors': {
-            'maliang': f'src/icon/contributors/maliang.png',
-            'Stevesuk0': f'src/icon/contributors/Stevesuk0.png',
-            'bzym2': f'src/icon/contributors/bzym2.png',
-            'HRGC-Sonrai': f'src/icon/contributors/HRGC-Sonrai.png',
-            'the-OmegaLabs': f'src/icon/contributors/the-OmegaLabs.png',
+            'maliang':        f'{ResPath}/icon/contributors/maliang.png',
+            'Stevesuk0':      f'{ResPath}/icon/contributors/Stevesuk0.png',
+            'bzym2':          f'{ResPath}/icon/contributors/bzym2.png',
+            'HRGC-Sonrai':    f'{ResPath}/icon/contributors/HRGC-Sonrai.png',
+            'the-OmegaLabs':  f'{ResPath}/icon/contributors/the-OmegaLabs.png',
         },
         'country': {
-            'cn': f'src/icon/both/country_cn.png',
-            'jp': f'src/icon/both/country_jp.png',
-            'ko': f'src/icon/both/country_ko.png',
-            'en': f'src/icon/both/country_us.png',
-            'sb': f'src/icon/both/transgender.png',
-            'ug': f'src/icon/both/country_cn.png',
-            'tw': f'src/icon/both/country_cn.png',
-            'cnol': f'src/icon/both/country_ching.png'
+            'cn':             f'{ResPath}/icon/both/country_cn.png',
+            'jp':             f'{ResPath}/icon/both/country_jp.png',
+            'ko':             f'{ResPath}/icon/both/country_ko.png',
+            'en':             f'{ResPath}/icon/both/country_us.png',
+            'sb':             f'{ResPath}/icon/both/transgender.png',
+            'ug':             f'{ResPath}/icon/both/country_cn.png',
+            'tw':             f'{ResPath}/icon/both/country_cn.png',
+            'cnol':           f'{ResPath}/icon/both/country_ching.png'
         },
         'background': {
-            'ChiesaBianca': f'src/icon/background/ChiesaBianca.png',
-            'g': f'src/icon/background/g.png'
+            'ChiesaBianca':   f'{ResPath}/icon/background/ChiesaBianca.png',
+            'g':              f'{ResPath}/icon/background/g.png'
         },
         None: {  # Regular images without category
-            'icon_quick': f'src/icon/both/quick.png',
-            'icon_unknown': f'src/icon/both/unknown.png',
-            'icon_logo': f'src/icon/main.png',
-            'icon_exit': f'src/icon/{theme}/exit.png',
-            'icon_minimize': f'src/icon/{theme}/minimize.png',
-            'icon_return': f'src/icon/{theme}/return.png',
-            'icon_settings': f'src/icon/{theme}/settings.png',
-            'icon_about': f'src/icon/{theme}/about.png',
-            'icon_language': f'src/icon/{theme}/language.png',
-            'icon_network': f'src/icon/{theme}/network.png',
-            'icon_account': f'src/icon/{theme}/account.png',
-            'icon_customize': f'src/icon/{theme}/customize.png',
-            'icon_dark': f'src/icon/{theme}/dark.png',
-            'icon_light': f'src/icon/{theme}/light.png',
-            'icon_auto': f'src/icon/{theme}/auto.png',
-            'icon_info': f'src/icon/{theme}/info.png',
-            'icon_round': f'src/icon/{theme}/round.png',
-            'icon_square': f'src/icon/{theme}/square.png',
-            'icon_search': f'src/icon/{theme}/search.png',
-            'icon_launch': f'src/icon/{theme}/launch.png'
+            'icon_quick':     f'{ResPath}/icon/both/quick.png',
+            'icon_unknown':   f'{ResPath}/icon/both/unknown.png',
+            'icon_logo':      f'{ResPath}/icon/main.png',
+            'icon_exit':      f'{ResPath}/icon/{theme}/exit.png',
+            'icon_minimize':  f'{ResPath}/icon/{theme}/minimize.png',
+            'icon_return':    f'{ResPath}/icon/{theme}/return.png',
+            'icon_settings':  f'{ResPath}/icon/{theme}/settings.png',
+            'icon_about':     f'{ResPath}/icon/{theme}/about.png',
+            'icon_language':  f'{ResPath}/icon/{theme}/language.png',
+            'icon_network':   f'{ResPath}/icon/{theme}/network.png',
+            'icon_account':   f'{ResPath}/icon/{theme}/account.png',
+            'icon_customize': f'{ResPath}/icon/{theme}/customize.png',
+            'icon_dark':      f'{ResPath}/icon/{theme}/dark.png',
+            'icon_light':     f'{ResPath}/icon/{theme}/light.png',
+            'icon_auto':      f'{ResPath}/icon/{theme}/auto.png',
+            'icon_info':      f'{ResPath}/icon/{theme}/info.png',
+            'icon_round':     f'{ResPath}/icon/{theme}/round.png',
+            'icon_square':    f'{ResPath}/icon/{theme}/square.png',
+            'icon_search':    f'{ResPath}/icon/{theme}/search.png',
+            'icon_launch':    f'{ResPath}/icon/{theme}/launch.png'
         }
     }
 
@@ -411,9 +401,9 @@ def loadLocale():
 
     lang_dict = {}
 
-    for i in os.listdir('./src/lang'):
+    for i in os.listdir(f'{ResPath}/lang'):
         if i.endswith('.json'):
-            with open(f'./src/lang/{i}', encoding='utf-8') as f:
+            with open(f'{ResPath}/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
 
             log(f'Loaded locale file "{i}"...')

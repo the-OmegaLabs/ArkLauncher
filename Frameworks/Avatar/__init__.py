@@ -13,6 +13,11 @@
 # limitations under the License.
 
 
-import libs.avatar
-import libs.configuration.config
-import libs.logger
+import platform
+
+
+if platform.system() == 'Windows':
+    from Frameworks.Avatar.Windows import *
+
+if platform.system() == 'Linux':
+    from Frameworks.Avatar.Linux import *
