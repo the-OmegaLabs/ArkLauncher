@@ -101,6 +101,9 @@ def smooth_forward(t: float):
 def smooth_reverse(t: float):
     return (math.cos(t * math.pi) + 1) / 2
 
+def getRelFromAbs(x, y):
+    return (x - root.winfo_x(), y - root.winfo_y())
+
 
 def takeShot(*args):
     x, y = root.winfo_x(), root.winfo_y()
@@ -113,8 +116,8 @@ def focusWindow(*args):
     if not focus:
         root.topmost(True)
         focus = True
-        maliang.animation.MoveWindow(root, offset=(-500, 0), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, end=lambda: root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth() - 515, root.winfo_screenheight() - 880)), fps=1000).start()
+        maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
+                                     controller=maliang.animation.controllers.ease_out, fps=1000).start()
 
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
@@ -124,8 +127,8 @@ def minimizeWindow():
     if focus:
         focus = False
         root.topmost(False)
-        maliang.animation.MoveWindow(root, offset=(
-            500, 0), duration=500, controller=maliang.animation.controllers.ease_out, end=lambda: root.geometry(size=(WIDTH, HEIGHT), position=(root.winfo_screenwidth() - 15, root.winfo_screenheight() - 880)), fps=1000).start()
+        maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth(
+        ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
 
 
