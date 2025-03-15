@@ -395,16 +395,16 @@ def createTopBar():
         
 
 def updateTopBar(barType):
-    global topMask, topImage
+    global topMask, topImage, topSearchMask, topMask, logo
     upHEIGHT            = 65
     backgroundImage     = getImage('ChiesaBianca', 'background')
-    topImage.destroy()
-    topMask.destroy()
     if barType == 'mainPage':
+        topImage.destroy()
+        topMask.destroy()
         topImage            = maliang.Image(topBar, position=(0, 0), image=ImageTk.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
         topMask             = maliang.Image(topBar, position=(0, 0), image=ImageTk.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
         topIconMask         = maliang.Image(topMask, position=(0, 0),image=ImageTk.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 16))))
-        topSearchMask       = maliang.Image(topMask, position=(upHEIGHT, 0), image=ImageTk.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
+        topSearchMask       = maliang.Image(topMask, position=(upHEIGHT, -65), image=ImageTk.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
         topMinimizeMask     = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=ImageTk.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 80))))
         topExitMask         = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 1)), 0), image=ImageTk.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(120, 0, 0, 128))))
 
@@ -420,30 +420,23 @@ def updateTopBar(barType):
         logo.style.set(bg=_EMPTY, ol=_EMPTY)
 
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(-305, 0), controller=maliang.animation.ease_out).start(delay=25)
+        maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
 
     if barType == 'settingsPage':
         def switchIn():
-            nonlocal close
             close = maliang.IconButton(topCloseMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: changeWindow(mainPage))
             close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))
+        
+        if topSearchMask:
+            maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
 
         upHEIGHT            = 65
-        topImage            = maliang.Image(topBar, position=(0, 0), image=ImageTk.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
-        topMask             = maliang.Image(topBar, position=(0, 0), image=ImageTk.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
         topCloseMask        = maliang.Image(topMask, position=(0, 0),image=ImageTk.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 16))))
         topIconMask         = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 3)), 0), image=ImageTk.PhotoImage(makeImageMask(size=(upHEIGHT, upHEIGHT), color=(0, 0, 0, 30))))
         topMinimizeMask     = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 2)), 0), image=ImageTk.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(0, 0, 0, 60))))
         topExitMask         = maliang.Image(topMask, position=(int(WIDTH - (upHEIGHT * 1)), 0), image=ImageTk.PhotoImage(makeImageMask((upHEIGHT, upHEIGHT), color=(120, 0, 0, 100))))
         close               = None
-        logo                = maliang.IconButton(topCloseMask, size=(upHEIGHT, upHEIGHT), position=(upHEIGHT // 2, upHEIGHT // 2 + 2), image=ImageTk.PhotoImage(getImage('icon_logo').resize((40, 40), 1)), anchor='center')
-        minimize            = maliang.IconButton(topMinimizeMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWindow)
-        exit                = maliang.IconButton(topExitMask, (2, 2), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_exit').resize((60, 60), 1)), command=minimizeAndExit)
-    
-
-        logo.style.set(bg=_EMPTY, ol=_EMPTY)
-        exit.style.set(bg=('', '#990000', ''), ol=('', '#EEEEEE'))
-        minimize.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))
 
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(305, 0), controller=maliang.animation.ease_out).start(delay=25)
 
@@ -582,7 +575,7 @@ def mainPage():
     bottomSubMask       = maliang.Image(bottomMask, position=(0, bottomMaskHEIGHT), image=ImageTk.PhotoImage(makeImageMask((WIDTH, bottomLMaskHEIGHT), color=(0, 0, 0, 64))))
     bottomLaunchMask    = maliang.Image(bottomSubMask, position=(10, 7), image=ImageTk.PhotoImage(makeImageMask((480, 116), color=(0, 0, 0, 64))))
 
-    settings            = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage), anchor='center')
+    settings            = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: (changeWindow(settingsPage)), anchor='center')
     account             = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsAccountPage), anchor='center')
 
     launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116))
