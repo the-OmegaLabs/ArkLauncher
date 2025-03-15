@@ -447,6 +447,7 @@ def welcomePage():
     def changeLanguage(lang_key):
         global locale
         locale = lang_key
+        updateFont()
 
         text_welcome.set(translate('welcome'))
         text_desc.set(translate('desc'))
