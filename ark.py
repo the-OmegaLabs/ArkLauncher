@@ -675,9 +675,8 @@ try:
     endLoadTime = time.time() - startLoadTime
 
     createRoot()
-    createTopBar()
-    updateTopBar('mainPage')
-
+    threading.Thread(target=lambda: (createTopBar(), updateTopBar('mainPage')), daemon=True).start()
+    
     focusWindow()
 
     log(f'Loaded ArkLauncher in {int(endLoadTime * 1000)}ms.')
