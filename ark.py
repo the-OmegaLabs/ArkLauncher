@@ -130,6 +130,7 @@ def focusWindow(*args):
 def minimizeWindow():
     global focus
     if focus:
+        focus = False
         maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth(
         ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
