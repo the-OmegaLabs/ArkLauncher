@@ -37,7 +37,7 @@ import maliang.standard
 import maliang.theme
 import maliang.toolbox
 
-from Frameworks.DashImaging import (
+from Frameworks.Imaging import (
     Image, 
     ImageDraw,
     ImageFilter,
@@ -49,7 +49,7 @@ from Frameworks import Logger as olog
 from Frameworks.Logger import output as log
 
 import Frameworks.Configuration.config as configLib
-import Frameworks.LightTray as LightTray
+import Frameworks.Tray as Tray
 
 _VERSION = 'dev'
 _SUBVERSION = '25w11f'
@@ -939,12 +939,12 @@ try:
     refreshImage(threaded=False)
 
     hidden_menu = (
-        LightTray.MenuItem('Focus', focusWindow, default=True),
-        LightTray.Menu.SEPARATOR,
-        LightTray.MenuItem('Exit', minimizeAndExit)
+        Tray.MenuItem('Focus', focusWindow, default=True),
+        Tray.Menu.SEPARATOR,
+        Tray.MenuItem('Exit', minimizeAndExit)
     )
 
-    icon = LightTray.Icon("name", getImage('icon_logo'),
+    icon = Tray.Icon("name", getImage('icon_logo'),
                         "ArkLauncher Tray", menu=hidden_menu)
 
     threading.Thread(target=icon.run, daemon=True).start()
