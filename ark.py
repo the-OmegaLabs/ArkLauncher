@@ -441,12 +441,15 @@ def updateTopBar(barType):
         maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
 
-
 def changeWindow(window):
+    def destroy(widget: maliang.Canvas, sleep):
+        time.sleep(sleep)
+        widget.destroy()
+        gc.collect()
+
     log(f'Perform change canvas to "{window.__name__}"...',
         type=olog.Type.INFO)
-    cv.destroy()
-    gc.collect()
+    threading.Thread(target=destroy, args=(cv, 1)).start()
     updateTopBar(window.__name__)
     try:
         window()
