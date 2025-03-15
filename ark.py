@@ -432,7 +432,7 @@ def updateTopBar(barType):
         maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
 
-    if barType == 'settingsPage':
+    else:
         if topSearchMask:
             maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
         upHEIGHT            = 65
@@ -611,7 +611,9 @@ def settingsPage():
 
 
 def settingsAccountPage():
-    pass
+    global cv
+
+    cv = createPage()
 
 
 def settingsNetworkPage():
