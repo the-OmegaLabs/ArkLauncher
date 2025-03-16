@@ -124,7 +124,7 @@ def focusWindow(*args):
         root.topmost(True)
         focus = True
         maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, fps=1000).start()
+                                     controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
 
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
@@ -133,8 +133,7 @@ def minimizeWindow():
     global focus
     if focus:
         focus = False
-        maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth(
-        ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000).start()
+        maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth() - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 15, root.winfo_y()))).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
 
 
@@ -167,8 +166,8 @@ def makeImageRadius(img, radius=30, alpha=0.5):
 def makeImageBlur(img, radius=5):
     return img.filter(ImageFilter.GaussianBlur(radius=radius))
 
-
 def makeImageMask(size, color=(0, 0, 0, 128), ):
+
     return Image.new("RGBA", size=size, color=color)
 
 
@@ -604,7 +603,7 @@ def mainPage():
 def settingsPage():
     global cv
     cv = createPage()
-    cv.bind("<Escape>", lambda event: changeWindow(mainPage, cv))
+    cv.bind("<Escape>", lambda event: changeWindow(mainPage))
 
     backgroundImage = mergeImage(makeImageBlur(getImage('ChiesaBianca', 'background'), radius=25),
                                  makeImageMask((500, 800), (0, 0, 0, 64)))
