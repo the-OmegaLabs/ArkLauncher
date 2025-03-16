@@ -430,6 +430,11 @@ def updateTopBar(barType):
 
 
     else:
+        def switchIn():
+            nonlocal avatar
+            avatar             = maliang.IconButton(topMask, size=(63, 63), position=(int(WIDTH - (65 * 4)), 3), image=ImageTk.PhotoImage(makeImageRadius(getImage('icon_account'), 128, 0.7).resize((40, 40), 1)))
+            avatar.style.set(bg=_EMPTY, ol=_EMPTY)
+
         if topSearchMask:
             maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
         upHEIGHT            = 65
@@ -618,9 +623,10 @@ def settingsPage():
     
     optionsImage         = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, 500, 50)))))
     optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
-    options              = maliang.SegmentedButton(optionsMask, position=(250, 25), text=['Artistic ID'], family=FONT_FAMILY_BOLD, fontsize=16, anchor='center')
-
+    
+    options = maliang.SegmentedButton(optionsMask, position=(250, 25), text=[translate('account'), '个性化', '关于'], family=FONT_FAMILY_BOLD, fontsize=16, anchor='center')
     options.style.set(bg=('', ''), ol=('', ''))
+
     root.bind("<ButtonPress-1>", focusWindow)
     root.mainloop()
 
@@ -692,14 +698,12 @@ try:
     loadLocale()
     updateFont()  # auto select font
 
-    endLoadTime = time.time() - startLoadTime
-
     createRoot()
     threading.Thread(target=lambda: (createTopBar(), updateTopBar('mainPage')), daemon=True).start()
     
     focusWindow()
 
-    log(f'Loaded ArkLauncher in {int(endLoadTime * 1000)}ms.')
+    log(f'Loaded ArkLauncher in {int((time.time() - startLoadTime) * 1000)}ms.')
 
     if configLib.first:
         welcomePage()
