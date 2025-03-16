@@ -8,3 +8,4 @@ build
 *.spec
 dist
 /ark.dist
+AccountProcessing/stringencrypting.py
