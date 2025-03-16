@@ -433,7 +433,7 @@ def updateTopBar(barType):
         def switchIn():
             nonlocal avatar
             avatar             = maliang.IconButton(topMask, size=(63, 63), position=(int(WIDTH - (65 * 4)), 0), image=ImageTk.PhotoImage(makeImageRadius(getImage('icon_account'), 128, 0.7).resize((40, 40), 1)))
-            avatar.style.set(bg=('', ''), ol=(''))
+            avatar.style.set(bg=_EMPTY, ol=_EMPTY)
 
         if topSearchMask:
             maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
