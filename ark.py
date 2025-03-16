@@ -13,6 +13,7 @@
 # limitations under the License.
 
 ############################
+from datetime import datetime
 import time
 startLoadTime = time.time()
 ############################
@@ -183,7 +184,6 @@ def loadFont(fontPath):
     if not fontPath in _FONTS:
         _FONTS.append(fontPath)
         maliang.toolbox.load_font(fontPath, private=True)  # must be private.
-        log(f'Loaded font \"{fontPath}\".')
 
 
 def testConnection():
@@ -421,8 +421,6 @@ def updateTopBar(barType):
         #topImage            = maliang.Image(topBar, position=(0, 0), image=ImageTk.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
         #topMask             = maliang.Image(topBar, position=(0, 0), image=ImageTk.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
         topSearchMask       = maliang.Image(topMask, position=(upHEIGHT, -65), image=ImageTk.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
-        
-        
         searchBox           = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
         searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
@@ -433,16 +431,25 @@ def updateTopBar(barType):
 
 
     else:
-        global dTime
         if topSearchMask:
             maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
         upHEIGHT            = 65
+
+        now = datetime.now()
+        curTimeMonth        = maliang.Text(topMask, position=(85, 14), text=f'{now.strftime("%Y/%m/%d")}', family=FONT_FAMILY, fontsize=10)
+        curTimeDay          = maliang.Text(topMask, position=(85, 27), text=f'{now.strftime("%H:%M")}', family=FONT_FAMILY_BOLD, fontsize=21)
+        
+        avatar = None
+
+        curTimeMonth.style.set(fg='#A5A9AC')
+
+
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(305, 0), controller=maliang.animation.ease_out).start(delay=25)
         close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: changeWindow(mainPage))
-        close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))
-        dTime = maliang.Text(topMask, (70, 10),family=FONT_FAMILY_BOLD, fontsize=35, text=datetime.datetime.now().strftime('%H:%M'))
+        close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))  
         maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
+        cv.after(100, switchIn)
 
 def changeWindow(window):
     def destroy(widget: maliang.Canvas, sleep):
@@ -470,7 +477,7 @@ def loadLocale():
             with open(f'{ResPath}/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
 
-            log(f'Loaded locale file "{i}"...')
+    log(f'Loaded {len(os.listdir(f'{ResPath}/lang'))} locales.')
 
 
 def translate(target):
@@ -610,7 +617,11 @@ def settingsPage():
 
     background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=ImageTk.PhotoImage(backgroundImage))
     
+    optionsImage         = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, 500, 50)))))
+    optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
+    options              = maliang.SegmentedButton(optionsMask, position=(250, 25), text=['Artistic ID'], family=FONT_FAMILY_BOLD, fontsize=16, anchor='center')
 
+    options.style.set(bg=('', ''), ol=('', ''))
     root.bind("<ButtonPress-1>", focusWindow)
     root.mainloop()
 
