@@ -26,6 +26,7 @@ import socket
 import threading
 import traceback
 import gc
+import datetime
 
 import colorama
 import darkdetect
@@ -54,6 +55,7 @@ import Frameworks.Tray as Tray
 
 _VERSION = 'dev'
 _SUBVERSION = '25w11f'
+_TIME_ENABLED = False
 
 # customized
 try:
@@ -432,12 +434,14 @@ def updateTopBar(barType):
 
 
     else:
+        global dTime
         if topSearchMask:
             maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
         upHEIGHT            = 65
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(305, 0), controller=maliang.animation.ease_out).start(delay=25)
         close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: changeWindow(mainPage))
-        close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))  
+        close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))
+        dTime = maliang.Text(topMask, (70, 10),family=FONT_FAMILY_BOLD, fontsize=35, text=datetime.datetime.now().strftime('%H:%M'))
         maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
 
