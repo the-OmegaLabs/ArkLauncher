@@ -27,7 +27,6 @@ import socket
 import threading
 import traceback
 import gc
-import datetime
 
 import colorama
 import darkdetect
