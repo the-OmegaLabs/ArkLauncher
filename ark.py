@@ -183,7 +183,6 @@ def loadFont(fontPath):
     if not fontPath in _FONTS:
         _FONTS.append(fontPath)
         maliang.toolbox.load_font(fontPath, private=True)  # must be private.
-        log(f'Loaded font \"{fontPath}\".')
 
 
 def testConnection():
@@ -482,7 +481,7 @@ def loadLocale():
             with open(f'{ResPath}/lang/{i}', encoding='utf-8') as f:
                 lang_dict[i[:-5]] = json.loads(f.read())
 
-            log(f'Loaded locale file "{i}"...')
+    log(f'Loaded {len(os.listdir(f'{ResPath}/lang'))} locales.')
 
 
 def translate(target):
