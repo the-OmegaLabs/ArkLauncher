@@ -91,6 +91,7 @@ _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
 _SYSVER = platform.version()
+_BACKGROUND = 'ChiesaBianca'
 maliang.configs.Env.system = 'Windows10'
 maliang.theme.manager.set_color_mode(_THEME)
 
@@ -314,7 +315,7 @@ def refreshImage(*args, threaded: bool):
         },
         'background': {
             'ChiesaBianca':   f'{ResPath}/icon/background/ChiesaBianca.png',
-            'g':              f'{ResPath}/icon/background/g.png'
+            'Concept':              f'{ResPath}/icon/background/g.png'
         },
         None: {  # Regular images without category
             'icon_quick':     f'{ResPath}/icon/both/quick.png',
@@ -398,7 +399,7 @@ def createPage():
 def createTopBar():
     global topBar, topImage, topMask, backgroundImage, topMinimizeMask, topExitMask, topIconMask, logo
 
-    backgroundImage     = getImage('ChiesaBianca', 'background')
+    backgroundImage     = getImage(_BACKGROUND, 'background')
 
     topBar = maliang.Canvas(root, auto_zoom=False)
     topBar.place(width=WIDTH, height=65, x=0, y=0)
@@ -591,7 +592,7 @@ def mainPage():
 
         root.geometry(position=(root.winfo_x() + dx, root.winfo_y() + dy))
 
-    backgroundImage = getImage('ChiesaBianca', 'background').crop((0, 65, WIDTH, HEIGHT))
+    backgroundImage = getImage(_BACKGROUND, 'background').crop((0, 65, WIDTH, HEIGHT))
 
     background = maliang.Image(cv, position=(0, 0), size=(
         WIDTH, HEIGHT), image=ImageTk.PhotoImage(backgroundImage))
@@ -630,7 +631,7 @@ def settingsPage():
     cv.bind("<Escape>", lambda event: changeWindow(mainPage, cv))
 
 
-    backgroundImage = mergeImage(makeImageBlur(getImage('ChiesaBianca', 'background'), radius=25),
+    backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
                                  makeImageMask((500, 800), (0, 0, 0, 64)))
 
     background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=ImageTk.PhotoImage(backgroundImage))
