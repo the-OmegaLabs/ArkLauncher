@@ -53,7 +53,13 @@ from Frameworks.Logger import output as log
 import Frameworks.Configuration.config as configLib
 import Frameworks.Tray as Tray
 
-_VERSION = 'dev'
+__version__ = 'dev'
+__author__ = [ # Sorted by contributions 
+    "Stevesuk0 (stevesukawa@outlook.com)",
+    "bzym2 (mantouk@qq.com)",
+    "HRGC-Sonrai",
+    "PPicku"
+]
 _SUBVERSION = '25w12b'
 
 # customized
@@ -61,7 +67,7 @@ try:
     hwnd = ctypes.windll.user32.GetForegroundWindow()
     user32 = ctypes.windll.user32
     user32.SetWindowTextW(
-        hwnd, f'ArkLauncher Console Interface - {_VERSION}, {_SUBVERSION}.')
+        hwnd, f'ArkLauncher Console Interface - {__version__}, {_SUBVERSION}.')
 except:
     pass
 
@@ -93,7 +99,7 @@ elif _SYSTEM == 'Linux':
 
 olog.logLevel = 5
 
-log(f'Starting ArkLauncher GUI, version {_VERSION}-{_SUBVERSION}.')
+log(f'Starting ArkLauncher GUI, version {__version__}-{_SUBVERSION}.')
 log(f'Welcome to Ark!')
 log(f'System: {_SYSTEM}, Version: {_SYSVER}.')
 
@@ -366,7 +372,7 @@ def createRoot(x=710, y=200):
     root = maliang.Tk(size=(WIDTH, HEIGHT), position=(100000, 100000))
     root.geometry(size=(WIDTH, HEIGHT), position=(
         root.winfo_screenwidth() - 15, root.winfo_screenheight() - 880))
-    root.title(f'{translate("prodname")} {translate(_VERSION)}-{_SUBVERSION}')
+    root.title(f'{translate("prodname")} {translate(__version__)}-{_SUBVERSION}')
     root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
@@ -661,7 +667,7 @@ def tracebackWindow(exception: Exception):
     width = 1000
     height = len(tracelist[:-1]) * 20 + 200
     root = maliang.Tk(size=(width, height),
-                      title=f'ArkLauncher traceback window | {_VERSION}')
+                      title=f'ArkLauncher traceback window | {__version__}')
     root.resizable(0, 0)
     cv = maliang.Canvas(root)
     cv.place(width=width, height=height)
