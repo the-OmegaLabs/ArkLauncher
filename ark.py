@@ -229,10 +229,13 @@ def updateFont():
         FONT_FAMILY = 'Yu Gothic UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Semilight'
-    else:
-        FONT_FAMILY = 'Microsoft YaHei UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    elif locale == 'cn':
+        FONT_FAMILY = '源流黑体 CJK'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
+        # FONT_FAMILY = 'Segoe UI'
+        # FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        # FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -451,7 +454,7 @@ def updateTopBar(barType):
 
         now = datetime.now()
         curTimeMonth        = maliang.Text(topMask, position=(85, 14), text=f'{now.strftime("%Y/%m/%d")}', family=FONT_FAMILY, fontsize=10)
-        curTimeDay          = maliang.Text(topMask, position=(85, 27), text=f'{now.strftime("%H:%M")}', family=FONT_FAMILY_BOLD, fontsize=21)
+        curTimeDay          = maliang.Text(topMask, position=(85, 23), text=f'{now.strftime("%H:%M")}', family=FONT_FAMILY_BOLD, fontsize=23)
         
         avatar = None
 
@@ -636,7 +639,7 @@ def settingsPage():
     optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
     
 
-    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, anchor='center', default=0, text=[translate('account'), translate('customize'), translate('network'), translate('locale'), translate('about')])
+    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, anchor='center', default=0, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
     options.style.set(bg=('', ''), ol=('', ''))
     for i in options.widgets:
         i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', ''), ol=('', '', '', '', ''))
@@ -713,7 +716,8 @@ try:
     updateFont()  # auto select font
 
     createRoot()
-    threading.Thread(target=lambda: (createTopBar(), updateTopBar('mainPage')), daemon=True).start()
+    createTopBar()
+    threading.Thread(target=lambda: updateTopBar('mainPage')).start()
     
     focusWindow()
 
