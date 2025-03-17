@@ -54,7 +54,7 @@ import Frameworks.Configuration.config as configLib
 import Frameworks.Tray as Tray
 
 _VERSION = 'dev'
-_SUBVERSION = '25w11f'
+_SUBVERSION = '25w12b'
 _TIME_ENABLED = False
 
 # customized
