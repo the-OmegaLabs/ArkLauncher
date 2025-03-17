@@ -231,12 +231,12 @@ def updateFont():
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Semilight'
     elif locale == 'cn':
-        FONT_FAMILY = '源流黑体 CJK'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
-        # FONT_FAMILY = 'Segoe UI'
-        # FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        # FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+    #     FONT_FAMILY = '源流黑体 CJK'
+    #     FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
+        # FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
+        FONT_FAMILY = 'Segoe UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -421,6 +421,8 @@ def createTopBar():
     #minimize.style.set(bg=('', '', ''), ol=('', ''))
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
 
+    
+    root.bind("<ButtonPress-1>", focusWindow)
 
 
 close = None
@@ -509,8 +511,14 @@ def translate(target):
 
 
 def welcomePage():
-    global locale
+    global locale, cv
     cv = createPage()
+
+    backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
+                                 makeImageMask((500, 800), (0, 0, 0, 64)))
+
+    background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=ImageTk.PhotoImage(backgroundImage))
+    
 
     FONT_FAMILY_BOLD = 'Microsoft YaHei UI Bold'
 
@@ -521,14 +529,14 @@ def welcomePage():
     text_desc = maliang.Text(
         cv, (50, 300), family=FONT_FAMILY_BOLD, fontsize=17)
     text_license = maliang.Text(
-        cv, (85, 605), family=FONT_FAMILY_BOLD, fontsize=15)
+        cv, (85, 555), family=FONT_FAMILY_BOLD, fontsize=15)
     text_collect = maliang.Text(
-        cv, (85, 643), family=FONT_FAMILY_BOLD, fontsize=15)
+        cv, (85, 593), family=FONT_FAMILY_BOLD, fontsize=15)
     text_button_chinese = maliang.Text(
-        cv, (210, 709), text="中文", fontsize=17, family=FONT_FAMILY_BOLD)
-    maliang.Text(cv, (330, 709), text="English",
+        cv, (210, 659), text="中文", fontsize=17, family=FONT_FAMILY_BOLD)
+    maliang.Text(cv, (330, 659), text="English",
                  fontsize=17, family=FONT_FAMILY_BOLD)
-    button = maliang.Button(cv, (50, 700), size=(100, 40), command=lambda: changeWindow(mainPage), fontsize=16,
+    button = maliang.Button(cv, (50, 650), size=(100, 40), command=lambda: changeWindow(mainPage), fontsize=16,
                             family=FONT_FAMILY_BOLD)
     button.disable(True)
 
@@ -556,13 +564,13 @@ def welcomePage():
     def changeToChinese(_):
         changeLanguage('cn')
 
-    maliang.CheckBox(cv, (50, 600), command=agreeLicense,
+    maliang.CheckBox(cv, (50, 550), command=agreeLicense,
                      default=False, length=23)
-    maliang.CheckBox(cv, (50, 640), default=True, length=23)
+    maliang.CheckBox(cv, (50, 590), default=True, length=23)
     langEN = maliang.RadioBox(
-        cv, (290, 705), command=changeToEnglish, length=30, default=False)
+        cv, (290, 655), command=changeToEnglish, length=30, default=False)
     langCN = maliang.RadioBox(
-        cv, (170, 705), command=changeToChinese, length=30, default=True)
+        cv, (170, 655), command=changeToChinese, length=30, default=True)
     maliang.RadioBox.group(langCN, langEN)
 
     changeLanguage('cn')
@@ -619,7 +627,6 @@ def mainPage():
     account.style.set(bg=_EMPTY, ol=_EMPTY)
     settings.style.set(bg=_EMPTY, ol=_EMPTY)
 
-    root.bind("<ButtonPress-1>", focusWindow)
     # logo.bind("<B1-Motion>", on_drag_motion)
 
     root.mainloop()
@@ -645,7 +652,6 @@ def settingsPage():
     for i in options.widgets:
         i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', ''), ol=('', '', '', '', ''))
 
-    root.bind("<ButtonPress-1>", focusWindow)
     root.mainloop()
 
 
@@ -718,15 +724,16 @@ try:
 
     createRoot()
     createTopBar()
-    threading.Thread(target=lambda: updateTopBar('mainPage')).start()
     
     focusWindow()
 
     log(f'Loaded ArkLauncher in {int((time.time() - startLoadTime) * 1000)}ms.')
 
     if configLib.first:
+        threading.Thread(target=lambda: updateTopBar('settingsPage')).start()
         welcomePage()
     else:
+        threading.Thread(target=lambda: updateTopBar('mainPage')).start()
         mainPage()
 
 except Exception as f:
