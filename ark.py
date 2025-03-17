@@ -55,7 +55,6 @@ import Frameworks.Tray as Tray
 
 _VERSION = 'dev'
 _SUBVERSION = '25w12b'
-_TIME_ENABLED = False
 
 # customized
 try:
@@ -124,7 +123,7 @@ def focusWindow(*args):
         root.topmost(True)
         focus = True
         maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
+                                     controller=maliang.animation.controllers.ease_out, fps=1000).start()
 
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
@@ -133,7 +132,8 @@ def minimizeWindow():
     global focus
     if focus:
         focus = False
-        maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth() - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 15, root.winfo_y()))).start()
+        maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth(
+        ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
 
 
@@ -166,8 +166,8 @@ def makeImageRadius(img, radius=30, alpha=0.5):
 def makeImageBlur(img, radius=5):
     return img.filter(ImageFilter.GaussianBlur(radius=radius))
 
-def makeImageMask(size, color=(0, 0, 0, 128), ):
 
+def makeImageMask(size, color=(0, 0, 0, 128), ):
     return Image.new("RGBA", size=size, color=color)
 
 
@@ -449,8 +449,9 @@ def updateTopBar(barType):
 
 
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(305, 0), controller=maliang.animation.ease_out).start(delay=25)
-        close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: changeWindow(mainPage))
+        close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: (curTimeMonth.destroy(), curTimeDay.destroy(), avatar.destroy(), changeWindow(mainPage)))
         close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))  
+        
         maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
         cv.after(100, switchIn)
@@ -614,7 +615,7 @@ def mainPage():
 def settingsPage():
     global cv
     cv = createPage()
-    cv.bind("<Escape>", lambda event: changeWindow(mainPage))
+    cv.bind("<Escape>", lambda event: changeWindow(mainPage, cv))
 
     backgroundImage = mergeImage(makeImageBlur(getImage('ChiesaBianca', 'background'), radius=25),
                                  makeImageMask((500, 800), (0, 0, 0, 64)))
