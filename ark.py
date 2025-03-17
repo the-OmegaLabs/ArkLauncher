@@ -474,8 +474,8 @@ def changeWindow(window):
     log(f'Perform change canvas to "{window.__name__}"...',
         type=olog.Type.INFO)
     threading.Thread(target=destroy, args=(cv, 1)).start()
-    updateTopBar(window.__name__)
     try:
+        updateTopBar(window.__name__)
         window()
     except RuntimeError:
         log('Calling Tcl from tray thread.', type=olog.Type.WARN)
