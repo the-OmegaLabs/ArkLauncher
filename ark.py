@@ -15,6 +15,8 @@
 ############################
 from datetime import datetime
 import time
+
+import maliang.core.virtual
 startLoadTime = time.time()
 ############################
 
@@ -457,7 +459,6 @@ def updateTopBar(barType):
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(305, 0), controller=maliang.animation.ease_out).start(delay=25)
         close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=ImageTk.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: (curTimeMonth.destroy(), curTimeDay.destroy(), avatar.destroy(), changeWindow(mainPage)))
         close.style.set(bg=('', '', ''), ol=('', '#EEEEEE'))  
-        
         maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
         cv.after(100, switchIn)
@@ -623,6 +624,7 @@ def settingsPage():
     cv = createPage()
     cv.bind("<Escape>", lambda event: changeWindow(mainPage, cv))
 
+
     backgroundImage = mergeImage(makeImageBlur(getImage('ChiesaBianca', 'background'), radius=25),
                                  makeImageMask((500, 800), (0, 0, 0, 64)))
 
@@ -631,8 +633,11 @@ def settingsPage():
     optionsImage         = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, 500, 50)))))
     optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=ImageTk.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
     
-    options = maliang.SegmentedButton(optionsMask, position=(250, 25), text=[translate('account'), '个性化', '关于'], family=FONT_FAMILY_BOLD, fontsize=16, anchor='center')
+
+    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, anchor='center', default=0, text=[translate('account'), translate('customize'), translate('network'), translate('locale'), translate('about')])
     options.style.set(bg=('', ''), ol=('', ''))
+    for i in options.widgets:
+        i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', ''), ol=('', '', '', '', ''))
 
     root.bind("<ButtonPress-1>", focusWindow)
     root.mainloop()
