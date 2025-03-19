@@ -46,7 +46,6 @@ from PIL import (
     ImageDraw,
     ImageFilter,
     ImageGrab,
-    ImageTk,
 )
 
 from Frameworks import Logger as olog
