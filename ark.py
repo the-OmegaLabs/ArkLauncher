@@ -235,7 +235,7 @@ def updateFont():
         # FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
         FONT_FAMILY = 'Segoe UI'
         FONT_FAMILY_BOLD = f'源流黑体 CJK'
-        FONT_FAMILY_LIGHT = f'Microsoft YaHei UI Light'
+        FONT_FAMILY_LIGHT = f'源流黑体 CJK'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -537,7 +537,7 @@ def welcomePage():
         cv, (210, 659), text="中文", fontsize=17, family=FONT_FAMILY_BOLD)
     maliang.Text(cv, (330, 659), text="English",
                  fontsize=17, family=FONT_FAMILY_BOLD)
-    button = maliang.Button(cv, (50, 650), size=(100, 40), command=lambda: changeWindow(mainPage), fontsize=16,
+    button = maliang.Button(cv, (50, 650), size=(100, 40), command=lambda: (updateFont(), changeWindow(mainPage)), fontsize=16,
                             family=FONT_FAMILY_BOLD)
     button.disable(True)
 
