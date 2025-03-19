@@ -235,8 +235,8 @@ def updateFont():
     #     FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
         # FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
         FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+        FONT_FAMILY_BOLD = f'源流黑体 CJK'
+        FONT_FAMILY_LIGHT = f'Microsoft YaHei UI Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -444,7 +444,9 @@ def updateTopBar(barType):
         maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(-305, 0), controller=maliang.animation.ease_out).start(delay=25)
         maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
-
+    elif barType == 'welcomePage':
+        pass
+        
     else:
         def switchIn():
             nonlocal avatar
@@ -522,12 +524,12 @@ def welcomePage():
 
     FONT_FAMILY_BOLD = 'Microsoft YaHei UI Bold'
 
-    maliang.Image(cv, (50, 75), image=ImageTk.PhotoImage(
+    maliang.Image(cv, (40, 75), image=ImageTk.PhotoImage(
         getImage('icon_logo').resize((150, 150), 1)))
     text_welcome = maliang.Text(
-        cv, (50, 250), family=FONT_FAMILY_BOLD, fontsize=30)
+        cv, (55, 250), family=FONT_FAMILY_BOLD, fontsize=30)
     text_desc = maliang.Text(
-        cv, (50, 300), family=FONT_FAMILY_BOLD, fontsize=17)
+        cv, (55, 300), family=FONT_FAMILY_BOLD, fontsize=17)
     text_license = maliang.Text(
         cv, (85, 555), family=FONT_FAMILY_BOLD, fontsize=15)
     text_collect = maliang.Text(
@@ -546,7 +548,6 @@ def welcomePage():
     def changeLanguage(lang_key):
         global locale
         locale = lang_key
-        updateFont()
 
         text_welcome.set(translate('welcome'))
         text_desc.set(translate('desc'))
@@ -572,6 +573,7 @@ def welcomePage():
     langCN = maliang.RadioBox(
         cv, (170, 655), command=changeToChinese, length=30, default=True)
     maliang.RadioBox.group(langCN, langEN)
+
 
     changeLanguage('cn')
 
@@ -730,7 +732,7 @@ try:
     log(f'Loaded ArkLauncher in {int((time.time() - startLoadTime) * 1000)}ms.')
 
     if configLib.first:
-        threading.Thread(target=lambda: updateTopBar('settingsPage')).start()
+        threading.Thread(target=lambda: updateTopBar('welcomePage')).start()
         welcomePage()
     else:
         threading.Thread(target=lambda: updateTopBar('mainPage')).start()
