@@ -1,5 +1,3 @@
 @echo off
 
-pyinstaller --onefile --optimize 2 --upx-dir ./upx/win/ --hide-console minimize-early -i ark.ico --uac-admin --disable-windowed-traceback ark.py
-
-pause
+pyinstaller --onefile --optimize 2 --noupx -i ark.ico --disable-windowed-traceback ark.py
