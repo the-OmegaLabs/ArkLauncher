@@ -636,7 +636,7 @@ def mainPage():
 def settingsPage():
     global cv
     cv = createPage()
-    cv.bind("<Escape>", lambda event: changeWindow(mainPage, cv))
+    cv.bind("<Escape>", lambda event: changeWindow(mainPage))
 
 
     backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
