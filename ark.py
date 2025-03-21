@@ -61,7 +61,7 @@ __author__ = [ # Sorted by contributions
     "HRGC-Sonrai",
     "PPicku"
 ]
-_SUBVERSION = '25w12b'
+_SUBVERSION = '25w12f'
 
 # customized
 try:
