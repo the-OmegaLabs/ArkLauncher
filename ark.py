@@ -650,7 +650,7 @@ def settingsPage():
 
     options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, anchor='center', default=0, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
     options.style.set(bg=('', ''), ol=('', ''))
-    for i in options.widgets:
+    for i in options.children:
         i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', '', ''), ol=('', '', '', '', '', ''))
 
     root.mainloop()
