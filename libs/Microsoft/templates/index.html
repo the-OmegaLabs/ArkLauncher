@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ark Launcher 认证完成</title>
+    <style>
+        :root {
+            --primary-color: #0a0a0a;
+            --accent-color: #007bff;
+            --text-color: #f1faee;
+            --success-green: #2a9d8f;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center,
+                var(--primary-color) 0%,
+                #000 100%);
+            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            padding: 2rem;
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            margin: 1rem;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(230, 57, 70, 0.3);
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            background: var(--success-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        .checkmark {
+            width: 40px;
+            height: 40px;
+            stroke-width: 2;
+            stroke: #fff;
+            fill: none;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: draw 0.6s ease-out forwards;
+        }
+
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(42, 157, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(42, 157, 143, 0); }
+        }
+
+        .instruction {
+            font-size: 1.2rem;
+            margin: 2rem 0;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 0.5s 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .keyboard-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .keyboard-key {
+            background: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ark Launcher</h1>
+
+        <div class="status-icon">
+            <svg class="checkmark" viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5"/>
+            </svg>
+        </div>
+
+        <div class="instruction">
+            <p>✅ 认证流程已完成</p>
+            <p>您现在可以安全地关闭此浏览器窗口</p>
+
+            <div class="keyboard-hint">
+                <span>快捷键:</span>
+                <span class="keyboard-key">Ctrl</span> +
+                <span class="keyboard-key">W</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.querySelector('.status-icon').style.animation = 'none';
+        }, 3000);
+    </script>
+</body>
+</html>
