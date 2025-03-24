@@ -381,7 +381,6 @@ def createRoot(x=710, y=200):
     root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
-    root.alpha(0.95)
     maliang.theme.manager.customize_window(
         root, disable_maximize_button=True, border_type=_BORDER)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
