@@ -131,7 +131,7 @@ def focusWindow(*args):
         root.topmost(True)
         focus = True
         maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y())))).start()
+                                     controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
 
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
