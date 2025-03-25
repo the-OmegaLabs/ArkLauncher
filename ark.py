@@ -235,7 +235,7 @@ def updateFont():
         # FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
         FONT_FAMILY = 'Segoe UI'
         FONT_FAMILY_BOLD = f'源流黑体 CJK'
-        FONT_FAMILY_LIGHT = f'源流黑体 CJK'
+        FONT_FAMILY_LIGHT = f'源流黑体 CJK Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
