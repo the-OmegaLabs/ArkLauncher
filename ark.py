@@ -211,8 +211,8 @@ def updateFont():
 
     if locale == 'en':
         FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+        FONT_FAMILY_BOLD = f'源流黑体 CJK'
+        FONT_FAMILY_LIGHT = f'源流黑体 CJK'
     elif locale == 'ug':
         FONT_FAMILY = 'Segoe UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
@@ -621,7 +621,7 @@ def mainPage():
 
     launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116))
     launchIcon          = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
-    launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='启动游戏', family=FONT_FAMILY,fontsize=17)
+    launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='Launch game', family=FONT_FAMILY,fontsize=17)
     launchTitle         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
 
     launch.style.set(fg=('', '', ''), bg=('', '', ''), ol=('#4C4849', '#BBBBBB'))
@@ -636,8 +636,6 @@ def mainPage():
 def settingsPage():
     global cv
     cv = createPage()
-    cv.bind("<Escape>", lambda event: changeWindow(mainPage))
-
 
     backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
                                  makeImageMask((500, 800), (0, 0, 0, 64)))
