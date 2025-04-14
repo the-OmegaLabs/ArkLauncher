@@ -129,7 +129,7 @@ def focusWindow(*args):
         root.topmost(True)
         focus = True
         maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, fps=1000).start()
+                                     controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
 
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
 
@@ -139,7 +139,7 @@ def minimizeWindow():
     if focus:
         focus = False
         maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth(
-        ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000).start()
+        ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: (root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y())))).start()
     # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
 
 
@@ -209,8 +209,8 @@ def updateFont():
 
     if locale == 'en':
         FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+        FONT_FAMILY_BOLD = f'源流黑体 CJK'
+        FONT_FAMILY_LIGHT = f'源流黑体 CJK'
     elif locale == 'ug':
         FONT_FAMILY = 'Segoe UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
@@ -231,6 +231,7 @@ def updateFont():
         FONT_FAMILY = 'Microsoft YaHei UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -376,7 +377,6 @@ def createRoot(x=710, y=200):
     root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
-    root.alpha(0.95)
     maliang.theme.manager.customize_window(
         root, disable_maximize_button=True, border_type=_BORDER)
     maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
@@ -617,7 +617,7 @@ def mainPage():
 
     launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116))
     launchIcon          = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
-    launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='启动游戏', family=FONT_FAMILY,fontsize=17)
+    launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='Launch game', family=FONT_FAMILY,fontsize=17)
     launchTitle         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
 
     launch.style.set(fg=('', '', ''), bg=('', '', ''), ol=('#4C4849', '#BBBBBB'))
