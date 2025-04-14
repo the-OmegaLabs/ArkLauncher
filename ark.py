@@ -35,9 +35,6 @@ import darkdetect
 
 import maliang
 import maliang.animation
-import maliang.color
-import maliang.core
-import maliang.standard
 import maliang.theme
 import maliang.toolbox
 
@@ -55,13 +52,14 @@ import Frameworks.Configuration.config as configLib
 import Frameworks.Tray as Tray
 
 __version__ = 'dev'
+_SUBVERSION = '25w15f'
+
 __author__ = [ # Sorted by contributions 
     "Stevesuk0 (stevesukawa@outlook.com)",
     "bzym2 (mantouk@qq.com)",
     "HRGC-Sonrai",
     "PPicku"
 ]
-_SUBVERSION = '25w12f'
 
 # customized
 try:
@@ -230,12 +228,9 @@ def updateFont():
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
         FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Semilight'
     elif locale == 'cn':
-    #     FONT_FAMILY = '源流黑体 CJK'
-    #     FONT_FAMILY_BOLD = f'{FONT_FAMILY}'
-        # FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
-        FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'源流黑体 CJK'
-        FONT_FAMILY_LIGHT = f'源流黑体 CJK'
+        FONT_FAMILY = 'Microsoft YaHei UI'
+        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
+        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
     """
         if locale == 'jp':
         FONT_FAMILY       = f'Yu Gothic UI'
@@ -639,23 +634,45 @@ def settingsPage():
     cv = createPage()
     cv.bind("<Escape>", lambda event: changeWindow(mainPage))
 
-
     backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
                                  makeImageMask((500, 800), (0, 0, 0, 64)))
 
-    background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
-    
-    optionsImage         = maliang.Image(cv, position=(0, 0), size=(500, 50), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, 500, 50)))))
-    optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=maliang.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
-    
+    def createSubPage():
+        subcv = maliang.Canvas(cv)
+        subcv.place(x=0, y=50, width=WIDTH, height=800-50)
+        maliang.Image(subcv, position=(0, -50), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
 
-    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, anchor='center', default=0, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
+        return subcv
+    
+    def pageAbout(subcv: maliang.Canvas):
+        maliang.Image(subcv, position=(50, 50), image=maliang.PhotoImage(getImage('icon_logo').resize((100, 100), 1)))
+
+        maliang.Text(subcv, position=(60, 150), text=f'Artistic Network', family=FONT_FAMILY, fontsize=20)
+        maliang.Text(subcv, position=(60, 177), text=f'ArkLauncher', family=FONT_FAMILY_BOLD, fontsize=32)
+        maliang.Text(subcv, position=(60, 220), text=f'Version: {__version__}-{_SUBVERSION}', family=FONT_FAMILY, fontsize=16)
+
+    maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
+    optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=maliang.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
+
+    global subcv
+    subcv = createSubPage()
+    def handler(i):
+        global subcv
+        
+        subcv.destroy()
+        subcv = createSubPage()
+        if i == 4:
+            pageAbout(subcv)
+
+
+    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, command=handler, anchor='center', default=4, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
     options.style.set(bg=('', ''), ol=('', ''))
     for i in options.children:
         i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', '', ''), ol=('', '', '', '', '', ''))
 
-    root.mainloop()
+    handler(4)
 
+    root.mainloop()
 
 def settingsAccountPage():
     global cv
