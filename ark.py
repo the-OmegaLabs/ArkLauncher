@@ -647,9 +647,14 @@ def settingsPage():
     def pageAbout(subcv: maliang.Canvas):
         maliang.Image(subcv, position=(50, 50), image=maliang.PhotoImage(getImage('icon_logo').resize((100, 100), 1)))
 
-        maliang.Text(subcv, position=(60, 150), text=f'Artistic Network', family=FONT_FAMILY, fontsize=20)
-        maliang.Text(subcv, position=(60, 177), text=f'ArkLauncher', family=FONT_FAMILY_BOLD, fontsize=32)
-        maliang.Text(subcv, position=(60, 220), text=f'Version: {__version__}-{_SUBVERSION}', family=FONT_FAMILY, fontsize=16)
+        maliang.Text(subcv, position=(60, 150), text=translate('parent'), family=FONT_FAMILY, fontsize=20)
+        maliang.Text(subcv, position=(60, 177), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=32)
+        maliang.Text(subcv, position=(60, 220), text=f'{translate('version')}: {__version__}-{_SUBVERSION}', family=FONT_FAMILY, fontsize=16)
+        
+        maliang.Text(subcv, position=(60, 260), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
+        maliang.Text(subcv, position=(60, 260), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
+
+
 
     maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
     optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=maliang.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
