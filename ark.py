@@ -42,7 +42,7 @@ import Frameworks.Configuration.config as configLib
 import Frameworks.Tray as Tray
 
 __version__ = 'dev'
-_SUBVERSION = '25w18a'
+_SUBVERSION = '25w18b'
 
 __author__ = [ # Sorted by contributions 
     "Stevesuk0 (stevesukawa@outlook.com)",
