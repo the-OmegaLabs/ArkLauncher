@@ -1,4 +1,27 @@
+# Files bearing this tag are regarded as original code.
+
+
 # Copyright 2025 Omega Labs, ArkLauncher Contributors.
+# Report bugs and issues to https://github.com/the-OmegaLabs/ArkLauncher/issues
+#
+#    ___         __      __                           __
+#    /   |  _____/ /__   / /   ____ ___  ______  _____/ /_  ___  _____
+#   / /| | / ___/ //_/  / /   / __ `/ / / / __ \/ ___/ __ \/ _ \/ ___/
+#  / ___ |/ /  / ,<    / /___/ /_/ / /_/ / / / / /__/ / / /  __/ /
+# /_/  |_/_/  /_/|_|  /_____/\__,_/\__,_/_/ /_/\___/_/ /_/\___/_/
+#
+# 　　　　　　／＞　　フ
+# 　　　　　| 　_　 _ l
+# 　 　　　／` ミ＿xノ
+# 　　 　 /　　　 　 |
+# 　　　 /　 ヽ　　 ﾉ
+# 　 　 │　　|　|　|
+# 　／￣|　　 |　|　|
+# 　| (￣ヽ＿_ヽ_)__)
+# 　＼二つ
+#
+#  ▲ this cat is called Ark
+#
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,9 +34,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-
 # The Dash Imaging Library (fork from PIL).
 #
 #
