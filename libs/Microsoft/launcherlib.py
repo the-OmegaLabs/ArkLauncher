@@ -1,5 +1,8 @@
 import urllib
 import urllib.parse
+
+import minecraft_launcher_lib
+
 AUTH_URL="https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize"
 TOKEN_URL="https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
 SCOPE="XboxLive.signin offline_access"
@@ -24,9 +27,10 @@ def getLogin(client_id: str, redirect_uri: str) -> str:
     url = urllib.parse.urlparse(AUTH_URL)._replace(query=urllib.parse.urlencode(parameters)).geturl()
     return url
 
-login_url = getLogin(
-    client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
-    redirect_uri="http://localhost:13372"
-)
-
-print(login_url)
+# login_url = getLogin(
+#     client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
+#     redirect_uri="http://localhost:13372"
+# )
+loginurl, state, verifier = minecraft_launcher_lib.microsoft_account.get_secure_login_data(    client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
+    redirect_uri="http://localhost:13372")
+print(loginurl)
