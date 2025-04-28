@@ -14,45 +14,35 @@
 
 ############################
 from datetime import datetime
+import sys
 import time
 
-import maliang.core.virtual
 startLoadTime = time.time()
 ############################
 
 import ctypes
 import json
-import math
 import os
 import platform
-import socket
 import threading
 import traceback
-import gc
 
 import colorama
 import darkdetect
-
 import maliang
 import maliang.animation
-import maliang.theme
-import maliang.toolbox
-
-from PIL import (
-    Image, 
-    ImageDraw,
-    ImageFilter,
-    ImageGrab,
-)
+import maliang.theme 
+from tkinterdnd2 import TkinterDnD, DND_TEXT
+from PIL import Image
 
 from Frameworks import Logger as olog
 from Frameworks.Logger import output as log
-
+import Frameworks.Utils as Utils
 import Frameworks.Configuration.config as configLib
 import Frameworks.Tray as Tray
 
 __version__ = 'dev'
-_SUBVERSION = '25w15f'
+_SUBVERSION = '25w18a'
 
 __author__ = [ # Sorted by contributions 
     "Stevesuk0 (stevesukawa@outlook.com)",
@@ -68,7 +58,8 @@ try:
     user32.SetWindowTextW(
         hwnd, f'ArkLauncher Console Interface - {__version__}, {_SUBVERSION}.')
 except:
-    pass
+    sys.stdout.write(f"\033]0;{'ArkLauncher Console Interface - {__version__}, {_SUBVERSION}.'}\007")
+    sys.stdout.flush()
 
 
 # config
@@ -87,8 +78,10 @@ _FONTS = []
 _THEME = config['theme']
 _BORDER = config['border']
 _SYSTEM = platform.system()
+_SYSREL = platform.release()
 _SYSVER = platform.version()
 _BACKGROUND = 'ChiesaBianca'
+_ANIMATIONFPS = 500
 maliang.configs.Env.system = 'Windows10'
 maliang.theme.manager.set_color_mode(_THEME)
 
@@ -101,27 +94,13 @@ olog.logLevel = 5
 
 log(f'Starting ArkLauncher GUI, version {__version__}-{_SUBVERSION}.')
 log(f'Welcome to Ark!')
-log(f'System: {_SYSTEM}, Version: {_SYSVER}.')
+log(f'System: {_SYSTEM} {_SYSREL} ({_SYSVER})')
 
 colorama.init()
 
 
-def smooth_forward(t: float):
-    return (1 - math.cos(t * math.pi)) / 2
-
-
-def smooth_reverse(t: float):
-    return (math.cos(t * math.pi) + 1) / 2
-
 def getRelFromAbs(x, y):
     return (x - root.winfo_x(), y - root.winfo_y())
-
-
-def takeShot(*args):
-    x, y = root.winfo_x(), root.winfo_y()
-    img = ImageGrab.grab((x, y, x + WIDTH, y + HEIGHT))
-    return img
-
 
 def focusWindow(*args):
     global focus
@@ -129,24 +108,13 @@ def focusWindow(*args):
         root.topmost(True)
         focus = True
         maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
-                                     controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
+                                     controller=maliang.animation.controllers.ease_out, fps=_ANIMATIONFPS, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
 
-    # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=1000).start()
-
-
-def minimizeWindow():
-    global focus
-    if focus:
-        focus = False
-        maliang.animation.MoveWindow(root, offset=getRelFromAbs(root.winfo_screenwidth(
-        ) - 15, root.winfo_y()), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000, end=lambda: (root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y())))).start()
-    # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_reverse, fps=1000).start()
-
+    # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=_ANIMATIONFPS).start()
 
 def minimizeAndExit():
     icon.stop()
-    animation = maliang.animation.MoveWindow(root, offset=(
-        600, 0), duration=500, controller=maliang.animation.controllers.ease_out, fps=1000)
+    animation = maliang.animation.MoveWindow(root, offset=(root.winfo_screenwidth() - root.winfo_x(), (root.winfo_screenheight() // 2 - root.winfo_y() - 400)), duration=750, controller=maliang.animation.controllers.ease_out, fps=_ANIMATIONFPS)
     animation.end = lambda: (animation.stop(), root.destroy())
     animation.start()
 
@@ -155,104 +123,18 @@ def testDragAndDrop(*args):
     log(f'dnd: {args}')
 
 
-def makeImageRadius(img, radius=30, alpha=0.5):
-    img = img.convert("RGBA")
-
-    mask = Image.new("L", img.size, 0)
-    draw = ImageDraw.Draw(mask)
-
-    draw.rounded_rectangle(
-        (0, 0, img.size[0], img.size[1]), radius, fill=int(256 * alpha))
-
-    img.putalpha(mask)
-
-    return img
-
-
-def makeImageBlur(img, radius=5):
-    return img.filter(ImageFilter.GaussianBlur(radius=radius))
-
-
-def makeImageMask(size, color=(0, 0, 0, 128), ):
-    return Image.new("RGBA", size=size, color=color)
-
-
-def mergeImage(a: Image, b: Image):
-    try:
-        return Image.alpha_composite(a, b)
-    except ValueError:
-        log(f'Can\'t merge image {a} and {b}.', type=olog.Type.ERROR)
-
-
-def loadFont(fontPath):
-    global _FONTS
-    if not fontPath in _FONTS:
-        _FONTS.append(fontPath)
-        maliang.toolbox.load_font(fontPath, private=True)  # must be private.
-
-
-def testConnection():
-    try:
-        socket.create_connection(("1.1.1.1", 53), timeout=5)
-        return True
-    except Exception as e:
-        return False
-
-
 def updateFont():
-    global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT
+    global FONT_FAMILY, FONT_FAMILY_BOLD, FONT_FAMILY_LIGHT, _FONTS
 
     for i in os.listdir(f'{ResPath}/font'):
-        loadFont(f'{ResPath}/font/{i}')
+        _FONTS = Utils.loadFont(f'{ResPath}/font/{i}', _FONTS)
 
     log(f'Loaded {len(os.listdir(f'{ResPath}/font'))} fonts.')
 
-    if locale == 'en':
-        FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'源流黑体 CJK'
-        FONT_FAMILY_LIGHT = f'源流黑体 CJK'
-    elif locale == 'ug':
-        FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-    elif locale == 'tw':
-        FONT_FAMILY = 'Microsoft Jhenghei'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-    elif locale == 'cnol':
-        FONT_FAMILY = 'Meiryo UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY}'
-    elif locale == 'jp':
-        FONT_FAMILY = 'Yu Gothic UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Semilight'
-    elif locale == 'cn':
-        FONT_FAMILY = 'Microsoft YaHei UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-
-    """
-        if locale == 'jp':
-        FONT_FAMILY       = f'Yu Gothic UI'
-        FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-    elif locale in ('cn'):
-    FONT_FAMILY       = f'Noto Sans'
-    FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
+    FONT_FAMILY = 'Segoe UI'
+    FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
     FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
-    elif locale in ('sb'):
-        FONT_FAMILY       = f'Simsun'
-        FONT_FAMILY_BOLD  = f'Simhei'
-        FONT_FAMILY_LIGHT = f'FangSong'
-    elif locale in ('ko'):
-        FONT_FAMILY       = f'Malgun Gothic'
-        FONT_FAMILY_BOLD  = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'Malgun Gothic'
-    elif locale in ('en'):
-        FONT_FAMILY       = f'Segoe UI'
-        FONT_FAMILY_BOLD  = f'Segoe UI Semibold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'"""
+
 
     log(f'Changed font to {FONT_FAMILY} (Bold: {FONT_FAMILY_BOLD}, Light: {FONT_FAMILY_LIGHT}).')
 
@@ -370,17 +252,15 @@ def openGithub(name):
 def createRoot(x=710, y=200):
     global root
 
-    root = maliang.Tk(size=(WIDTH, HEIGHT), position=(100000, 100000))
-    root.geometry(size=(WIDTH, HEIGHT), position=(
-        root.winfo_screenwidth() - 15, root.winfo_screenheight() - 880))
+    root = maliang.Tk(size=(WIDTH, HEIGHT), position=(-1000, -1000))  
+    root.geometry(position=(root.winfo_screenwidth() - 15, root.winfo_screenheight() // 2 - 400))
     root.title(f'{translate("prodname")} {translate(__version__)}-{_SUBVERSION}')
-    root.overrideredirect(True)
     root.minsize(WIDTH, HEIGHT)
     root.maxsize(WIDTH, HEIGHT)
-    maliang.theme.manager.customize_window(
-        root, disable_maximize_button=True, border_type=_BORDER)
-    maliang.theme.manager.apply_file_dnd(window=root, command=testDragAndDrop)
-
+    maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
+    maliang.theme.apply_file_dnd(root, command=testDragAndDrop)    
+    
+    root.at_exit(minimizeAndExit, ensure_destroy=False)
 
 def createPage():
     global root
@@ -399,26 +279,14 @@ def createTopBar():
     topBar = maliang.Canvas(root, auto_zoom=False)
     topBar.place(width=WIDTH, height=65, x=0, y=0)
 
-    topImage            = maliang.Image(topBar, position=(0, 0), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, 65)), radius=10)))
-    topMask             = maliang.Image(topBar, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(WIDTH, 65))))
-    topMinimizeMask     = maliang.Image(topMask, position=(int(WIDTH - (65 * 2)), 0), image=maliang.PhotoImage(makeImageMask((65, 65), color=(0, 0, 0, 80))))
-    topExitMask         = maliang.Image(topMask, position=(int(WIDTH - (65 * 1)), 0), image=maliang.PhotoImage(makeImageMask((65, 65), color=(120, 0, 0, 128))))
-    topIconMask         = maliang.Image(topMask, position=(0, 0),image=maliang.PhotoImage(makeImageMask(size=(65, 65), color=(0, 0, 0, 16))))
-    logo                = maliang.IconButton(topIconMask, size=(65, 65), position=(305, 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)))
-    minimize            = maliang.IconButton(topMinimizeMask, (2, 2), (61, 61), image=maliang.PhotoImage(getImage('icon_minimize').resize((40, 40), 1)), command=minimizeWindow)
-    exit                = maliang.IconButton(topExitMask, (2, 2), (61, 61), image=maliang.PhotoImage(getImage('icon_exit').resize((60, 60), 1)), command=minimizeAndExit)
-    
+    topImage            = maliang.Image(topBar, position=(0, 0), image=maliang.PhotoImage(Utils.makeImageBlur(backgroundImage.crop((0, 0, WIDTH, 65)), radius=10)))
+    topMask             = maliang.Image(topBar, position=(0, 0), image=maliang.PhotoImage(Utils.makeImageMask(size=(WIDTH, 65))))
+    topIconMask         = maliang.Image(topMask, position=(0, 0),image=maliang.PhotoImage(Utils.makeImageMask(size=(65, 65), color=(0, 0, 0, 16))))
+    logo                = maliang.IconButton(topIconMask, size=(65, 65), position=(365, 2), image=maliang.PhotoImage(getImage('icon_logo').resize((40, 40), 1)))
 
     logo.style.set(bg=_EMPTY, ol=_EMPTY)
-    #exit.style.set(bg=('', '#990000', ''), ol=('', '#EEEEEE'))
-    exit.style.set(bg=('', '#990000', ''), ol=('', '#990000', '#990000'))
-    minimize.style.set(bg=('', '', ''), ol=(''))
-    #minimize.style.set(bg=('', '', ''), ol=('', ''))
-    logo.style.set(bg=_EMPTY, ol=_EMPTY)
-
     
     root.bind("<ButtonPress-1>", focusWindow)
-
 
 close = None
 
@@ -427,59 +295,43 @@ def updateTopBar(barType):
     upHEIGHT            = 65
     if barType == 'mainPage':
         if close:
-            maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start()
-        #topImage            = maliang.Image(topBar, position=(0, 0), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, 0, WIDTH, upHEIGHT)), radius=10)))
-        #topMask             = maliang.Image(topBar, position=(0, 0), image=maliang.PhotoImage(makeImageMask(size=(WIDTH, upHEIGHT))))
-        topSearchMask       = maliang.Image(topMask, position=(upHEIGHT, -65), image=maliang.PhotoImage(makeImageMask(size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT), color=(0, 0, 0, 50))))
+            maliang.animation.MoveWidget(close, duration=350, fps=_ANIMATIONFPS, offset=(0, -65), controller=maliang.animation.ease_out).start()
+        topSearchMask       = maliang.Image(topMask, position=(upHEIGHT, -65), image=maliang.PhotoImage(Utils.makeImageMask(size=(int(WIDTH - (upHEIGHT * 2)), upHEIGHT), color=(0, 0, 0, 50))))
         searchBox           = maliang.InputBox(topSearchMask, position=(0, 2), size=(int(WIDTH - (upHEIGHT * 3)), upHEIGHT - 4), placeholder=translate('search'), family=FONT_FAMILY_BOLD, fontsize=18)
         searchBox.style.set(bg=_EMPTY, ol=_EMPTY)
 
-
-
-        maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(-305, 0), controller=maliang.animation.ease_out).start(delay=25)
-        maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
+        avatar          = maliang.IconButton(topMask, size=(63, 63), position=(int(WIDTH - 65), 3), image=maliang.PhotoImage(Utils.makeImageRadius(getImage('icon_account'), 128, 0.7).resize((40, 40), 1)))
+        avatar.style.set(bg=_EMPTY, ol=_EMPTY)
+        maliang.animation.MoveWidget(logo, duration=350, fps=_ANIMATIONFPS, offset=(-365, 0), controller=maliang.animation.ease_out).start(delay=25)
+        maliang.animation.MoveWidget(topSearchMask, duration=350, fps=_ANIMATIONFPS, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
     elif barType == 'welcomePage':
         pass
         
     else:
-        def switchIn():
-            nonlocal avatar
-            avatar             = maliang.IconButton(topMask, size=(63, 63), position=(int(WIDTH - (65 * 4)), 3), image=maliang.PhotoImage(makeImageRadius(getImage('icon_account'), 128, 0.7).resize((40, 40), 1)))
-            avatar.style.set(bg=_EMPTY, ol=_EMPTY)
-
         if topSearchMask:
-            maliang.animation.MoveWidget(topSearchMask, duration=350, fps=1000, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
+            maliang.animation.MoveWidget(topSearchMask, duration=350, fps=_ANIMATIONFPS, offset=(0, -65), controller=maliang.animation.ease_out).start(delay=25)
         upHEIGHT            = 65
 
         now = datetime.now()
         curTimeMonth        = maliang.Text(topMask, position=(85, 14), text=f'{now.strftime("%Y/%m/%d")}', family=FONT_FAMILY, fontsize=10)
         curTimeDay          = maliang.Text(topMask, position=(85, 23), text=f'{now.strftime("%H:%M")}', family=FONT_FAMILY_BOLD, fontsize=23)
         
-        avatar = None
 
         curTimeMonth.style.set(fg='#A5A9AC')
 
-
-        maliang.animation.MoveWidget(logo, duration=350, fps=1000, offset=(305, 0), controller=maliang.animation.ease_out).start(delay=25)
-        close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: (curTimeMonth.destroy(), curTimeDay.destroy(), avatar.destroy(), changeWindow(mainPage)))
+        maliang.animation.MoveWidget(logo, duration=350, fps=_ANIMATIONFPS, offset=(365, 0), controller=maliang.animation.ease_out).start(delay=25)
+        close = maliang.IconButton(topIconMask, (2, -63), (upHEIGHT - 4, upHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_close').resize((40, 40), 1)), command=lambda: (curTimeMonth.destroy(), curTimeDay.destroy(), changeWindow(mainPage)))
         close.style.set(bg=('', '', ''), ol=(''))  
-        maliang.animation.MoveWidget(close, duration=350, fps=1000, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
+        maliang.animation.MoveWidget(close, duration=350, fps=_ANIMATIONFPS, offset=(0, 65), controller=maliang.animation.ease_out).start(delay=25)
 
-        cv.after(100, switchIn)
 
-def changeWindow(window):
-    def destroy(widget: maliang.Canvas, sleep):
-        time.sleep(sleep)
-        widget.destroy()
-        gc.collect()
-
-    log(f'Perform change canvas to "{window.__name__}"...',
-        type=olog.Type.INFO)
-    threading.Thread(target=destroy, args=(cv, 1)).start()
+def changeWindow(window, extra_args = ()):
+    log(f'Perform change canvas to "{window.__name__}"...', type=olog.Type.INFO)
+    root.after(1000, cv.destroy)
     try:
         updateTopBar(window.__name__)
-        window()
+        window(extra_args)
     except RuntimeError:
         log('Calling Tcl from tray thread.', type=olog.Type.WARN)
 
@@ -511,8 +363,8 @@ def welcomePage():
     global locale, cv
     cv = createPage()
 
-    backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
-                                 makeImageMask((500, 800), (0, 0, 0, 64)))
+    backgroundImage = Utils.mergeImage(Utils.makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
+                                 Utils.makeImageMask((500, 800), (0, 0, 0, 64)))
 
     background = maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
     
@@ -548,7 +400,6 @@ def welcomePage():
         text_desc.set(translate('desc'))
         text_license.set(translate('license'))
         text_collect.set(translate('collect'))
-        text_button_chinese.set(translate('lang_chinese'))
         button.set(translate('button'))
 
         configLib.setConfig('language', locale)
@@ -575,27 +426,11 @@ def welcomePage():
     root.mainloop()
 
 
-def aboutPage():
-    pass
-
-
-def mainPage():
+def mainPage(*_):
     global cv
     cv = createPage()
     cv.bind("<Escape>", lambda event: minimizeAndExit())
 
-    _DRAG = [0, 0]
-
-    def Drag(event):
-        nonlocal _DRAG
-        _DRAG[0] = event.x
-        _DRAG[1] = event.y
-
-    def moveWindow(event):
-        dx = event.x - _DRAG[0]
-        dy = event.y - _DRAG[1]
-
-        root.geometry(position=(root.winfo_x() + dx, root.winfo_y() + dy))
 
     backgroundImage = getImage(_BACKGROUND, 'background').crop((0, 65, WIDTH, HEIGHT))
 
@@ -605,15 +440,15 @@ def mainPage():
     bottomHEIGHT        = 265
     bottomMaskHEIGHT    = 70
     bottomLMaskHEIGHT   = 130
-    bottomImage         = maliang.Image(cv, position=(0, 535), image=maliang.PhotoImage(makeImageBlur(backgroundImage.crop((0, HEIGHT - bottomHEIGHT, WIDTH, HEIGHT)), radius=10)))
-    bottomMask          = maliang.Image(cv, position=(0, 535), image=maliang.PhotoImage(makeImageMask(size=(HEIGHT, bottomHEIGHT))))
-    bottomSettingsMask  = maliang.Image(bottomMask, position=(bottomMaskHEIGHT // 2, bottomMaskHEIGHT // 2), image=maliang.PhotoImage(makeImageRadius(makeImageMask(size=(bottomMaskHEIGHT, bottomMaskHEIGHT), color=(0, 0, 0, 128)), bottomMaskHEIGHT, alpha=0.1).resize((50, 50), 1)), anchor='center')
-    bottomAccountMask   = maliang.Image(bottomMask, position=(500 - bottomMaskHEIGHT // 2, bottomMaskHEIGHT // 2), image=maliang.PhotoImage(makeImageRadius(makeImageMask(size=(bottomMaskHEIGHT, bottomMaskHEIGHT), color=(0, 0, 0, 128)), bottomMaskHEIGHT, alpha=0.1).resize((50, 50), 1)), anchor='center')
-    bottomSubMask       = maliang.Image(bottomMask, position=(0, bottomMaskHEIGHT), image=maliang.PhotoImage(makeImageMask((WIDTH, bottomLMaskHEIGHT), color=(0, 0, 0, 64))))
-    bottomLaunchMask    = maliang.Image(bottomSubMask, position=(10, 7), image=maliang.PhotoImage(makeImageMask((480, 116), color=(0, 0, 0, 64))))
+    bottomImage         = maliang.Image(cv, position=(0, 535), image=maliang.PhotoImage(Utils.makeImageBlur(backgroundImage.crop((0, HEIGHT - bottomHEIGHT, WIDTH, HEIGHT)), radius=10)))
+    bottomMask          = maliang.Image(cv, position=(0, 535), image=maliang.PhotoImage(Utils.makeImageMask(size=(HEIGHT, bottomHEIGHT))))
+    bottomSettingsMask  = maliang.Image(bottomMask, position=(bottomMaskHEIGHT // 2, bottomMaskHEIGHT // 2), image=maliang.PhotoImage(Utils.makeImageRadius(Utils.makeImageMask(size=(bottomMaskHEIGHT, bottomMaskHEIGHT), color=(0, 0, 0, 128)), bottomMaskHEIGHT, alpha=0.1).resize((50, 50), 1)), anchor='center')
+    bottomAccountMask   = maliang.Image(bottomMask, position=(500 - bottomMaskHEIGHT // 2, bottomMaskHEIGHT // 2), image=maliang.PhotoImage(Utils.makeImageRadius(Utils.makeImageMask(size=(bottomMaskHEIGHT, bottomMaskHEIGHT), color=(0, 0, 0, 128)), bottomMaskHEIGHT, alpha=0.1).resize((50, 50), 1)), anchor='center')
+    bottomSubMask       = maliang.Image(bottomMask, position=(0, bottomMaskHEIGHT), image=maliang.PhotoImage(Utils.makeImageMask((WIDTH, bottomLMaskHEIGHT), color=(0, 0, 0, 64))))
+    bottomLaunchMask    = maliang.Image(bottomSubMask, position=(10, 7), image=maliang.PhotoImage(Utils.makeImageMask((480, 116), color=(0, 0, 0, 64))))
 
-    settings            = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: (changeWindow(settingsPage)), anchor='center')
-    account             = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsAccountPage), anchor='center')
+    settings            = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage, extra_args=(4)), anchor='center')
+    account             = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage, extra_args=(0)), anchor='center')
 
     launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116))
     launchIcon          = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
@@ -629,53 +464,102 @@ def mainPage():
     root.mainloop()
 
 
-def settingsPage():
+def settingsPage(default = 4):
     global cv
+
+    currentPage = 0
+
     cv = createPage()
     cv.bind("<Escape>", lambda event: changeWindow(mainPage))
 
-    backgroundImage = mergeImage(makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
-                                 makeImageMask((500, 800), (0, 0, 0, 64)))
+    backgroundImage = Utils.mergeImage(Utils.makeImageBlur(getImage(_BACKGROUND, 'background'), radius=25),
+                             Utils.makeImageMask((500, 800), (0, 0, 0, 64)))
 
-    def createSubPage():
+    def createSubPage(i, oldcv):
         subcv = maliang.Canvas(cv)
-        subcv.place(x=0, y=50, width=WIDTH, height=800-50)
+        if i > currentPage:
+            x = 500
+        elif i < currentPage:
+            x = -500
+        else:
+            x = 0
+        subcv.place(x=x, y=50, width=WIDTH, height=800-50)
         maliang.Image(subcv, position=(0, -50), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
 
+        if oldcv:
+            maliang.animation.MoveTkWidget(
+                oldcv,
+                offset=(0 - x, 0),
+                duration=400,
+                controller=maliang.animation.ease_out,
+                fps=_ANIMATIONFPS,  
+                end=oldcv.destroy
+            ).start(delay=1)
+
+            maliang.animation.MoveTkWidget(
+                subcv,
+                offset=(0 - x, 0),
+                duration=400,
+                controller=maliang.animation.ease_out,
+                fps=_ANIMATIONFPS
+            ).start()
+
+
+        else:
+            maliang.animation.MoveTkWidget(
+                subcv,
+                offset=(0 - x, 0),
+                duration=500,
+                controller=maliang.animation.ease_out,
+                fps=_ANIMATIONFPS
+            ).start()
+
         return subcv
+
+
+
     
-    def pageAbout(subcv: maliang.Canvas):
+    def pageAbout():
+        smoke = Utils.makeImageRadius(Utils.makeImageMask((500, 800)), radius=5)
+        maliang.Image(subcv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(smoke))
         maliang.Image(subcv, position=(50, 50), image=maliang.PhotoImage(getImage('icon_logo').resize((100, 100), 1)))
 
-        maliang.Text(subcv, position=(60, 150), text=translate('parent'), family=FONT_FAMILY, fontsize=20)
-        maliang.Text(subcv, position=(60, 177), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=32)
-        maliang.Text(subcv, position=(60, 220), text=f'{translate('version')}: {__version__}-{_SUBVERSION}', family=FONT_FAMILY, fontsize=16)
+        maliang.Text(subcv, position=(60, 180), text=translate('parent'), family=FONT_FAMILY, fontsize=20)
+        maliang.Text(subcv, position=(60, 207), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=32)
+        maliang.Text(subcv, position=(60, 250), text=f'{translate('version')}: {__version__}-{_SUBVERSION}', family=FONT_FAMILY, fontsize=16)
         
-        maliang.Text(subcv, position=(60, 260), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
-        maliang.Text(subcv, position=(60, 260), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
+        maliang.Text(subcv, position=(60, 300), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
+        maliang.Text(subcv, position=(60, 300), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
 
+    def pageLanguage():
+        container = maliang.Label(subcv, position=(40, 40), size=(420, 600))
+        container.style.set(bg=('#00000000', '#00000000'), ol=('#00000000', '#00000000'))
 
+        smoke = Utils.makeImageRadius(Utils.makeImageMask(container.size), radius=5)
+        maliang.Image(subcv, position=container.position, size=container.size, image=maliang.PhotoImage(smoke))
+        container.destroy()
+        
 
     maliang.Image(cv, position=(0, 0), size=(500, 800), image=maliang.PhotoImage(backgroundImage))
-    optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=maliang.PhotoImage(makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
+    optionsMask          = maliang.Image(cv, position=(0, 0), size=(500, 50), image=maliang.PhotoImage(Utils.makeImageMask(size=(500, 50), color=(0, 0, 0, 80))))
 
-    global subcv
-    subcv = createSubPage()
+    subcv = None
     def handler(i):
-        global subcv
-        
-        subcv.destroy()
-        subcv = createSubPage()
+        nonlocal subcv, currentPage
+
+        subcv = createSubPage(i, subcv)
+        currentPage = i
+        if i == 1:
+            pageLanguage()
         if i == 4:
-            pageAbout(subcv)
+            pageAbout()
 
-
-    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, command=handler, anchor='center', default=4, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
+    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, command=handler, anchor='center', default=default, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
     options.style.set(bg=('', ''), ol=('', ''))
     for i in options.children:
         i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', '', ''), ol=('', '', '', '', '', ''))
 
-    handler(4)
+    handler(default)
 
     root.mainloop()
 
@@ -745,10 +629,8 @@ try:
 
     loadLocale()
     updateFont()  # auto select font
-
     createRoot()
     createTopBar()
-    
     focusWindow()
 
     log(f'Loaded ArkLauncher in {int((time.time() - startLoadTime) * 1000)}ms.')

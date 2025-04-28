@@ -7,8 +7,7 @@ SCOPE="XboxLive.signin offline_access"
 def getLogin(client_id: str, redirect_uri: str) -> str:
     """
     Generate a login url.\\
-    For a more secure alternative, use :func:`get_secure_login_data`
-
+    For a more secure alternative, use :func:`get_secure_login_data`                                                      
     :param client_id: The Client ID of your Azure App
     :param redirect_uri: The Redirect URI of your Azure App
     :return: The url to the website on which the user logs in
@@ -25,7 +24,7 @@ def getLogin(client_id: str, redirect_uri: str) -> str:
     return url
 
 login_url = getLogin(
-    client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
+    client_id="ece1bc0c-e3d1-4967-b4a2-63d13c57380c",
     redirect_uri="http://localhost:13372"
 )
 
