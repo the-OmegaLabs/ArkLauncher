@@ -513,7 +513,7 @@ def mainPage(*_):
     settings            = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage, extra_args=(4)), anchor='center')
     account             = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage, extra_args=(0)), anchor='center')
 
-    launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116), command=lambda: Notify.toast(title='启动失败', message='实例 \"Meira Client\" 不存在。', duration=5000, root=root, icon=getImage('icon_logo').resize((60, 60), 1)))
+    launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116), command=lambda: Notify.toast(title='testTitle', message='testMessage', duration=5000, root=root, icon=getImage('icon_logo').resize((60, 60), 1)))
     launchIcon          = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
     launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='Launch game', family=FONT_FAMILY,fontsize=17)
     launchTitle         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
@@ -710,103 +710,3 @@ except Exception as f:
     tracebackWindow(f)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#  不要瞎几把翻了。我乱打着玩的
-#
-    #
-        #
-            #
-                #
-                    #
-                        #
-                            #
-                            #
-                                #
-                                #
-                                    #
-                                    #
-                                        #
-                                        #
-                                            #
-                                            #
-                                                #
-                                                #
-                                                    #
-                                                    #
-                                                    #
-                                                        #
-                                                        #
-                                                        #
-                                                            #
-                                                            #
-                                                            #
-                                                                #
-                                                                #
-                                                                #
-                                                                    #
-                                                                    #
-                                                                    #
-                                                                        #
-                                                                        #
-                                                                        #     你看你妈呢宝宝嘟嘟打雷啦
