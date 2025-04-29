@@ -40,6 +40,7 @@ from Frameworks.Logger import output as log
 import Frameworks.Utils as Utils
 import Frameworks.Configuration.config as configLib
 import Frameworks.Tray as Tray
+import Frameworks.Notify as Notify
 
 __version__ = 'dev'
 _SUBVERSION = '25w18b'
@@ -450,7 +451,7 @@ def mainPage(*_):
     settings            = maliang.IconButton(bottomSettingsMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_settings').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage, extra_args=(4)), anchor='center')
     account             = maliang.IconButton(bottomAccountMask, (0, 0), (bottomMaskHEIGHT - 4, bottomMaskHEIGHT - 4), image=maliang.PhotoImage(getImage('icon_account').resize((40, 40), 1)), command=lambda: changeWindow(settingsPage, extra_args=(0)), anchor='center')
 
-    launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116))
+    launch              = maliang.Button(bottomLaunchMask, (0, 0), size=(480, 116), command=lambda: Notify.toast(title='启动失败', message='实例 \"Meira Client\" 不存在。', duration=5000, root=root, icon=getImage('icon_logo').resize((60, 60), 1)))
     launchIcon          = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
     launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='Launch game', family=FONT_FAMILY,fontsize=17)
     launchTitle         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
@@ -591,26 +592,26 @@ def tracebackWindow(exception: Exception):
 
     width = 1000
     height = len(tracelist[:-1]) * 20 + 200
-    root = maliang.Tk(size=(width, height),
-                      title=f'ArkLauncher traceback window | {__version__}')
-    root.resizable(0, 0)
-    cv = maliang.Canvas(root)
-    cv.place(width=width, height=height)
+    # root = maliang.Tk(size=(width, height),
+    #                   title=f'ArkLauncher traceback window | {__version__}')
+    # root.resizable(0, 0)
+    # cv = maliang.Canvas(root)
+    # cv.place(width=width, height=height)
 
-    text_title = maliang.Text(cv, (50, 50), fontsize=23)
-    text_title.set('An error detected.')
+    # text_title = maliang.Text(cv, (50, 50), fontsize=23)
+    # text_title.set('An error detected.')
 
-    text_title = maliang.Text(cv, (50, 80), fontsize=17)
-    text_title.set(
-        'You can take an screenshot in this window, and send it to the author.')
+    # text_title = maliang.Text(cv, (50, 80), fontsize=17)
+    # text_title.set(
+    #     'You can take an screenshot in this window, and send it to the author.')
 
-    text_trace = maliang.Text(cv, (50, 130), fontsize=14)
-    text_trace.set(str(''.join(traceback.format_exception(exception))))
+    # text_trace = maliang.Text(cv, (50, 130), fontsize=14)
+    # text_trace.set(str(''.join(traceback.format_exception(exception))))
 
-    root.at_exit(exit)
-    root.bind('<Escape>', exit)
-    root.center()
-    root.mainloop()
+    # root.at_exit(exit)
+    # root.bind('<Escape>', exit)
+    # root.center()
+    # root.mainloop()
 
 
 try:
@@ -643,4 +644,5 @@ try:
         mainPage()
 
 except Exception as f:
+    pass
     tracebackWindow(f)

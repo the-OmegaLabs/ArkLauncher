@@ -30,6 +30,6 @@ def getLogin(client_id: str, redirect_uri: str) -> str:
 #     client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
 #     redirect_uri="http://localhost:13372"
 # )
-loginurl, state, verifier = minecraft_launcher_lib.microsoft_account.get_secure_login_data(    client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
+loginurl, state, verifier = minecraft_launcher_lib.microsoft_account.get_secure_login_data(client_id="76658556-e195-49da-a47e-3c1eb90f6f9b",
     redirect_uri="http://localhost:13372")
 print(loginurl)
