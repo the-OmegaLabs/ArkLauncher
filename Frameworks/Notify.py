@@ -1,7 +1,7 @@
 import maliang
 import maliang.animation
 import threading
-from playsound import playsound
+from Frameworks.Utils import play
 
 ANIMATION_DURATION = 300
 ANIMATION_FPS = 1000
@@ -14,10 +14,7 @@ HEIGHT = 100
 def scaled(n): return n * SCALE
 
 def toast(title, message, duration, icon, root, target = 'notify'):
-    def play():
-        threading.Thread(target=playsound, args=[f'Resources/sounds/{target}.mp3'], daemon=True).start()
-
-    play()
+    play(target)
     toast = maliang.Toplevel(root, size=(scaled(WIDTH), scaled(HEIGHT)), position=(10000, 10000), focus=False)
     toast.alpha(0.85)
     toast.geometry(position=(toast.winfo_screenwidth() // 2 - scaled(WIDTH) // 2, 0 - scaled(HEIGHT)))

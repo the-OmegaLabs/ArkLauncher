@@ -8,4 +8,4 @@ typing_extensions
 win32material
 wheel
 setuptools
-playsound
+playsound==1.2.2

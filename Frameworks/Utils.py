@@ -78,8 +78,13 @@
 
 import maliang.toolbox
 import socket
+import playsound
+import threading
 from PIL import Image, ImageDraw, ImageFilter, ImageGrab
 
+
+def play(name):
+    threading.Thread(target=playsound.playsound, args=[f'Resources/sounds/{name}.mp3'], daemon=True).start()
 
 def makeImageRadius(img, radius=30, alpha=0.5):
     img = img.convert("RGBA")
