@@ -6,3 +6,6 @@ pywinstyles
 six
 typing_extensions
 win32material
+wheel
+setuptools
+playsound
