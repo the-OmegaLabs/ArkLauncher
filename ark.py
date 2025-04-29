@@ -95,7 +95,6 @@ import darkdetect
 import maliang
 import maliang.animation
 import maliang.theme 
-from tkinterdnd2 import TkinterDnD, DND_TEXT
 from PIL import Image
 
 from Frameworks import Logger as olog
