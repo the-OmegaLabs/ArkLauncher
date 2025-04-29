@@ -87,7 +87,7 @@ import Frameworks.Tray as Tray
 import Frameworks.Notify as Notify
 
 __version__ = 'dev'
-_SUBVERSION = '25w18b'
+_SUBVERSION = '25w18c'
 
 __author__ = [ # Sorted by contributions 
     "Stevesuk0 (stevesukawa@outlook.com)",
