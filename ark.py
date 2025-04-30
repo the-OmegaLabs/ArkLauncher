@@ -71,18 +71,16 @@ def tracebackWindow(exception: Exception):
             return True
         except TypeError:
             return False
-
-    log('Starting Traceback window because a exception detected.', type=Logger.Type.WARN)
-
+        
     tracelist = ''.join(traceback.format_exception(exception)).split('\n')
-
-    for i in tracelist[:-1]:
-        log(i, type=Logger.Type.ERROR)
 
     width = max(len(item) for item in tracelist) * 8 + 150
     height = len(tracelist[:-1]) * 20 + 150
     
-    Utils.play('error')
+    try:
+        Utils.play('error')
+    except:
+        pass
 
     nowTime = time.time()
     globalsFiltered = {
@@ -93,10 +91,15 @@ def tracebackWindow(exception: Exception):
         'pythonVersion': platform.python_version(),
         'dumpTime': nowTime,
         'dumpTimeFormated': time.ctime(),
-        'arkLogs': Logger.log
     })
+
+    try:
+        globalsFiltered.update({'arkLogs': Logger.log})
+    except:
+        pass
     
     for key in [
+        "__author__",
         "__doc__",
         "__package__",
         "__spec__",
@@ -109,9 +112,19 @@ def tracebackWindow(exception: Exception):
     ]: globalsFiltered.pop(key, None)
 
     filename = f"dump_{int(nowTime)}.json"
-    log(f"Dumped to {filename}")
     with open(filename, "w", encoding='utf-8') as f:
         json.dump(globalsFiltered, f, indent=4, ensure_ascii=False)
+
+    try:
+        log('Starting Traceback window because a exception detected.', type=Logger.Type.WARN)
+        for i in tracelist[:-1]:
+            log(i, type=Logger.Type.ERROR)
+        log(f"Dumped to {filename}")
+    except:
+        print('WARN: Starting Traceback window because a exception detected.')
+        for i in tracelist[:-1]:
+            print(f'FAIL: {i}')
+        print(f"Dumped to {filename}")
 
     traceWin = maliang.Tk(size=(width, height),
                       title=f'ArkLauncher traceback window | {__version__}')
@@ -161,7 +174,6 @@ try:
     import Frameworks.Logger as Logger
     import Frameworks.Utils as Utils
     import Frameworks.Configuration.config as configLib
-    import Frameworks.Tray as Tray
     import Frameworks.Notify as Notify
 
 
@@ -198,7 +210,7 @@ try:
     images = {}
     ResPath = 'Resources'
     _FONTS = []
-    _THEME = config['theme']
+    _THEME = 'dark'
     _BORDER = config['border']
     _BACKGROUND = 'ChiesaBianca'
     _ANIMATIONFPS = 500
@@ -219,7 +231,6 @@ try:
                                         controller=maliang.animation.controllers.ease_out, fps=_ANIMATIONFPS, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
 
     def minimizeAndExit():
-        icon.stop()
         animation = maliang.animation.MoveWindow(root, offset=(root.winfo_screenwidth() - root.winfo_x(), (root.winfo_screenheight() // 2 - root.winfo_y() - 400)), duration=750, controller=maliang.animation.controllers.ease_out, fps=_ANIMATIONFPS)
         animation.end = lambda: (animation.stop(), root.destroy())
         animation.start()
@@ -235,7 +246,7 @@ try:
         for i in os.listdir(f'{ResPath}/font'):
             _FONTS = Utils.loadFont(f'{ResPath}/font/{i}', _FONTS)
 
-        log(f'Loaded {len(os.listdir(f'{ResPath}/font'))} fonts.')
+        log(f'Loaded {len(os.listdir(f"{ResPath}/font"))} fonts.')
 
         FONT_FAMILY = 'Segoe UI'
         FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
@@ -334,7 +345,7 @@ try:
                 else:
                     threadedImageOpen(path, key, category)
 
-        log(f'Loaded {len(image_paths['contributors']) + len(image_paths["country"]) + len(image_paths[None])} images.')
+        log(f'Loaded {len(image_paths["contributors"]) + len(image_paths["country"]) + len(image_paths[None])} images.')
 
 
     def getImage(target, category=None):
@@ -452,7 +463,7 @@ try:
                 with open(f'{ResPath}/lang/{i}', encoding='utf-8') as f:
                     lang_dict[i[:-5]] = json.loads(f.read())
 
-        log(f'Loaded {len(os.listdir(f'{ResPath}/lang'))} locales.')
+        log(f'Loaded {len(os.listdir(f"{ResPath}/lang"))} locales.')
 
 
     def translate(target):
@@ -567,6 +578,7 @@ try:
 
         # logo.bind("<B1-Motion>", on_drag_motion)
 
+
         root.mainloop()
 
 
@@ -632,10 +644,9 @@ try:
 
             maliang.Text(subcv, position=(60, 180), text=translate('parent'), family=FONT_FAMILY, fontsize=20)
             maliang.Text(subcv, position=(60, 207), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=32)
-            maliang.Text(subcv, position=(60, 250), text=f'{translate('version')}: {__version__}-{__subversion__}', family=FONT_FAMILY, fontsize=16)
+            maliang.Text(subcv, position=(60, 250), text=f"{translate('version')}: {__version__}-{__subversion__}", family=FONT_FAMILY, fontsize=16)
             
-            maliang.Text(subcv, position=(60, 300), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
-            maliang.Text(subcv, position=(60, 300), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
+            maliang.Text(subcv, position=(60, 300), text=translate('license'), family=FONT_FAMILY, fontsize=16)
 
         def pageLanguage():
             container = maliang.Label(subcv, position=(40, 40), size=(420, 600))
@@ -676,12 +687,11 @@ try:
 
     refreshImage(threaded=False)
 
-    icon = Tray.Icon("name", getImage('icon_logo'),
-                        "ArkLauncher Tray", menu=[
-        Tray.MenuItem("Exit", minimizeAndExit, default=True)
-    ])
+    # icon = Tray.Icon("name", getImage('icon_logo'), "ArkLauncher Tray", menu=[
+    #     Tray.MenuItem("Exit", minimizeAndExit, default=True)
+    # ])
 
-    threading.Thread(target=icon.run, daemon=True).start()
+    # threading.Thread(target=icon.run, daemon=True).start()
 
     # === Load UI ===
     loadLocale()
