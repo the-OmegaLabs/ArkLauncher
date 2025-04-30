@@ -168,7 +168,7 @@ try:
     log = Logger.output
 
     __version__ = 'dev'
-    __subversion__ = '25w18c'
+    __subversion__ = '25w18d'
 
     __author__ = [ # Sorted by contributions 
         "Stevesuk0 (stevesukawa@outlook.com)",
