@@ -393,6 +393,7 @@ def changeWindow(window, extra_args = ()):
     log(f'Perform change canvas to "{window.__name__}"...', type=olog.Type.INFO)
     root.after(1000, cv.destroy)
     try:
+        Utils.play('change')
         updateTopBar(window.__name__)
         window(extra_args)
     except RuntimeError:
@@ -617,7 +618,7 @@ def settingsPage(default = 4):
         if i == 4:
             pageAbout()
 
-    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, command=handler, anchor='center', default=default, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
+    options = maliang.SegmentedButton(optionsMask, position=(250, 25), family=FONT_FAMILY_BOLD, fontsize=16, command=lambda i: (Utils.play('change'), handler(i)), anchor='center', default=default, text=[translate('account'), translate('locale'), translate('network'), translate('customize'), translate('about')])
     options.style.set(bg=('', ''), ol=('', ''))
     for i in options.children:
         i.style.set(fg=('#888888', '#AAAAAA', '#CCCCCC', '#FFFFFF'), bg=('', '', '', '', '', ''), ol=('', '', '', '', '', ''))
