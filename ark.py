@@ -65,19 +65,19 @@
 # please contact our team, and I will promptly remove or replace the material as requested.
 
 def tracebackWindow(exception: Exception):
-    def isSerializable(obj):
-        """Checks if an object can be serialized to JSON."""
+    def isSerializable(obj) -> bool:
         try:
             json.dumps(obj)
             return True
         except TypeError:
             return False
-    log('Starting Traceback window because a exception detected.', type=olog.Type.WARN)
+
+    log('Starting Traceback window because a exception detected.', type=Logger.Type.WARN)
 
     tracelist = ''.join(traceback.format_exception(exception)).split('\n')
 
     for i in tracelist[:-1]:
-        log(i, type=olog.Type.ERROR)
+        log(i, type=Logger.Type.ERROR)
 
     width = max(len(item) for item in tracelist) * 8 + 150
     height = len(tracelist[:-1]) * 20 + 150
@@ -106,8 +106,7 @@ def tracebackWindow(exception: Exception):
         "4", # ?
         "lang_dict",
 
-    ]:
-        globalsFiltered.pop(key, None)
+    ]: globalsFiltered.pop(key, None)
 
     filename = f"dump_{int(nowTime)}.json"
     log(f"Dumped to {filename}")
@@ -116,6 +115,7 @@ def tracebackWindow(exception: Exception):
 
     traceWin = maliang.Tk(size=(width, height),
                       title=f'ArkLauncher traceback window | {__version__}')
+
     traceWin.resizable(0, 0)
     traceWin.topmost(True)
     
@@ -129,47 +129,44 @@ def tracebackWindow(exception: Exception):
     text_msg2.set('You can take an screenshot in this window, and send it to the author.')
 
     text_trace = maliang.Text(cv, (50, 130), fontsize=14)
-    text_trace.set(str(''.join(traceback.format_exception(exception))))
+    text_trace.set(''.join(traceback.format_exception(exception)))
 
     traceWin.center()
     traceWin.mainloop()
 
 
 try:
-    ############################
-    from datetime import datetime
-    import sys
     import time
-
     startLoadTime = time.time()
-    ############################
 
+    # === Standard Library ===
     import ctypes
     import json
     import os
     import platform
+    import sys
     import threading
     import traceback
+    from datetime import datetime
 
+    # === Third-Party Libraries ===
     import colorama
     import darkdetect
+    from PIL import Image
     import maliang
     import maliang.animation
-    import maliang.theme 
-    from PIL import Image
+    import maliang.theme
 
-    from Frameworks import Logger as olog
+    # === Internal Frameworks ===
     import Frameworks.Logger as Logger
     import Frameworks.Utils as Utils
     import Frameworks.Configuration.config as configLib
     import Frameworks.Tray as Tray
     import Frameworks.Notify as Notify
 
-    log = Logger.output
 
     __version__ = 'dev'
     __subversion__ = '25w18d'
-
     __author__ = [ # Sorted by contributions 
         "Stevesuk0 (stevesukawa@outlook.com)",
         "bzym2 (mantouk@qq.com)",
@@ -177,52 +174,42 @@ try:
         "PPicku"
     ]
 
-    # customized
+    log = Logger.output
+    Logger.logLevel = 5
+
+    # === Console Title ===
     try:
         hwnd = ctypes.windll.user32.GetForegroundWindow()
         user32 = ctypes.windll.user32
         user32.SetWindowTextW(
             hwnd, f'ArkLauncher Console Interface - {__version__}, {__subversion__}.')
-    except:
+    except: # fallback
         sys.stdout.write(f"\033]0;{'ArkLauncher Console Interface - {__version__}, {__subversion__}.'}\007")
         sys.stdout.flush()
 
-
-    # config
-    WIDTH = 500
-    HEIGHT = 800
+    # === Configuration ===
+    WIDTH, HEIGHT = 500, 800
 
     configLib.loadConfig()
     config = configLib.config
     locale = config['language']
 
+    # === Global Resources & Appearance ===
     images = {}
     ResPath = 'Resources'
-    _EMPTY = ('', '', '')
     _FONTS = []
     _THEME = config['theme']
     _BORDER = config['border']
-    _SYSTEM = platform.system()
-    _SYSREL = platform.release()
-    _SYSVER = platform.version()
     _BACKGROUND = 'ChiesaBianca'
     _ANIMATIONFPS = 500
     maliang.configs.Env.system = 'Windows10'
-    maliang.theme.manager.set_color_mode(_THEME)
+    maliang.theme.manager.set_color_mode('dark')
 
-    if _SYSTEM == 'Windows':
-        pass
-    elif _SYSTEM == 'Linux':
-        pass
-
-    olog.logLevel = 5
-
-    log(f'Starting ArkLauncher GUI, version {__version__}-{__subversion__}.')
-    log(f'Welcome to Ark!')
-    log(f'System: {_SYSTEM} {_SYSREL} ({_SYSVER})')
-
-    colorama.init()
-
+    # === Constants ===
+    _EMPTY = ('', '', '')
+    _SYSTEM = platform.system()
+    _SYSREL = platform.release()
+    _SYSVER = platform.version()
 
     def getRelFromAbs(x, y):
         return (x - root.winfo_x(), y - root.winfo_y())
@@ -360,7 +347,7 @@ try:
             return img
         except:
             log(f'Image \"{target}\" is missing from category \"{category}\".',
-                type=olog.Type.WARN)
+                type=Logger.Type.WARN)
             return images['icon_unknown']
 
 
@@ -445,14 +432,14 @@ try:
 
 
     def changeWindow(window, extra_args = ()):
-        log(f'Perform change canvas to "{window.__name__}"...', type=olog.Type.INFO)
+        log(f'Perform change canvas to "{window.__name__}"...', type=Logger.Type.INFO)
         root.after(1000, cv.destroy)
         try:
             Utils.play('change')
             updateTopBar(window.__name__)
             window(extra_args)
         except RuntimeError:
-            log('Calling Tcl from tray thread.', type=olog.Type.WARN)
+            log('Calling Tcl from tray thread.', type=Logger.Type.WARN)
 
 
     def loadLocale():
@@ -474,7 +461,7 @@ try:
             return text
         except:
             log(f'String \"{target}\" missing in language \"{locale}\".',
-                type=olog.Type.WARN)
+                type=Logger.Type.WARN)
             return target
 
 
@@ -682,42 +669,31 @@ try:
 
         root.mainloop()
 
-    def settingsAccountPage():
-        global cv
+    # === Initialization ===
+    log(f'System: {_SYSTEM} {_SYSREL} ({_SYSVER})')
 
-        cv = createPage()
-
-
-    def settingsNetworkPage():
-        pass
-
-
-    def settingsCustomizePage():
-        pass
-
-
-    def settingsLanguagePage():
-        pass
+    colorama.init()
 
     refreshImage(threaded=False)
 
-    hidden_menu = [
-        Tray.MenuItem('Exit', minimizeAndExit)
-    ]
-
     icon = Tray.Icon("name", getImage('icon_logo'),
-                        "ArkLauncher Tray", menu=hidden_menu)
+                        "ArkLauncher Tray", menu=[
+        Tray.MenuItem("Exit", minimizeAndExit, default=True)
+    ])
 
     threading.Thread(target=icon.run, daemon=True).start()
 
+    # === Load UI ===
     loadLocale()
-    updateFont()  # auto select font
+    updateFont() 
     createRoot()
     createTopBar()
     focusWindow()
 
-    log(f'Loaded ArkLauncher in {int((time.time() - startLoadTime) * 1000)}ms.')
+    endLoadTime = int((time.time() - startLoadTime) * 1000)
 
+    log(f'Loaded ArkLauncher in {endLoadTime} ms.')
+    log(f'Welcome to Ark!')
 
     if configLib.first:
         updateTopBar('welcomePage')

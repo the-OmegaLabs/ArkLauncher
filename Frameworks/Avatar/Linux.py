@@ -17,7 +17,7 @@ import os
 import pwd
 import subprocess
 
-import Frameworks.Logger as olog
+import Frameworks.Logger as Logger
 
 
 def detect_desktop_environment():
@@ -74,7 +74,7 @@ def get_user_avatar_path(de):
 def getAvatar():
     de = detect_desktop_environment()
     avatar_path = get_user_avatar_path(de)
-    olog.output(f"Desktop Environment: {de}")
+    Logger.output(f"Desktop Environment: {de}")
     """ 用不了：
     PIL.UnidentifiedImageError: cannot identify image file '/home/stevesuk/.face'
 
