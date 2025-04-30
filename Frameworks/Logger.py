@@ -16,11 +16,13 @@
 import datetime
 import inspect
 import sys
+import re
 
 from colorama import Fore, Style, Back, init
 
 init()
 
+log = []
 
 class Type():
     INFO = f'{Back.BLUE} INFO {Back.RESET}'
@@ -34,10 +36,13 @@ logLevel = 5
 
 
 def output(value: str, end: str = "\n", type: str = Type.INFO):
+    global log
+
     now = datetime.datetime.now()
     sys.stdout.write(f"{Back.GREEN} {now.strftime('%H:%M:%S')} {Back.CYAN} " +
                      inspect.stack()[1].filename.replace('\\', '/').split('/')[-1][
                      :-3] + f" {type} {value} {Style.RESET_ALL}")
+    log.append(f"{now.strftime('%H:%M:%S')} {inspect.stack()[1].filename.replace('\\', '/').split('/')[-1][:-3]}{re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])').sub('', type)}{value}")
     sys.stdout.write(f'{end}')
     sys.stdout.flush()
 

@@ -1,25 +1,6 @@
 # Copyright 2025 Omega Labs, ArkLauncher Contributors.
 # Report bugs and issues to https://github.com/the-OmegaLabs/ArkLauncher/issues
 #
-#    ___         __      __                           __
-#    /   |  _____/ /__   / /   ____ ___  ______  _____/ /_  ___  _____
-#   / /| | / ___/ //_/  / /   / __ `/ / / / __ \/ ___/ __ \/ _ \/ ___/
-#  / ___ |/ /  / ,<    / /___/ /_/ / /_/ / / / / /__/ / / /  __/ /
-# /_/  |_/_/  /_/|_|  /_____/\__,_/\__,_/_/ /_/\___/_/ /_/\___/_/
-#
-# 　　　　　　／＞　　フ
-# 　　　　　| 　_　 _ l
-# 　 　　　／` ミ＿xノ
-# 　　 　 /　　　 　 |
-# 　　　 /　 ヽ　　 ﾉ
-# 　 　 │　　|　|　|
-# 　／￣|　　 |　|　|
-# 　| (￣ヽ＿_ヽ_)__)
-# 　＼二つ
-#
-#  ▲ this cat is called Ark
-#
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -31,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+3
 # The Dash Imaging Library (fork from PIL).
-#
 #
 # License:
 # This project is licensed under multiple licenses:
@@ -74,8 +55,23 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
+# Some of the sound effects used in this project are sourced from Apple’s macOS system.
+# All copyrights and trademarks remain the property of Apple Inc. These assets are used solely 
+# for educational, research, or non-commercial demonstration purposes. 
+# No commercial use or distribution is intended.
+#
+# If Apple Inc. or any rights holder believes that the use of these assets is inappropriate, 
+# please contact our team, and I will promptly remove or replace the material as requested.
 
 def tracebackWindow(exception: Exception):
+    def isSerializable(obj):
+        """Checks if an object can be serialized to JSON."""
+        try:
+            json.dumps(obj)
+            return True
+        except TypeError:
+            return False
     log('Starting Traceback window because a exception detected.', type=olog.Type.WARN)
 
     tracelist = ''.join(traceback.format_exception(exception)).split('\n')
@@ -87,6 +83,36 @@ def tracebackWindow(exception: Exception):
     height = len(tracelist[:-1]) * 20 + 150
     
     Utils.play('error')
+
+    nowTime = time.time()
+    globalsFiltered = {
+        key: value for key, value in globals().items() if isSerializable(value)
+    }
+    globalsFiltered.update({
+        'systemArch': platform.machine(),
+        'pythonVersion': platform.python_version(),
+        'dumpTime': nowTime,
+        'dumpTimeFormated': time.ctime(),
+        'arkLogs': Logger.log
+    })
+    
+    for key in [
+        "__doc__",
+        "__package__",
+        "__spec__",
+        "__annotations__",
+        "__cached__",
+        "_EMPTY",
+        "4", # ?
+        "lang_dict",
+
+    ]:
+        globalsFiltered.pop(key, None)
+
+    filename = f"dump_{int(nowTime)}.json"
+    log(f"Dumped to {filename}")
+    with open(filename, "w", encoding='utf-8') as f:
+        json.dump(globalsFiltered, f, indent=4, ensure_ascii=False)
 
     traceWin = maliang.Tk(size=(width, height),
                       title=f'ArkLauncher traceback window | {__version__}')
@@ -105,7 +131,6 @@ def tracebackWindow(exception: Exception):
     text_trace = maliang.Text(cv, (50, 130), fontsize=14)
     text_trace.set(str(''.join(traceback.format_exception(exception))))
 
-    traceWin.at_exit(lambda: (root.destroy()))
     traceWin.center()
     traceWin.mainloop()
 
@@ -134,14 +159,16 @@ try:
     from PIL import Image
 
     from Frameworks import Logger as olog
-    from Frameworks.Logger import output as log
+    import Frameworks.Logger as Logger
     import Frameworks.Utils as Utils
     import Frameworks.Configuration.config as configLib
     import Frameworks.Tray as Tray
     import Frameworks.Notify as Notify
 
+    log = Logger.output
+
     __version__ = 'dev'
-    _SUBVERSION = '25w18c'
+    __subversion__ = '25w18c'
 
     __author__ = [ # Sorted by contributions 
         "Stevesuk0 (stevesukawa@outlook.com)",
@@ -155,9 +182,9 @@ try:
         hwnd = ctypes.windll.user32.GetForegroundWindow()
         user32 = ctypes.windll.user32
         user32.SetWindowTextW(
-            hwnd, f'ArkLauncher Console Interface - {__version__}, {_SUBVERSION}.')
+            hwnd, f'ArkLauncher Console Interface - {__version__}, {__subversion__}.')
     except:
-        sys.stdout.write(f"\033]0;{'ArkLauncher Console Interface - {__version__}, {_SUBVERSION}.'}\007")
+        sys.stdout.write(f"\033]0;{'ArkLauncher Console Interface - {__version__}, {__subversion__}.'}\007")
         sys.stdout.flush()
 
 
@@ -170,7 +197,6 @@ try:
     locale = config['language']
 
     images = {}
-    focus = False
     ResPath = 'Resources'
     _EMPTY = ('', '', '')
     _FONTS = []
@@ -191,7 +217,7 @@ try:
 
     olog.logLevel = 5
 
-    log(f'Starting ArkLauncher GUI, version {__version__}-{_SUBVERSION}.')
+    log(f'Starting ArkLauncher GUI, version {__version__}-{__subversion__}.')
     log(f'Welcome to Ark!')
     log(f'System: {_SYSTEM} {_SYSREL} ({_SYSVER})')
 
@@ -202,14 +228,8 @@ try:
         return (x - root.winfo_x(), y - root.winfo_y())
 
     def focusWindow(*args):
-        global focus
-        if not focus:
-            root.topmost(True)
-            focus = True
-            maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
+        maliang.animation.MoveWindow(root, offset=(getRelFromAbs(root.winfo_screenwidth() - 515, root.winfo_y())), duration=500,
                                         controller=maliang.animation.controllers.ease_out, fps=_ANIMATIONFPS, end=lambda: root.geometry(position=(root.winfo_screenwidth() - 515, root.winfo_y()))).start()
-
-        # maliang.animation.Animation(duration=100, command=root.alpha, controller=smooth_forward, end=_focus, fps=_ANIMATIONFPS).start()
 
     def minimizeAndExit():
         icon.stop()
@@ -353,7 +373,7 @@ try:
 
         root = maliang.Tk(size=(WIDTH, HEIGHT), position=(-1000, -1000))  
         root.geometry(position=(root.winfo_screenwidth() - 15, root.winfo_screenheight() // 2 - 400))
-        root.title(f'{translate("prodname")} {translate(__version__)}-{_SUBVERSION}')
+        root.title(f'{translate("prodname")} {translate(__version__)}-{__subversion__}')
         root.minsize(WIDTH, HEIGHT)
         root.maxsize(WIDTH, HEIGHT)
         maliang.theme.manager.customize_window(root, disable_maximize_button=True, border_type=_BORDER)
@@ -385,7 +405,6 @@ try:
 
         logo.style.set(bg=_EMPTY, ol=_EMPTY)
         
-        root.bind("<ButtonPress-1>", focusWindow)
 
     close = None
 
@@ -561,9 +580,6 @@ try:
 
         # logo.bind("<B1-Motion>", on_drag_motion)
 
-        
-        raise Exception
-
         root.mainloop()
 
 
@@ -629,7 +645,7 @@ try:
 
             maliang.Text(subcv, position=(60, 180), text=translate('parent'), family=FONT_FAMILY, fontsize=20)
             maliang.Text(subcv, position=(60, 207), text=translate('prodname'), family=FONT_FAMILY_BOLD, fontsize=32)
-            maliang.Text(subcv, position=(60, 250), text=f'{translate('version')}: {__version__}-{_SUBVERSION}', family=FONT_FAMILY, fontsize=16)
+            maliang.Text(subcv, position=(60, 250), text=f'{translate('version')}: {__version__}-{__subversion__}', family=FONT_FAMILY, fontsize=16)
             
             maliang.Text(subcv, position=(60, 300), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
             maliang.Text(subcv, position=(60, 300), text=f'{translate('license')}', family=FONT_FAMILY, fontsize=16)
@@ -685,11 +701,9 @@ try:
 
     refreshImage(threaded=False)
 
-    hidden_menu = (
-        Tray.MenuItem('Focus', focusWindow, default=True),
-        Tray.Menu.SEPARATOR,
+    hidden_menu = [
         Tray.MenuItem('Exit', minimizeAndExit)
-    )
+    ]
 
     icon = Tray.Icon("name", getImage('icon_logo'),
                         "ArkLauncher Tray", menu=hidden_menu)
