@@ -65,7 +65,7 @@
 # please contact our team, and I will promptly remove or replace the material as requested.
 
 __version__ = 'dev'
-__subversion__ = '25w19b'
+__subversion__ = '25w19d'
 __author__ = [ # Sorted by contributions 
     "Stevesuk0 (stevesukawa@outlook.com)",
     "bzym2 (mantouk@qq.com)",
