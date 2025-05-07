@@ -64,7 +64,18 @@
 # If Apple Inc. or any rights holder believes that the use of these assets is inappropriate, 
 # please contact our team, and I will promptly remove or replace the material as requested.
 
+__version__ = 'dev'
+__subversion__ = '25w19b'
+__author__ = [ # Sorted by contributions 
+    "Stevesuk0 (stevesukawa@outlook.com)",
+    "bzym2 (mantouk@qq.com)",
+    "HRGC-Sonrai",
+    "PPicku"
+]
+
 def tracebackWindow(exception: Exception):
+    os.makedirs('dumps', exist_ok=True)
+
     def isSerializable(obj) -> bool:
         try:
             json.dumps(obj)
@@ -111,7 +122,7 @@ def tracebackWindow(exception: Exception):
 
     ]: globalsFiltered.pop(key, None)
 
-    filename = f"dump_{int(nowTime)}.json"
+    filename = f"./dumps/dump_{int(nowTime)}.json"
     with open(filename, "w", encoding='utf-8') as f:
         json.dump(globalsFiltered, f, indent=4, ensure_ascii=False)
 
@@ -176,16 +187,6 @@ try:
     import Frameworks.Configuration.config as configLib
     import Frameworks.Notify as Notify
 
-
-    __version__ = 'dev'
-    __subversion__ = '25w18d'
-    __author__ = [ # Sorted by contributions 
-        "Stevesuk0 (stevesukawa@outlook.com)",
-        "bzym2 (mantouk@qq.com)",
-        "HRGC-Sonrai",
-        "PPicku"
-    ]
-
     log = Logger.output
     Logger.logLevel = 5
 
@@ -213,9 +214,10 @@ try:
     _THEME = 'dark'
     _BORDER = config['border']
     _BACKGROUND = 'ChiesaBianca'
-    _ANIMATIONFPS = 500
+    _ANIMATIONFPS = 1000
     maliang.configs.Env.system = 'Windows10'
     maliang.theme.manager.set_color_mode('dark')
+    devPageDisplayed = False
 
     # === Constants ===
     _EMPTY = ('', '', '')
@@ -249,8 +251,8 @@ try:
         log(f'Loaded {len(os.listdir(f"{ResPath}/font"))} fonts.')
 
         FONT_FAMILY = 'Segoe UI'
-        FONT_FAMILY_BOLD = f'{FONT_FAMILY} Bold'
-        FONT_FAMILY_LIGHT = f'{FONT_FAMILY} Light'
+        FONT_FAMILY_BOLD = f'Microsoft YaHei UI Bold'
+        FONT_FAMILY_LIGHT = f'Microsoft YaHei UI Light'
 
 
         log(f'Changed font to {FONT_FAMILY} (Bold: {FONT_FAMILY_BOLD}, Light: {FONT_FAMILY_LIGHT}).')
@@ -571,6 +573,26 @@ try:
         launchIcon          = maliang.Image(launch, (bottomLMaskHEIGHT // 2 - 5, bottomLMaskHEIGHT // 2 - 7),image=maliang.PhotoImage(getImage('icon_launch').resize((80, 80), 1)), anchor='center')
         launchDesc          = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 35), text='Launch game', family=FONT_FAMILY,fontsize=17)
         launchTitle         = maliang.Text(launch, position=(105, bottomLMaskHEIGHT // 2 - 10), text='Meira Client', family=FONT_FAMILY_BOLD, fontsize=25)
+
+        if __version__ == 'dev':
+            global devPageDisplayed            
+            
+            if not devPageDisplayed:
+                Utils.play('invite')
+                devWin = maliang.Label(cv, position=(40, 40), size=(420, 600))
+                maliang.animation.MoveWidget(devWin, offset=(0, 1000), duration=0).start()
+                maliang.animation.MoveWidget(devWin, offset=(0, -1000), duration=500, controller=maliang.animation.ease_out, fps=_ANIMATIONFPS).start()
+                dev_Icon            = maliang.Image(devWin, position=(30, 40), image=maliang.PhotoImage(getImage('icon_logo').resize((50, 50), 1)))
+                dev_welcome         = maliang.Text(devWin, position=(40, 110), fontsize=20, family=FONT_FAMILY_BOLD, text=translate('dev_welcome'))
+
+                dev_text1         = maliang.Text(devWin, position=(40, 170), fontsize=15, family=FONT_FAMILY, text=translate('dev_text1'))
+                dev_text2         = maliang.Text(devWin, position=(40, 220), fontsize=15, family=FONT_FAMILY, text=translate('dev_text2'))
+                dev_text3         = maliang.Text(devWin, position=(40, 290), fontsize=15, family=FONT_FAMILY, text=translate('dev_text3'))
+
+                dev_btn           = maliang.Button(devWin, position=(210, 550), size=(350, 50), anchor='center', text='OK', fontsize=18, family=FONT_FAMILY_BOLD, command=lambda: (Utils.play('launch'), maliang.animation.MoveWidget(devWin, offset=(0, -1000), duration=1000, controller=maliang.animation.ease_out, end=devWin.destroy, fps=_ANIMATIONFPS).start()))
+
+                devWin.style.set(bg=('#202020', '#202020'))
+            devPageDisplayed = True
 
         launch.style.set(fg=('', '', ''), bg=('', '', ''), ol=('#4C4849', '#BBBBBB'))
         account.style.set(bg=_EMPTY, ol=_EMPTY)

@@ -11,7 +11,7 @@
     "language": "语言",
     "homepage": "主页",
     "about": "关于",
-    "account": "Artistic ID",
+    "account": "账户",
     "settings": "设置",
     "version": "版本",
     "locale": "语言与地区",
@@ -47,5 +47,9 @@
     "open_source_notice": "本程序已根据 Apache 2.0 协议开源。",
     "leaddev": "主开发者",
     "deve": "开发者",
-    "ud+dev": "美术与开发" 
+    "ud+dev": "美术与开发",
+    "dev_welcome": "欢迎使用 ArkLauncher 开发版",
+    "dev_text1": "感谢您对 ArkLauncher 开发工作的关注与支持！",
+    "dev_text2": "您当前正在使用早期开发版的 Ark 构建，该版本当前\n还不具备任何实际功能。",
+    "dev_text3": "我们希望您能通过当前预览版本中对 ArkLauncher 有\n一个详细的了解。如果您有任何疑问，请在 Issue 中\n与开发团队联系！"
 }

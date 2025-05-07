@@ -111,7 +111,7 @@ def makeImageBlur(img, radius=5):
 def mergeImage(a: Image, b: Image):
     return Image.alpha_composite(a, b)
 
-def makeImageMask(size, color=(0, 0, 0, 128), ):
+def makeImageMask(size, color=(0, 0, 0, 128)):
     return Image.new("RGBA", size=size, color=color)
 
 def loadFont(fontPath, FONT_LIST):
