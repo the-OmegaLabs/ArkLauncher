@@ -589,7 +589,7 @@ try:
                 dev_text2         = maliang.Text(devWin, position=(40, 220), fontsize=15, family=FONT_FAMILY, text=translate('dev_text2'))
                 dev_text3         = maliang.Text(devWin, position=(40, 290), fontsize=15, family=FONT_FAMILY, text=translate('dev_text3'))
 
-                dev_btn           = maliang.Button(devWin, position=(210, 550), size=(350, 50), anchor='center', text=translate('button'), fontsize=18, family=FONT_FAMILY_BOLD, command=lambda: (Utils.play('change'), maliang.animation.MoveWidget(devWin, offset=(0, -1000), duration=1000, controller=maliang.animation.ease_out, end=devWin.destroy, fps=_ANIMATIONFPS).start()))
+                dev_btn           = maliang.Button(devWin, position=(210, 550), size=(350, 50), anchor='center', text=translate('button'), fontsize=18, family=FONT_FAMILY_BOLD, command=lambda: (Utils.play('change'), maliang.animation.MoveWidget(devWin, offset=(0, -1000), duration=1000, controller=maliang.animation.ease_out, end=devWin.destroy, fps=_ANIMATIONFPS).start(delay=100)))
 
                 devWin.style.set(bg=('#202020', '#202020'))
             devPageDisplayed = True
