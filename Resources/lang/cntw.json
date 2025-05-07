@@ -49,5 +49,9 @@
     "open_source_notice": "本程式已根據 Apache 協定開源。",
     "leaddev": "主開發者",
     "deve": "開發者",
-    "ud+dev": "美術與開發" 
+    "ud+dev": "美術與開發",
+    "dev_welcome": "歡迎使用 ArkLauncher 開發版",
+    "dev_text1": "感謝您對 ArkLauncher 開發工作的關注與支持！",
+    "dev_text2": "您當前正在使用早期開發版的 Ark 構建，該版本目前\n尚未具備任何實際功能。",
+    "dev_text3": "我們希望您能透過當前預覽版本更加了解 ArkLaunch\ner。若您有任何疑問，請於 Issue 中聯繫開發團隊！"
 }

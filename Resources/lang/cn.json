@@ -48,8 +48,8 @@
     "leaddev": "主开发者",
     "deve": "开发者",
     "ud+dev": "美术与开发",
-    "dev_welcome": "欢迎使用 ArkLauncher 开发版",
-    "dev_text1": "感谢您对 ArkLauncher 开发工作的关注与支持！",
-    "dev_text2": "您当前正在使用早期开发版的 Ark 构建，该版本当前\n还不具备任何实际功能。",
-    "dev_text3": "我们希望您能通过当前预览版本中对 ArkLauncher 有\n一个详细的了解。如果您有任何疑问，请在 Issue 中\n与开发团队联系！"
+    "dev_welcome": "歡迎使用 ArkLauncher 開發版",
+    "dev_text1": "感謝您對 ArkLauncher 開發工作的關注與支持！",
+    "dev_text2": "您當前正在使用早期開發版的 Ark 構建，該版本目前\n尚未具備任何實際功能。",
+    "dev_text3": "我們希望您能透過當前預覽版本更加了解 ArkLauncher。\n若您有任何疑問，請於 Issue 中聯繫開發團隊！"
 }

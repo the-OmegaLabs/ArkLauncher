@@ -45,5 +45,9 @@
     "needLogin1": "Before using this feature",
     "needLogin2": "Need Login",
     "needLogin3": "After logging in, you will enjoy various online services provided by Artistic Network's Ark.",
-    "login": "Log in"
+    "login": "Log in",
+    "dev_welcome": "Welcome to the ArkLauncher dev.",
+    "dev_text1": "Thank you for your interest and support in the devel\nopment of ArkLauncher!",
+    "dev_text2": "You are currently using an early development build\n of Ark, which does not yet have any functional feat\nures.",
+    "dev_text3": "We hope this preview version gives you a detailed i\nnsight into ArkLauncher. If you have any questions, \nplease contact the development team via the GitH\nub Issue!"
 }
